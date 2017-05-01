@@ -234,6 +234,10 @@ function init(extensionMeta) {
 function enable() {
     nasaApodIndicator = new NasaApodIndicator();
     Main.panel.addToStatusArea(IndicatorName, nasaApodIndicator);
+    let dir = Gio.file_new_for_path(NasaApodDir);
+    if (!dir.query_exists(null)) {
+        dir.make_directory_with_parents(null);
+    }
 }
 
 function disable() {
