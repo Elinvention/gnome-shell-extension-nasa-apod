@@ -18,13 +18,18 @@ const NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
 
+
+function log(msg) {
+    print("NASA APOD extension: " + msg);
+}
+
 // Utility function
 function dump(object) {
     let output = '';
     for (let property in object) {
         output += property + ': ' + object[property]+'; ';
     }
-    print(output);
+    log(output);
 }
 
 const LongNotification = new Lang.Class({
@@ -99,16 +104,15 @@ const NasaApodIndicator = new Lang.Class({
         this.menu.addMenuItem(this.refreshItem);
         this.showItem.connect('activate', Lang.bind(this, this._showDescription));
         this.wallpaperItem.connect('activate', Lang.bind(this, function () {
-            if (this.filename != "")
-                setBackground(this.filename);
-            else
-                this._refresh();
+            setBackground(this.filename);
         }));
         this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
 
         this.actor.connect('button-press-event', Lang.bind(this, function () {
+            // Grey out menu items if an update is pending
             this.refreshItem.setSensitive(!this._updatePending);
-            this.showItem.setSensitive(!this._updatePending);
+            this.showItem.setSensitive(!this._updatePending && this.title != "" && this.explanation != "");
+            this.wallpaperItem.setSensitive(!this._updatePending && this.filename != "");
         }));
 
         this._refresh();
@@ -149,6 +153,9 @@ const NasaApodIndicator = new Lang.Class({
             } else if (message.status_code == 403) {
                 notifyError("Error 403: check your NASA API key");
                 this._updatePending = false;
+            } else {
+                notifyError("Network error");
+                this._updatePending = false;
             }
         }));
     },
@@ -166,6 +173,7 @@ const NasaApodIndicator = new Lang.Class({
             if (!file.query_exists(null)) {
                 this._download_image(url, file);
             } else {
+                log("Image already downloaded");
                 this._updatePending = false;
             }
         } else {
@@ -175,21 +183,21 @@ const NasaApodIndicator = new Lang.Class({
     },
 
     _download_image: function(url, file) {
-        print("Downloading " + url + " to " + file.get_uri())
+        log("Downloading " + url + " to " + file.get_uri())
 
         // open the Gfile
-        fstream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
+        let fstream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
 
         // variables for the progress bar
-        var total_size;
-        var bytes_so_far = 0;
+        let total_size;
+        let bytes_so_far = 0;
 
         // create an http message
-        var request = Soup.Message.new('GET', url);
+        let request = Soup.Message.new('GET', url);
 
         // got_headers event
         request.connect('got_headers', Lang.bind(this, function(message){
-            print("got_headers")
+            log("got_headers")
             total_size = message.response_headers.get_content_length()
         }));
 
@@ -200,19 +208,24 @@ const NasaApodIndicator = new Lang.Class({
             if(total_size) {
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
-                print("Download "+percent+"% done ("+bytes_so_far+" / "+total_size+" bytes)");
+                log("Download "+percent+"% done ("+bytes_so_far+" / "+total_size+" bytes)");
             }
             fstream.write(chunk.get_data(), null, chunk.length);
         }));
 
         // queue the http request
         httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
-            print('Download is done');
-            // close the file
+            // request completed
             fstream.close(null);
-            setBackground(file.get_uri());
-            this._showDescription();
             this._updatePending = false;
+            if (message.status_code == 200) {
+                log('Download successful');
+                setBackground(file.get_uri());
+                this._showDescription();
+            } else {
+                notifyError("Couldn't fetch image from " + url);
+                file.delete(null);
+            }
         }));
     },
 
