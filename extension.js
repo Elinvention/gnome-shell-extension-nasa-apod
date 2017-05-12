@@ -17,7 +17,7 @@ const DefaultAPIKey = "XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH";
 const NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
-
+const ICON = "saturn"
 
 function log(msg) {
     print("NASA APOD extension: " + msg);
@@ -46,7 +46,7 @@ const LongNotification = new Lang.Class({
 
 function notify(msg, details) {
     // set notifications icon
-    let source = new MessageTray.Source("NASA APOD", 'nasa');
+    let source = new MessageTray.Source("NASA APOD", ICON);
     // force expanded notification
     source.policy = new MessageTray.NotificationPolicy({ enable: true,
                                         enableSound: true,
@@ -87,7 +87,7 @@ const NasaApodIndicator = new Lang.Class({
     _init: function() {
         this.parent(0.0, IndicatorName);
 
-        this.icon = new St.Icon({icon_name: 'nasa', style_class: 'system-status-icon'});
+        this.icon = new St.Icon({icon_name: ICON, style_class: 'system-status-icon'});
         this.actor.add_child(this.icon);
 
         this.title = "";
