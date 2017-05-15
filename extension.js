@@ -172,14 +172,14 @@ const NasaApodIndicator = new Lang.Class({
     _parseData: function(data) {
         let parsed = JSON.parse(data);
 
-        this.title = parsed['title']
-        this.explanation = parsed['explanation'];
-        if ('copyright' in parsed)
-            this.copyright = parsed['copyright'];
-
         if (parsed['media_type'] == "image") {
-            let url = parsed['hdurl'];
+            this.title = parsed['title']
+            this.explanation = parsed['explanation'];
+            if ('copyright' in parsed)
+                this.copyright = parsed['copyright'];
             this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.jpg';
+            let url = parsed['hdurl'];
+
             let file = Gio.file_new_for_path(this.filename);
             if (!file.query_exists(null)) {
                 this._download_image(url, file);
@@ -189,8 +189,11 @@ const NasaApodIndicator = new Lang.Class({
                 this._updatePending = false;
             }
         } else {
-            notifyError("Media type " + parsed['media_type'] + " not supported.");
+            this.title = "Media type " + parsed['media_type'] + " not supported.";
+            this.explanation = "No picture for today 😞. Please visit NASA APOD website.";
+            this.filename = "";
             this._updatePending = false;
+            this._showDescription();
         }
     },
 
