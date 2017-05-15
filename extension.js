@@ -98,6 +98,7 @@ const NasaApodIndicator = new Lang.Class({
         this.title = "";
         this.explanation = "";
         this.filename = "";
+        this.copyright = "";
         this._updatePending = false;
         this._timeout = null;
 
@@ -133,7 +134,10 @@ const NasaApodIndicator = new Lang.Class({
         if (this.title == "" && this.explanation == "") {
             this._refresh();
         } else {
-            notify(this.title, this.explanation);
+            let message = this.explanation;
+            if (this.copyright != "")
+                message += "\n**Copyright © " + this.copyright + "**"
+            notify(this.title, message);
         }
     },
 
@@ -170,6 +174,8 @@ const NasaApodIndicator = new Lang.Class({
 
         this.title = parsed['title']
         this.explanation = parsed['explanation'];
+        if ('copyright' in parsed)
+            this.copyright = parsed['copyright'];
 
         if (parsed['media_type'] == "image") {
             let url = parsed['hdurl'];
@@ -179,6 +185,7 @@ const NasaApodIndicator = new Lang.Class({
                 this._download_image(url, file);
             } else {
                 log("Image already downloaded");
+                setBackground(this.filename);
                 this._updatePending = false;
             }
         } else {
