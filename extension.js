@@ -69,11 +69,16 @@ function notifyError(msg) {
     Main.notifyError("NASA APOD extension error", msg);
 }
 
-function setBackground(uri) {
-    let gsettings = new Gio.Settings({schema: 'org.gnome.desktop.background'});
+function doSetBackground(uri, schema) {
+    let gsettings = new Gio.Settings({schema: schema});
     gsettings.set_string('picture-uri', uri);
     Gio.Settings.sync();
     gsettings.apply();
+}
+
+function setBackground(uri) {
+    doSetBackground(uri, 'org.gnome.desktop.background');
+    doSetBackground(uri, 'org.gnome.desktop.screensaver');
 }
 
 
@@ -257,4 +262,3 @@ function disable() {
     nasaApodIndicator.stop();
     nasaApodIndicator.destroy();
 }
-
