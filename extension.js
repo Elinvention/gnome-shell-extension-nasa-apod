@@ -259,7 +259,6 @@ const NasaApodIndicator = new Lang.Class({
             this._updatePending = false;
             if (message.status_code == 200) {
                 log('Download successful');
-                this.filename = 
                 this._setBackground();
                 if (this._settings.get_boolean('notify'))
                     this._showDescription();
