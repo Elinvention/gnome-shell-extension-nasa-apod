@@ -1,0 +1,49 @@
+<schemalist gettext-domain="gnome-shell-extensions">
+
+  <schema id="org.gnome.shell.extensions.nasa-apod"
+      path="/org/gnome/shell/extensions/nasa-apod/">
+
+    <key name="hide" type="b">
+      <default>false</default>
+        <summary>Hide indicator</summary>
+        <description>Hide indicator icon from status area</description>
+    </key>
+
+    <key name="notify" type="b">
+      <default>true</default>
+        <summary>Send a notifications</summary>
+        <description>Send a notification with explanation when the picture of the day is downloaded</description>
+    </key>
+
+    <key name="transient" type="b">
+      <default>true</default>
+        <summary>Use transient notifications (auto dismiss)</summary>
+        <description></description>
+    </key>
+
+    <key name="set-background" type="b">
+      <default>true</default>
+        <summary>Set background</summary>
+        <description>Set background to NASA's APOD</description>
+    </key>
+
+    <key name="set-lock-screen" type="b">
+      <default>true</default>
+        <summary>Set lock screen</summary>
+        <description>Set lock screen to NASA's APOD</description>
+    </key>
+
+    <key name="download-folder" type="s">
+      <default>".cache/apod"</default>
+      <summary>Where to download pictures.</summary>
+      <description></description>
+    </key>
+
+    <key name="api-key" type="s">
+      <default>"XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH"</default>
+      <summary>NASA APOD api key.</summary>
+      <description>Get your API key from https://api.nasa.gov/</description>
+    </key>
+
+  </schema>
+</schemalist>

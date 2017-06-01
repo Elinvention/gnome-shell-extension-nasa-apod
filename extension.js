@@ -11,10 +11,12 @@ const Util = imports.misc.util;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
+const Utils = Me.imports.utils;
+
 const NasaApodURL = "https://api.nasa.gov/planetary/apod";
 const NasaApodWebsiteURL = "https://apod.nasa.gov/apod/";
-const DefaultAPIKey = "XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH";
-const NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
 const ICON = "saturn"
@@ -44,7 +46,7 @@ const LongNotification = new Lang.Class({
     }
 });
 
-function notify(msg, details) {
+function notify(msg, details, transient) {
     // set notifications icon
     let source = new MessageTray.Source("NASA APOD", ICON);
     // force expanded notification
@@ -57,7 +59,7 @@ function notify(msg, details) {
                                       });
     Main.messageTray.add(source);
     let notification = new LongNotification(source, msg, details);
-    notification.setTransient(true);
+    notification.setTransient(transient);
     // Add action to open NASA APOD website with default browser
     notification.addAction("NASA APOD website", Lang.bind(this, function() {
         Util.spawn(["xdg-open", NasaApodWebsiteURL]);
@@ -75,12 +77,6 @@ function doSetBackground(uri, schema) {
     Gio.Settings.sync();
     gsettings.apply();
 }
-
-function setBackground(uri) {
-    doSetBackground(uri, 'org.gnome.desktop.background');
-    doSetBackground(uri, 'org.gnome.desktop.screensaver');
-}
-
 
 let httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
@@ -102,17 +98,25 @@ const NasaApodIndicator = new Lang.Class({
         this._updatePending = false;
         this._timeout = null;
 
+        this._settings = Utils.getSettings();
+        this._settings.connect('changed::hide', Lang.bind(this, function() {
+            this.actor.visible = !this._settings.get_boolean('hide');
+        }));
+
         this.showItem = new PopupMenu.PopupMenuItem("Show description");
         this.wallpaperItem = new PopupMenu.PopupMenuItem("Set wallpaper");
         this.refreshItem = new PopupMenu.PopupMenuItem("Refresh");
+        this.settingsItem = new PopupMenu.PopupMenuItem("Settings");
         this.menu.addMenuItem(this.showItem);
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.refreshItem);
+        this.menu.addMenuItem(this.settingsItem);
         this.showItem.connect('activate', Lang.bind(this, this._showDescription));
-        this.wallpaperItem.connect('activate', Lang.bind(this, function () {
-            setBackground(this.filename);
-        }));
+        this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
         this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
+        this.settingsItem.connect('activate', function() {
+            Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
+        });
 
         this.actor.connect('button-press-event', Lang.bind(this, function () {
             // Grey out menu items if an update is pending
@@ -122,6 +126,15 @@ const NasaApodIndicator = new Lang.Class({
         }));
 
         this._refresh();
+    },
+
+    _setBackground: function() {
+        if (this.filename == "")
+            return;
+        if (this._settings.get_boolean('set-background'))
+            doSetBackground(this.filename, 'org.gnome.desktop.background');
+        if (this._settings.get_boolean('set-lock-screen'))
+            doSetBackground(this.filename, 'org.gnome.desktop.screensaver');
     },
 
     _restartTimeout: function() {
@@ -137,7 +150,7 @@ const NasaApodIndicator = new Lang.Class({
             let message = this.explanation;
             if (this.copyright != "")
                 message += "\n**Copyright © " + this.copyright + "**"
-            notify(this.title, message);
+            notify(this.title, message, this._settings.get_boolean('transient'));
         }
     },
 
@@ -148,8 +161,8 @@ const NasaApodIndicator = new Lang.Class({
 
         this._restartTimeout();
 
-        // TODO: add settings to specify user's API key
-        let apiKey = DefaultAPIKey;
+        let apiKey = this._settings.get_string('api-key');
+        log("API key: " + apiKey);
 
         // create an http message
         let request = Soup.Message.new('GET', NasaApodURL + '?api_key=' + apiKey);
@@ -177,15 +190,25 @@ const NasaApodIndicator = new Lang.Class({
             this.explanation = parsed['explanation'];
             if ('copyright' in parsed)
                 this.copyright = parsed['copyright'];
+            let url = ('hdurl' in parsed) ? parsed['hdurl'] : parsed['url'];
+
+            let NasaApodDir = this._settings.get_string('download-folder');
+            if (NasaApodDir == "")
+                NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
+            else if (!NasaApodDir.endsWith('/'))
+                NasaApodDir += '/';
             this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.jpg';
-            let url = parsed['hdurl'];
 
             let file = Gio.file_new_for_path(this.filename);
             if (!file.query_exists(null)) {
+                let dir = Gio.file_new_for_path(NasaApodDir);
+                if (!dir.query_exists(null)) {
+                    dir.make_directory_with_parents(null);
+                }
                 this._download_image(url, file);
             } else {
                 log("Image already downloaded");
-                setBackground(this.filename);
+                this._setBackground();
                 this._updatePending = false;
             }
         } else {
@@ -193,7 +216,8 @@ const NasaApodIndicator = new Lang.Class({
             this.explanation = "No picture for today 😞. Please visit NASA APOD website.";
             this.filename = "";
             this._updatePending = false;
-            this._showDescription();
+            if (this._settings.get_boolean('notify'))
+                this._showDescription();
         }
     },
 
@@ -235,8 +259,10 @@ const NasaApodIndicator = new Lang.Class({
             this._updatePending = false;
             if (message.status_code == 200) {
                 log('Download successful');
-                setBackground(file.get_uri());
-                this._showDescription();
+                this.filename = 
+                this._setBackground();
+                if (this._settings.get_boolean('notify'))
+                    this._showDescription();
             } else {
                 notifyError("Couldn't fetch image from " + url);
                 file.delete(null);
@@ -262,10 +288,6 @@ function init(extensionMeta) {
 function enable() {
     nasaApodIndicator = new NasaApodIndicator();
     Main.panel.addToStatusArea(IndicatorName, nasaApodIndicator);
-    let dir = Gio.file_new_for_path(NasaApodDir);
-    if (!dir.query_exists(null)) {
-        dir.make_directory_with_parents(null);
-    }
 }
 
 function disable() {

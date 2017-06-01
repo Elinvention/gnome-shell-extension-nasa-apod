@@ -3,6 +3,7 @@
   "name": "NASA APOD",
   "shell-version": ["3.22", "3.24"],
   "description": "Change your wallpaper daily to the NASA's astronomy picture of the day",
-  "url": "https://github.com/Elinvention/gnome-shell-extension-nasa-apod"
+  "url": "https://github.com/Elinvention/gnome-shell-extension-nasa-apod",
+  "version": 6
 }
 
