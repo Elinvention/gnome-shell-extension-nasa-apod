@@ -1,6 +1,7 @@
 
 const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Me.imports.utils;
 
@@ -44,6 +45,7 @@ function buildPrefsWidget(){
 
     //download folder
     fileChooser.set_filename(settings.get_string('download-folder'));
+    fileChooser.add_shortcut_folder_uri("file://" + GLib.get_user_cache_dir() + "/apod");
     fileChooser.connect('file-set', function(widget) {
         settings.set_string('download-folder', widget.get_filename());
     });
