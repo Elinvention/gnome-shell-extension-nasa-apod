@@ -99,6 +99,7 @@ const NasaApodIndicator = new Lang.Class({
         this._timeout = null;
 
         this._settings = Utils.getSettings();
+	this.actor.visible = !this._settings.get_boolean('hide'); // set initial indicator visibility state
         this._settings.connect('changed::hide', Lang.bind(this, function() {
             this.actor.visible = !this._settings.get_boolean('hide');
         }));
