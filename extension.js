@@ -125,7 +125,7 @@ const NasaApodIndicator = new Lang.Class({
             this.wallpaperItem.setSensitive(!this._updatePending && this.filename != "");
         }));
 
-        this._refresh();
+        this._restartTimeout(60);
     },
 
     _setBackground: function() {
@@ -137,10 +137,10 @@ const NasaApodIndicator = new Lang.Class({
             doSetBackground(this.filename, 'org.gnome.desktop.screensaver');
     },
 
-    _restartTimeout: function() {
+    _restartTimeout: function(seconds = TIMEOUT_SECONDS) {
         if (this._timeout)
             Mainloop.source_remove(this._timeout);
-        this._timeout = Mainloop.timeout_add_seconds(TIMEOUT_SECONDS, Lang.bind(this, this._refresh));
+        this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
     },
 
     _showDescription: function() {
