@@ -11,4 +11,8 @@ Also note that some images might be protected by copyright.
 
 `git clone https://github.com/Elinvention/gnome-shell-extension-nasa-apod.git $HOME/.local/share/gnome-shell/extensions/nasa_apod@elinvention.ovh`
 
+## Screenshots
 
+![NASA APOD extension](https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/1.png)
+![Settings](https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/2.png)
+![Settings About](https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/3.png)
