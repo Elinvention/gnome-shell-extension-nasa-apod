@@ -73,7 +73,7 @@ function notifyError(msg) {
 
 function doSetBackground(uri, schema) {
     let gsettings = new Gio.Settings({schema: schema});
-    gsettings.set_string('picture-uri', uri);
+    gsettings.set_string('picture-uri', 'file://'+uri);
     Gio.Settings.sync();
     gsettings.apply();
 }
