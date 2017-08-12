@@ -13,12 +13,13 @@ function init() {
     settings = Utils.getSettings(Me);
 }
 
-function buildCacheFlowBoxChild(title, path) {
+function buildCacheFlowBoxChild(title, date, path) {
     let buildable = new Gtk.Builder();
     buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ["cache_flowchild"]);
     let row = buildable.get_object("cache_flowchild");
     let event = buildable.get_object("event");
-    let label = buildable.get_object("label");
+    let title_label = buildable.get_object("title");
+    let date_label = buildable.get_object("date");
     let image = buildable.get_object("image");
     event.connect('button-press-event', function(widget, event) {
         Utils.setBackgroundBasedOnSettings(path, settings);
@@ -28,7 +29,8 @@ function buildCacheFlowBoxChild(title, path) {
         let pix = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
         image.set_from_pixbuf(pix);
     });
-    label.set_text(title);
+    title_label.set_text(title);
+    date_label.set_text(date);
     return row;
 }
 
@@ -100,7 +102,7 @@ function buildPrefsWidget(){
                 split.pop();  // drop the extension
                 let title = split.join('-');
                 Utils.log("Loading: " + path);
-                let child = buildCacheFlowBoxChild(title, path);
+                let child = buildCacheFlowBoxChild(title, date, path);
                 cacheFlowBox.add(child);
             } catch (err) {
                 Utils.log(err.message);
