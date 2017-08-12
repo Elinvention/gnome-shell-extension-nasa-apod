@@ -84,22 +84,31 @@ function buildPrefsWidget(){
     let downloadFolder = settings.get_string('download-folder');
     let dir = Gio.file_new_for_path(downloadFolder);
     let files_iter = dir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
+    let file_names = [], file;
+    while ((file = files_iter.next_file(null)) != null) {
+        file_names.push(file.get_name());
+    }
+    file_names.sort();
 
     function load_files_thumbnails() {
-        files_iter.next_files_async(10, 0, null, function(source, res) {
-            let file_infos = source.next_files_finish(res);
-            file_infos.forEach(function(file, index) {
-                try {
-                    let path = downloadFolder + "/" + file.get_name();
-                    Utils.log("Loading: " + path);
-                    let row = buildCacheListBoxRow(file.get_name(), path);
-                    cacheListBox.add(row);
-                } catch (err) {
-                    Utils.log(err.message);
-                    return;
-                }
-            });
-        });
+        let file, i = 0;
+        while ((file = file_names.pop()) != null && i < 10) {
+            try {
+                let path = downloadFolder + "/" + file;
+                let split = file.split('-');
+                let date = split.splice(0, 3).join('-');
+                split = split.join('-').split('.');
+                split.pop();  // drop the extension
+                let title = split.join('-');
+                Utils.log("Loading: " + path);
+                let row = buildCacheListBoxRow(title, path);
+                cacheListBox.add(row);
+            } catch (err) {
+                Utils.log(err.message);
+            } finally {
+                i++;
+            }
+        };
     };
 
     load_files_thumbnails();
