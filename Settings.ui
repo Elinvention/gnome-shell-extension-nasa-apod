@@ -27,33 +27,28 @@ Author: Elia Argentieri
   <!-- interface-name NASA APOD preferences -->
   <!-- interface-copyright 2017 -->
   <!-- interface-authors Elia Argentieri -->
-  <object class="GtkListBoxRow" id="cache_listboxrow">
+  <object class="GtkFlowBoxChild" id="cache_flowchild">
     <property name="width_request">100</property>
     <property name="height_request">80</property>
     <property name="visible">True</property>
     <property name="can_focus">True</property>
+    <property name="margin_left">6</property>
+    <property name="margin_right">6</property>
+    <property name="margin_top">6</property>
+    <property name="margin_bottom">6</property>
     <child>
-      <object class="GtkEventBox">
+      <object class="GtkEventBox" id="event">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage">
+              <object class="GtkImage" id="image">
+                <property name="width_request">200</property>
+                <property name="height_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
               </object>
@@ -61,6 +56,21 @@ Author: Elia Argentieri
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="pack_type">end</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+                <property name="justify">center</property>
+                <property name="wrap">True</property>
+                <property name="wrap_mode">word-char</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -475,9 +485,12 @@ Author: Elia Argentieri
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkListBox" id="cache_listbox">
+              <object class="GtkFlowBox" id="cache_flowbox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <property name="min_children_per_line">2</property>
+                <property name="max_children_per_line">5</property>
               </object>
             </child>
           </object>

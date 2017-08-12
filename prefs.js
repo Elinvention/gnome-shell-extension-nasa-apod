@@ -13,14 +13,13 @@ function init() {
     settings = Utils.getSettings(Me);
 }
 
-function buildCacheListBoxRow(title, path) {
+function buildCacheFlowBoxChild(title, path) {
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ["cache_listboxrow"]);
-    let row = buildable.get_object("cache_listboxrow");
-    let event = row.get_child();
-    let box = event.get_child();
-    let label = box.get_children()[0];
-    let image = box.get_children()[1];
+    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ["cache_flowchild"]);
+    let row = buildable.get_object("cache_flowchild");
+    let event = buildable.get_object("event");
+    let label = buildable.get_object("label");
+    let image = buildable.get_object("image");
     event.connect('button-press-event', function(widget, event) {
         Utils.setBackgroundBasedOnSettings(path, settings);
     });
@@ -49,7 +48,7 @@ function buildPrefsWidget(){
     let lsSwitch = buildable.get_object('lock_screen');
     let fileChooser = buildable.get_object('download_folder');
     let apiEntry = buildable.get_object('api_key');
-    let cacheListBox = buildable.get_object('cache_listbox');
+    let cacheFlowBox = buildable.get_object('cache_flowbox');
     let cacheScroll = buildable.get_object('cache_scroll');
 
     // Indicator
@@ -101,8 +100,8 @@ function buildPrefsWidget(){
                 split.pop();  // drop the extension
                 let title = split.join('-');
                 Utils.log("Loading: " + path);
-                let row = buildCacheListBoxRow(title, path);
-                cacheListBox.add(row);
+                let child = buildCacheFlowBoxChild(title, path);
+                cacheFlowBox.add(child);
             } catch (err) {
                 Utils.log(err.message);
             } finally {
