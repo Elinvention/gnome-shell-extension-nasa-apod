@@ -136,13 +136,15 @@ const NasaApodIndicator = new Lang.Class({
             if ('copyright' in parsed)
                 this.copyright = parsed['copyright'];
             let url = ('hdurl' in parsed) ? parsed['hdurl'] : parsed['url'];
+            let url_split = url.split(".");
+            let extension = url_split[url_split.length - 1];
 
             let NasaApodDir = this._settings.get_string('download-folder');
             if (NasaApodDir == "")
                 NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
             else if (!NasaApodDir.endsWith('/'))
                 NasaApodDir += '/';
-            this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.jpg';
+            this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.' + extension;
 
             let file = Gio.file_new_for_path(this.filename);
             if (!file.query_exists(null)) {
