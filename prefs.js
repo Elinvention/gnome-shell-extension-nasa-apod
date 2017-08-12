@@ -8,9 +8,12 @@ const GdkPixbuf = imports.gi.GdkPixbuf;
 
 
 let settings;
+let css;
 
 function init() {
     settings = Utils.getSettings(Me);
+    css = Gtk.CssProvider.get_default();
+    css.load_from_path(Me.dir.get_path() + "/theme.css");
 }
 
 function buildCacheFlowBoxChild(title, date, path) {
@@ -31,6 +34,7 @@ function buildCacheFlowBoxChild(title, date, path) {
     });
     title_label.set_text(title);
     date_label.set_text(date);
+    row.get_style_context().add_provider(css, 0);
     return row;
 }
 
