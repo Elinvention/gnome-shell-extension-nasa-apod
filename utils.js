@@ -16,6 +16,8 @@ function dump(object) {
 
 function doSetBackground(uri, schema) {
     let gsettings = new Gio.Settings({schema: schema});
+    if (!uri.startsWith('file://'))
+        uri = 'file://' + uri
     gsettings.set_string('picture-uri', uri);
     Gio.Settings.sync();
     gsettings.apply();
