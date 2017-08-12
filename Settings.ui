@@ -27,6 +27,48 @@ Author: Elia Argentieri
   <!-- interface-name NASA APOD preferences -->
   <!-- interface-copyright 2017 -->
   <!-- interface-authors Elia Argentieri -->
+  <object class="GtkListBoxRow" id="cache_listboxrow">
+    <property name="width_request">100</property>
+    <property name="height_request">80</property>
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <child>
+      <object class="GtkEventBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkNotebook" id="prefs_widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -423,6 +465,40 @@ Author: Elia Argentieri
       </packing>
     </child>
     <child>
+      <object class="GtkScrolledWindow" id="cache_scroll">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">never</property>
+        <property name="shadow_type">in</property>
+        <child>
+          <object class="GtkViewport">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkListBox" id="cache_listbox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child type="tab">
+      <object class="GtkLabel" id="cache_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Cache</property>
+      </object>
+      <packing>
+        <property name="position">1</property>
+        <property name="tab_fill">False</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkBox" id="about_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -580,7 +656,7 @@ See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;G
         </child>
       </object>
       <packing>
-        <property name="position">1</property>
+        <property name="position">2</property>
       </packing>
     </child>
     <child type="tab">
@@ -590,7 +666,7 @@ See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;G
         <property name="label" translatable="yes">About</property>
       </object>
       <packing>
-        <property name="position">1</property>
+        <property name="position">2</property>
         <property name="tab_fill">False</property>
       </packing>
     </child>
