@@ -1,7 +1,6 @@
 
 const St = imports.gi.St;
 const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
 const Soup = imports.gi.Soup
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
@@ -14,6 +13,7 @@ const PopupMenu = imports.ui.popupMenu;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Utils = Me.imports.utils;
+const Notifications = Me.imports.notifications;
 
 const NasaApodURL = "https://api.nasa.gov/planetary/apod";
 const NasaApodWebsiteURL = "https://apod.nasa.gov/apod/";
@@ -21,62 +21,6 @@ const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
 const ICON = "saturn"
 
-function log(msg) {
-    print("NASA APOD extension: " + msg);
-}
-
-// Utility function
-function dump(object) {
-    let output = '';
-    for (let property in object) {
-        output += property + ': ' + object[property]+'; ';
-    }
-    log(output);
-}
-
-const LongNotification = new Lang.Class({
-    Name: 'LongNotification',
-    Extends: MessageTray.Notification,
-
-    createBanner: function() {
-        // Explanations are usually longer than default
-        let banner = this.source.createBanner(this);
-        banner.setExpandedLines(20);
-        return banner;
-    }
-});
-
-function notify(msg, details, transient) {
-    // set notifications icon
-    let source = new MessageTray.Source("NASA APOD", ICON);
-    // force expanded notification
-    source.policy = new MessageTray.NotificationPolicy({ enable: true,
-                                        enableSound: true,
-                                        showBanners: true,
-                                        forceExpanded: true,
-                                        showInLockScreen: true,
-                                        detailsInLockScreen: true
-                                      });
-    Main.messageTray.add(source);
-    let notification = new LongNotification(source, msg, details);
-    notification.setTransient(transient);
-    // Add action to open NASA APOD website with default browser
-    notification.addAction("NASA APOD website", Lang.bind(this, function() {
-        Util.spawn(["xdg-open", NasaApodWebsiteURL]);
-    }));
-    source.notify(notification);
-}
-
-function notifyError(msg) {
-    Main.notifyError("NASA APOD extension error", msg);
-}
-
-function doSetBackground(uri, schema) {
-    let gsettings = new Gio.Settings({schema: schema});
-    gsettings.set_string('picture-uri', 'file://'+uri);
-    Gio.Settings.sync();
-    gsettings.apply();
-}
 
 let httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
@@ -99,7 +43,7 @@ const NasaApodIndicator = new Lang.Class({
         this._timeout = null;
 
         this._settings = Utils.getSettings();
-	this.actor.visible = !this._settings.get_boolean('hide'); // set initial indicator visibility state
+        this.actor.visible = !this._settings.get_boolean('hide'); // set initial indicator visibility state
         this._settings.connect('changed::hide', Lang.bind(this, function() {
             this.actor.visible = !this._settings.get_boolean('hide');
         }));
@@ -151,7 +95,7 @@ const NasaApodIndicator = new Lang.Class({
             let message = this.explanation;
             if (this.copyright != "")
                 message += "\n**Copyright © " + this.copyright + "**"
-            notify(this.title, message, this._settings.get_boolean('transient'));
+            Notifications.notify(this.title, message, this._settings.get_boolean('transient'));
         }
     },
 
@@ -174,10 +118,10 @@ const NasaApodIndicator = new Lang.Class({
                 let data = message.response_body.data;
                 this._parseData(data);
             } else if (message.status_code == 403) {
-                notifyError("Error 403: check your NASA API key");
+                Notifications.notifyError("Error 403: check your NASA API key");
                 this._updatePending = false;
             } else {
-                notifyError("Network error");
+                Notifications.notifyError("Network error");
                 this._updatePending = false;
             }
         }));
@@ -208,7 +152,7 @@ const NasaApodIndicator = new Lang.Class({
                 }
                 this._download_image(url, file);
             } else {
-                log("Image already downloaded");
+                log("Image " + this.filename + " already downloaded");
                 this._setBackground();
                 this._updatePending = false;
             }
@@ -264,7 +208,7 @@ const NasaApodIndicator = new Lang.Class({
                 if (this._settings.get_boolean('notify'))
                     this._showDescription();
             } else {
-                notifyError("Couldn't fetch image from " + url);
+                Notifications.notifyError("Couldn't fetch image from " + url);
                 file.delete(null);
             }
         }));

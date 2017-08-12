@@ -2,6 +2,25 @@
 const Gio = imports.gi.Gio;
 const ExtensionUtils = imports.misc.extensionUtils;
 
+function log(msg) {
+    print("NASA APOD extension: " + msg);
+}
+
+function dump(object) {
+    let output = '';
+    for (let property in object) {
+        output += property + ': ' + object[property]+'; ';
+    }
+    log(output);
+}
+
+function doSetBackground(uri, schema) {
+    let gsettings = new Gio.Settings({schema: schema});
+    gsettings.set_string('picture-uri', uri);
+    Gio.Settings.sync();
+    gsettings.apply();
+}
+
 function getSettings() {
 	let extension = ExtensionUtils.getCurrentExtension();
 	let schema = 'org.gnome.shell.extensions.nasa-apod';
