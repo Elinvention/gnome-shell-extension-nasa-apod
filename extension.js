@@ -76,10 +76,7 @@ const NasaApodIndicator = new Lang.Class({
     _setBackground: function() {
         if (this.filename == "")
             return;
-        if (this._settings.get_boolean('set-background'))
-            doSetBackground(this.filename, 'org.gnome.desktop.background');
-        if (this._settings.get_boolean('set-lock-screen'))
-            doSetBackground(this.filename, 'org.gnome.desktop.screensaver');
+        Utils.setBackgroundBasedOnSettings(this.filename, this._settings);
     },
 
     _restartTimeout: function(seconds = TIMEOUT_SECONDS) {

@@ -21,6 +21,13 @@ function doSetBackground(uri, schema) {
     gsettings.apply();
 }
 
+function setBackgroundBasedOnSettings(filename, settings) {
+    if (settings.get_boolean('set-background'))
+        doSetBackground(filename, 'org.gnome.desktop.background');
+    if (settings.get_boolean('set-lock-screen'))
+        doSetBackground(filename, 'org.gnome.desktop.screensaver');
+}
+
 function getSettings() {
 	let extension = ExtensionUtils.getCurrentExtension();
 	let schema = 'org.gnome.shell.extensions.nasa-apod';
