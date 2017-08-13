@@ -532,7 +532,7 @@ Author: Elia Argentieri
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">5</property>
+        <property name="spacing">10</property>
         <child>
           <object class="GtkImage" id="logo">
             <property name="visible">True</property>
@@ -550,7 +550,7 @@ Author: Elia Argentieri
           <object class="GtkLabel" id="extension_name">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label">&lt;b&gt;NASA APOD extension&lt;/b&gt;</property>
+            <property name="label">&lt;b&gt;NASA APOD Wallpaper Changer extension&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
           <packing>
@@ -610,34 +610,13 @@ Author: Elia Argentieri
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="maintainer_box">
+          <object class="GtkLabel" id="maintainer_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="spacing">5</property>
-            <child>
-              <object class="GtkLabel" id="maintainer_label">
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Maintained by</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="email_label">
-                <property name="can_focus">False</property>
-                <property name="label">Elia Argentieri (&lt;a href="mailto:elia.argentieri@openmailbox.org"&gt;elia.argentieri@openmailbox.org&lt;/a&gt;)</property>
-                <property name="use_markup">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+            <property name="label" translatable="yes">Maintained by:
+Elia Argentieri (&lt;a href="mailto:elia.argentieri@openmailbox.org"&gt;elia.argentieri@openmailbox.org&lt;/a&gt;)</property>
+            <property name="use_markup">True</property>
+            <property name="justify">center</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -647,13 +626,12 @@ Author: Elia Argentieri
         </child>
         <child>
           <object class="GtkLinkButton" id="homepage_link">
-            <property name="label" translatable="yes">Webpage</property>
+            <property name="label" translatable="yes">Extension's GitHub Webpage</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="events"/>
             <property name="halign">center</property>
-            <property name="relief">none</property>
             <property name="uri">https://github.com/Elinvention/gnome-shell-extension-nasa-apod</property>
           </object>
           <packing>
@@ -666,7 +644,6 @@ Author: Elia Argentieri
           <object class="GtkLabel" id="GNU_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">end</property>
             <property name="label" translatable="yes">&lt;span size="small"&gt;This program comes with ABSOLUTELY NO WARRANTY.
 See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;GNU General Public License, version 3 or later&lt;/a&gt; for details.&lt;/span&gt;</property>
             <property name="use_markup">True</property>
@@ -674,8 +651,9 @@ See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;G
             <property name="wrap">True</property>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="pack_type">end</property>
             <property name="position">6</property>
           </packing>
         </child>
