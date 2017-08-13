@@ -48,14 +48,17 @@ const NasaApodIndicator = new Lang.Class({
             this.actor.visible = !this._settings.get_boolean('hide');
         }));
 
+        this.refreshDueItem = new PopupMenu.PopupMenuItem("No refresh scheduled");
         this.showItem = new PopupMenu.PopupMenuItem("Show description");
         this.wallpaperItem = new PopupMenu.PopupMenuItem("Set wallpaper");
         this.refreshItem = new PopupMenu.PopupMenuItem("Refresh");
         this.settingsItem = new PopupMenu.PopupMenuItem("Settings");
+        this.menu.addMenuItem(this.refreshDueItem);
         this.menu.addMenuItem(this.showItem);
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.refreshItem);
         this.menu.addMenuItem(this.settingsItem);
+        this.refreshDueItem.setSensitive(false);
         this.showItem.connect('activate', Lang.bind(this, this._showDescription));
         this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
         this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
@@ -83,6 +86,10 @@ const NasaApodIndicator = new Lang.Class({
         if (this._timeout)
             Mainloop.source_remove(this._timeout);
         this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
+        let timezone = GLib.TimeZone.new_local();
+        let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
+        this.refreshDueItem.label.set_text('Next refresh: ' + localTime);
+        Utils.log('Next check in ' + seconds + ' seconds @ local time ' + localTime);
     },
 
     _showDescription: function() {
