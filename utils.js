@@ -1,5 +1,6 @@
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 function log(msg) {
@@ -12,6 +13,15 @@ function dump(object) {
         output += property + ': ' + object[property]+'; ';
     }
     log(output);
+}
+
+function getDownloadFolder(settings) {
+    let NasaApodDir = settings.get_string('download-folder');
+    if (NasaApodDir == "")
+        NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
+    else if (!NasaApodDir.endsWith('/'))
+        NasaApodDir += '/';
+    return NasaApodDir;
 }
 
 function doSetBackground(uri, schema) {

@@ -143,11 +143,7 @@ const NasaApodIndicator = new Lang.Class({
             let url_split = url.split(".");
             let extension = url_split[url_split.length - 1];
 
-            let NasaApodDir = this._settings.get_string('download-folder');
-            if (NasaApodDir == "")
-                NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
-            else if (!NasaApodDir.endsWith('/'))
-                NasaApodDir += '/';
+            let NasaApodDir = Utils.getDownloadFolder(this._settings);
             this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.' + extension;
 
             let file = Gio.file_new_for_path(this.filename);

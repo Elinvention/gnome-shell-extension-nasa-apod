@@ -57,6 +57,8 @@ function buildPrefsWidget(){
     let cacheFlowBox = buildable.get_object('cache_flowbox');
     let cacheScroll = buildable.get_object('cache_scroll');
 
+    let downloadFolder = Utils.getDownloadFolder(settings);
+
     // Indicator
     settings.bind('hide', hideSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
@@ -73,7 +75,7 @@ function buildPrefsWidget(){
     settings.bind('set-lock-screen', lsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
     //download folder
-    fileChooser.set_filename(settings.get_string('download-folder'));
+    fileChooser.set_filename(downloadFolder);
     fileChooser.add_shortcut_folder_uri("file://" + GLib.get_user_cache_dir() + "/apod");
     fileChooser.connect('file-set', function(widget) {
         settings.set_string('download-folder', widget.get_filename());
@@ -86,7 +88,6 @@ function buildPrefsWidget(){
             settings.reset('api-key');
     });
 
-    let downloadFolder = settings.get_string('download-folder');
     let dir = Gio.file_new_for_path(downloadFolder);
     let files_iter = dir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
     let file_names = [], file;
@@ -99,7 +100,7 @@ function buildPrefsWidget(){
         let file, i = 0;
         while ((file = file_names.pop()) != null && i < 10) {
             try {
-                let path = downloadFolder + "/" + file;
+                let path = downloadFolder + file;
                 let split = file.split('-');
                 let date = split.splice(0, 3).join('-');
                 split = split.join('-').split('.');
