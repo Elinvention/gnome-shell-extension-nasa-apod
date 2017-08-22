@@ -34,9 +34,9 @@
     </key>
 
     <key name="download-folder" type="s">
-      <default>".cache/apod"</default>
+      <default>""</default>
       <summary>Where to download pictures.</summary>
-      <description></description>
+      <description>An empty string means that the default folder is used: ~/.cache/apod/</description>
     </key>
 
     <key name="api-key" type="s">
