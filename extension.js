@@ -111,7 +111,7 @@ const NasaApodIndicator = new Lang.Class({
         this._restartTimeout();
 
         let apiKey = this._settings.get_string('api-key');
-        log("API key: " + apiKey);
+        Utils.log("API key: " + apiKey);
 
         // create an http message
         let request = Soup.Message.new('GET', NasaApodURL + '?api_key=' + apiKey);
@@ -154,7 +154,7 @@ const NasaApodIndicator = new Lang.Class({
                 }
                 this._download_image(url, file);
             } else {
-                log("Image " + this.filename + " already downloaded");
+                Utils.log("Image " + this.filename + " already downloaded");
                 this._setBackground();
                 this._updatePending = false;
             }
@@ -169,7 +169,7 @@ const NasaApodIndicator = new Lang.Class({
     },
 
     _download_image: function(url, file) {
-        log("Downloading " + url + " to " + file.get_uri())
+        Utils.log("Downloading " + url + " to " + file.get_uri())
 
         // open the Gfile
         let fstream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
@@ -183,7 +183,7 @@ const NasaApodIndicator = new Lang.Class({
 
         // got_headers event
         request.connect('got_headers', Lang.bind(this, function(message){
-            log("got_headers")
+            Utils.log("got_headers")
             total_size = message.response_headers.get_content_length()
         }));
 
@@ -194,7 +194,7 @@ const NasaApodIndicator = new Lang.Class({
             if(total_size) {
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
-                log("Download "+percent+"% done ("+bytes_so_far+" / "+total_size+" bytes)");
+                Utils.log("Download "+percent+"% done ("+bytes_so_far+" / "+total_size+" bytes)");
             }
             fstream.write(chunk.get_data(), null, chunk.length);
         }));
@@ -205,7 +205,7 @@ const NasaApodIndicator = new Lang.Class({
             fstream.close(null);
             this._updatePending = false;
             if (message.status_code == 200) {
-                log('Download successful');
+                Utils.log('Download successful');
                 this._setBackground();
                 if (this._settings.get_boolean('notify'))
                     this._showDescription();
