@@ -1,7 +1,9 @@
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
+const Util = imports.misc.util;
 
+const NasaApodWebsiteURL = "https://apod.nasa.gov/apod/";
 
 const LongNotification = new Lang.Class({
     Name: 'LongNotification',
