@@ -16,10 +16,9 @@ const Utils = Me.imports.utils;
 const Notifications = Me.imports.notifications;
 
 const NasaApodURL = "https://api.nasa.gov/planetary/apod";
-const NasaApodWebsiteURL = "https://apod.nasa.gov/apod/";
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
-const ICON = "saturn"
+const ICON = "saturn";
 
 
 let httpSession = new Soup.SessionAsync();
