@@ -48,32 +48,33 @@ const NasaApodIndicator = new Lang.Class({
             this.actor.visible = !this._settings.get_boolean('hide');
         }));
 
-        this.refreshDueItem = new PopupMenu.PopupMenuItem("No refresh scheduled");
+        this.refreshStatusItem = new PopupMenu.PopupMenuItem("No refresh scheduled");
         this.showItem = new PopupMenu.PopupMenuItem("Show description");
         this.wallpaperItem = new PopupMenu.PopupMenuItem("Set wallpaper");
         this.refreshItem = new PopupMenu.PopupMenuItem("Refresh");
         this.settingsItem = new PopupMenu.PopupMenuItem("Settings");
-        this.menu.addMenuItem(this.refreshDueItem);
+        this.menu.addMenuItem(this.refreshStatusItem);
         this.menu.addMenuItem(this.showItem);
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.refreshItem);
         this.menu.addMenuItem(this.settingsItem);
-        this.refreshDueItem.setSensitive(false);
+        this.refreshStatusItem.setSensitive(false);
         this.showItem.connect('activate', Lang.bind(this, this._showDescription));
         this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
         this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
         this.settingsItem.connect('activate', function() {
             Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
         });
-
-        this.actor.connect('button-press-event', Lang.bind(this, function () {
-            // Grey out menu items if an update is pending
-            this.refreshItem.setSensitive(!this._updatePending);
-            this.showItem.setSensitive(!this._updatePending && this.title != "" && this.explanation != "");
-            this.wallpaperItem.setSensitive(!this._updatePending && this.filename != "");
-        }));
+        this.actor.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
 
         this._restartTimeout(60);
+    },
+
+    _updateMenuItems: function() {
+        // Grey out menu items if an update is pending
+        this.refreshItem.setSensitive(!this._updatePending);
+        this.showItem.setSensitive(!this._updatePending && this.title != "" && this.explanation != "");
+        this.wallpaperItem.setSensitive(!this._updatePending && this.filename != "");
     },
 
     _setBackground: function() {
@@ -88,7 +89,7 @@ const NasaApodIndicator = new Lang.Class({
         this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
         let timezone = GLib.TimeZone.new_local();
         let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
-        this.refreshDueItem.label.set_text('Next refresh: ' + localTime);
+        this.refreshStatusItem.label.set_text('Next refresh: ' + localTime);
         Utils.log('Next check in ' + seconds + ' seconds @ local time ' + localTime);
     },
 
@@ -107,8 +108,7 @@ const NasaApodIndicator = new Lang.Class({
         if (this._updatePending)
             return;
         this._updatePending = true;
-
-        this._restartTimeout();
+        this.refreshStatusItem.label.set_text('Pending refresh');
 
         let apiKey = this._settings.get_string('api-key');
         Utils.log("API key: " + apiKey);
@@ -123,12 +123,19 @@ const NasaApodIndicator = new Lang.Class({
                 this._parseData(data);
             } else if (message.status_code == 403) {
                 Notifications.notifyError("Error 403: check your NASA API key");
-                this._updatePending = false;
+                this._refreshDone();
             } else {
                 Notifications.notifyError("Network error");
-                this._updatePending = false;
+                this._refreshDone();
             }
         }));
+    },
+
+    _refreshDone: function() {
+        this._updatePending = false;
+        this._restartTimeout();
+        this._updateMenuItems();
+        Utils.log("Refresh done.");
     },
 
     _parseData: function(data) {
@@ -156,13 +163,13 @@ const NasaApodIndicator = new Lang.Class({
             } else {
                 Utils.log("Image " + this.filename + " already downloaded");
                 this._setBackground();
-                this._updatePending = false;
+                this._refreshDone();
             }
         } else {
             this.title = "Media type " + parsed['media_type'] + " not supported.";
             this.explanation = "No picture for today 😞. Please visit NASA APOD website.";
             this.filename = "";
-            this._updatePending = false;
+            this._refreshDone();
             if (this._settings.get_boolean('notify'))
                 this._showDescription();
         }
@@ -194,7 +201,7 @@ const NasaApodIndicator = new Lang.Class({
             if(total_size) {
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
-                Utils.log("Download "+percent+"% done ("+bytes_so_far+" / "+total_size+" bytes)");
+                this.refreshStatusItem.label.set_text("Download " + percent + "% done");
             }
             fstream.write(chunk.get_data(), null, chunk.length);
         }));
@@ -203,7 +210,7 @@ const NasaApodIndicator = new Lang.Class({
         httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
             // request completed
             fstream.close(null);
-            this._updatePending = false;
+            this._refreshDone();
             if (message.status_code == 200) {
                 Utils.log('Download successful');
                 this._setBackground();
