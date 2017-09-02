@@ -21,8 +21,10 @@ const TIMEOUT_SECONDS = 6 * 3600;
 const ICON = "saturn";
 
 
+let nasaApodIndicator;
 let httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
+
 
 const NasaApodIndicator = new Lang.Class({
     Name: IndicatorName,
@@ -229,8 +231,6 @@ const NasaApodIndicator = new Lang.Class({
         this.menu.removeAll();
     }
 });
-
-let nasaApodIndicator;
 
 function init(extensionMeta) {
     let theme = imports.gi.Gtk.IconTheme.get_default();

@@ -94,7 +94,12 @@ function buildPrefsWidget(){
     fileChooser.set_filename(downloadFolder);
     fileChooser.add_shortcut_folder_uri("file://" + GLib.get_user_cache_dir() + "/apod");
     fileChooser.connect('file-set', function(widget) {
-        settings.set_string('download-folder', widget.get_filename());
+        downloadFolder = widget.get_filename() + '/';
+        settings.set_string('download-folder', downloadFolder);
+        // Empty cache page
+        cacheFlowBox.get_children().forEach(function(child) {
+            child.destroy();
+        });
     });
 
     //API key
@@ -105,41 +110,32 @@ function buildPrefsWidget(){
     });
 
     // Cache page
-    function loadCachePage() {
-        let dir = Gio.file_new_for_path(downloadFolder);
-        let files_iter = dir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
-        let file_names = [], file;
-        while ((file = files_iter.next_file(null)) != null) {
-            file_names.push(file.get_name());
-        }
-        file_names.sort();
+    let file_names = [];
 
-        function load_files_thumbnails() {
-            let file, i = 0;
-            while ((file = file_names.pop()) != null && i < 10) {
-                try {
-                    let child = buildCacheFlowBoxChild(downloadFolder, file);
-                    cacheFlowBox.add(child);
-                } catch (err) {
-                    Utils.log(err);
-                } finally {
-                    i++;
-                }
-            };
-        };
-
-        load_files_thumbnails();
-
-        cacheScroll.connect('edge-reached', function(window, pos) {
-            if (pos == 3) {  // if user reached the bottom of the SrolledWindow
-                load_files_thumbnails();
+    function load_files_thumbnails(limit = 6) {
+        let file, i = 0;
+        while ((file = file_names.pop()) != null && i < limit) {
+            try {
+                let child = buildCacheFlowBoxChild(downloadFolder, file);
+                cacheFlowBox.add(child);
+                i++;
+            } catch (err) {
+                Utils.log(err);
             }
-        });
+        };
     };
 
+    cacheScroll.connect('edge-reached', function(window, pos) {
+        if (pos == 3) {  // if user reached the bottom of the SrolledWindow
+            load_files_thumbnails();
+        }
+    });
+
     notebook.connect('switch-page', function(widget, page, page_index) {
-        if (page_index == 1)
-            loadCachePage();
+        if (page_index == 1 && cacheFlowBox.get_children().length == 0) {
+            file_names = Utils.list_files(downloadFolder);
+            load_files_thumbnails();
+        }
     });
 
     notebook.show_all();

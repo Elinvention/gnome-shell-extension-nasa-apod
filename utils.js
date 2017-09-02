@@ -40,13 +40,25 @@ function setBackgroundBasedOnSettings(filename, settings) {
         doSetBackground(filename, 'org.gnome.desktop.screensaver');
 }
 
+function list_files(path) {
+    let dir = Gio.file_new_for_path(path);
+    let files_iter = dir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
+    let file_names = [];
+    let file;
+    while ((file = files_iter.next_file(null)) != null) {
+        file_names.push(file.get_name());
+    }
+    file_names.sort();
+    return file_names;
+}
+
 function getSettings() {
 	let extension = ExtensionUtils.getCurrentExtension();
 	let schema = 'org.gnome.shell.extensions.nasa-apod';
 
 	const GioSSS = Gio.SettingsSchemaSource;
 
-	// check if this extension was built with "make zip-file", and thus
+	// check if this extension was built with "make zip", and thus
 	// has the schema files in a subfolder
 	// otherwise assume that extension has been installed in the
 	// same prefix as gnome-shell (and therefore schemas are available
