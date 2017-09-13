@@ -38,6 +38,13 @@ function notify(msg, details, transient) {
     source.notify(notification);
 }
 
-function notifyError(msg) {
-    Main.notifyError("NASA APOD extension error", msg);
+function notifyError(msg, details) {
+    let prefix = 'NASA APOD extension error';
+    if (details) {
+        log(prefix + ': ' + msg + ': ' + details);
+        Main.notify(prefix, msg + ': ' + details);
+    } else {
+        log(prefix + ': ' + msg);
+        Main.notify(prefix, msg);
+    }
 }

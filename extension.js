@@ -126,7 +126,7 @@ const NasaApodIndicator = new Lang.Class({
                 Notifications.notifyError("Error 403: check your NASA API key");
                 this._refreshDone();
             } else {
-                Notifications.notifyError("Network error");
+                Notifications.notifyError("Network error", message.error_code);
                 this._refreshDone();
             }
         }));
