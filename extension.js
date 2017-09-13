@@ -68,7 +68,21 @@ const NasaApodIndicator = new Lang.Class({
         });
         this.actor.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
 
-        this._restartTimeout(60);
+        let json = this._settings.get_string("last-json");
+        try {
+            this._parseData(json);
+        } catch (err) {
+            Utils.log("Refresh of JSON data is needed.");
+            this._restartTimeout(60);
+            return;
+        }
+
+        let last_refresh = this._settings.get_uint64("last-refresh");
+        let seconds = Math.floor(TIMEOUT_SECONDS - (Date.now() - last_refresh) / 1000);
+        if (seconds < 60)
+            this._restartTimeout(60);
+        else
+            this._restartTimeout(seconds);
     },
 
     _updateMenuItems: function() {
@@ -121,7 +135,19 @@ const NasaApodIndicator = new Lang.Class({
         httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
             if (message.status_code == 200) {
                 let data = message.response_body.data;
-                this._parseData(data);
+                this._settings.set_string("last-json", data);
+                this._settings.set_uint64("last-refresh", Date.now());
+                try {
+                    let url = this._parseData(data);
+                    this._prepareDownload(url);
+                } catch(err) {
+                    if ('media_type' in err)
+                        if (this._settings.get_boolean('notify'))
+                            this._showDescription();
+                    else
+                        Notifications.notifyError("Error downloading image", err);
+                    this._refreshDone();
+                }
             } else if (message.status_code == 403) {
                 Notifications.notifyError("Error 403: check your NASA API key");
                 this._refreshDone();
@@ -154,25 +180,31 @@ const NasaApodIndicator = new Lang.Class({
             let NasaApodDir = Utils.getDownloadFolder(this._settings);
             this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.' + extension;
 
-            let file = Gio.file_new_for_path(this.filename);
-            if (!file.query_exists(null)) {
-                let dir = Gio.file_new_for_path(NasaApodDir);
-                if (!dir.query_exists(null)) {
-                    dir.make_directory_with_parents(null);
-                }
-                this._download_image(url, file);
-            } else {
-                Utils.log("Image " + this.filename + " already downloaded");
-                this._setBackground();
-                this._refreshDone();
-            }
+            return url;
         } else {
             this.title = "Media type " + parsed['media_type'] + " not supported.";
             this.explanation = "No picture for today 😞. Please visit NASA APOD website.";
             this.filename = "";
+            this.copyright = "";
+            let error = new Error(this.title);
+            error.media_type = parsed['media_type'];
+            throw error;
+        }
+    },
+
+    _prepareDownload: function(url) {
+        let file = Gio.file_new_for_path(this.filename);
+        let NasaApodDir = Utils.getDownloadFolder(this._settings);
+        if (!file.query_exists(null)) {
+            let dir = Gio.file_new_for_path(NasaApodDir);
+            if (!dir.query_exists(null)) {
+                dir.make_directory_with_parents(null);
+            }
+            this._download_image(url, file);
+        } else {
+            Utils.log(this.filename + " already downloaded");
+            this._setBackground();
             this._refreshDone();
-            if (this._settings.get_boolean('notify'))
-                this._showDescription();
         }
     },
 

@@ -45,5 +45,17 @@
       <description>Get your API key from https://api.nasa.gov/</description>
     </key>
 
+    <key name="last-refresh" type="t">
+      <default>0</default>
+      <summary>Last performed refresh.</summary>
+      <description></description>
+    </key>
+
+    <key name="last-json" type="s">
+      <default>""</default>
+      <summary>Last json downloaded from API.</summary>
+      <description></description>
+    </key>
+
   </schema>
 </schemalist>
