@@ -68,6 +68,10 @@ const NasaApodIndicator = new Lang.Class({
         });
         this.actor.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
 
+        this._bgSettings = Utils.getBackgroundSettings();
+        this._bgSettings.connect('changed::picture-uri', Lang.bind(this, this._backgroundChanged));
+        this._bgChanged = false;
+
         let json = this._settings.get_string("last-json");
         try {
             this._parseData(json);
@@ -85,6 +89,15 @@ const NasaApodIndicator = new Lang.Class({
             this._restartTimeout(seconds);
     },
 
+    _backgroundChanged: function() {
+        let uri = this._bgSettings.get_string("picture-uri");
+        let info = Utils.parse_uri(uri);
+        if (!this._bgChanged && info.directory == Utils.getDownloadFolder(this._settings)) {
+            this._refresh(info.date);
+        }
+        this._bgChanged = false;
+    },
+
     _updateMenuItems: function() {
         // Grey out menu items if an update is pending
         this.refreshItem.setSensitive(!this._updatePending);
@@ -95,6 +108,7 @@ const NasaApodIndicator = new Lang.Class({
     _setBackground: function() {
         if (this.filename == "")
             return;
+        this._bgChanged = true;
         Utils.setBackgroundBasedOnSettings(this.filename, this._settings);
     },
 
@@ -119,17 +133,21 @@ const NasaApodIndicator = new Lang.Class({
         }
     },
 
-    _refresh: function() {
+    _refresh: function(date = null) {
         if (this._updatePending)
             return;
         this._updatePending = true;
         this.refreshStatusItem.label.set_text('Pending refresh');
 
         let apiKey = this._settings.get_string('api-key');
-        Utils.log("API key: " + apiKey);
+
+        let url = NasaApodURL + '?api_key=' + apiKey;
+        if (typeof date == "string" || date instanceof String)
+            url += '&date=' + date;
+        Utils.log(url);
 
         // create an http message
-        let request = Soup.Message.new('GET', NasaApodURL + '?api_key=' + apiKey);
+        let request = Soup.Message.new('GET', url);
 
         // queue the http request
         httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
