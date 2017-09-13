@@ -1,7 +1,7 @@
 
 const St = imports.gi.St;
 const Main = imports.ui.main;
-const Soup = imports.gi.Soup
+const Soup = imports.gi.Soup;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Gio = imports.gi.Gio;
@@ -40,9 +40,9 @@ const NasaApodIndicator = new Lang.Class({
         this.explanation = "";
         this.filename = "";
         this.copyright = "";
+
         this._updatePending = false;
         this._timeout = null;
-
         this._settings = Utils.getSettings();
         this.actor.visible = !this._settings.get_boolean('hide'); // set initial indicator visibility state
         this._settings.connect('changed::hide', Lang.bind(this, function() {
@@ -139,8 +139,8 @@ const NasaApodIndicator = new Lang.Class({
         Utils.log("Refresh done.");
     },
 
-    _parseData: function(data) {
-        let parsed = JSON.parse(data);
+    _parseData: function(json) {
+        let parsed = JSON.parse(json);
 
         if (parsed['media_type'] == "image") {
             this.title = parsed['title']

@@ -52,6 +52,35 @@ function list_files(path) {
     return file_names;
 }
 
+function parse_path(path) {
+    let info = {};
+    let splitSlash = path.split('/');
+    info.filename = splitSlash.pop();
+    info.directory = splitSlash.join('/') + '/';
+    let splitDot = info.filename.split('.');
+    info.extension = splitDot.pop();
+    let splitDash = splitDot.join('.').split('-');
+    info.date = splitDash.splice(0, 3).join('-');
+    info.title = splitDash.join('-');
+    return info;
+}
+
+function parse_uri(uri) {
+    let splitSlash = uri.split('/');
+    let schema = splitSlash.splice(0, 2).join('/') + '/';
+    let info = parse_path(splitSlash.join('/'));
+    info.schema = schema;
+    return info;
+}
+
+function getBackgroundSettings() {
+    return new Gio.Settings({schema: 'org.gnome.desktop.background'});
+}
+
+function getScreenSaverSettings() {
+    return new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
+}
+
 function getSettings() {
 	let extension = ExtensionUtils.getCurrentExtension();
 	let schema = 'org.gnome.shell.extensions.nasa-apod';

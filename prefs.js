@@ -16,15 +16,11 @@ function init() {
     css.load_from_path(Me.dir.get_path() + "/theme.css");
 }
 
-function buildCacheFlowBoxChild(folder, file) {
-    let path = folder + file;
-    let split = file.split('-');
-    let date = split.splice(0, 3).join('-');
-    split = split.join('-').split('.');
-    let extension = split.pop();
-    let title = split.join('-');
+function buildCacheFlowBoxChild(file) {
+    let path = file.get_path();
+    let info = Utils.parse_path(path);
 
-    if (['jpg', 'png', 'gif'].indexOf(extension) < 0)
+    if (['jpg', 'png', 'gif'].indexOf(info.extension) < 0)
         throw path + " is not an image";
 
     Utils.log("Loading: " + path);
@@ -41,14 +37,14 @@ function buildCacheFlowBoxChild(folder, file) {
         Utils.setBackgroundBasedOnSettings(path, settings);
     });
 
-    let stream = Gio.file_new_for_path(path).read(null);
+    let stream = file.read(null);
     GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream, 200, 200, true, null, function(source, res) {
         let pix = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
         image.set_from_pixbuf(pix);
     });
 
-    title_label.set_text(title);
-    date_label.set_text(date);
+    title_label.set_text(info.title);
+    date_label.set_text(info.date);
     row.get_style_context().add_provider(css, 0);
     return row;
 }
@@ -113,10 +109,11 @@ function buildPrefsWidget(){
     let file_names = [];
 
     function load_files_thumbnails(limit = 6) {
-        let file, i = 0;
-        while ((file = file_names.pop()) != null && i < limit) {
+        let file_name, i = 0;
+        while ((file_name = file_names.pop()) != null && i < limit) {
             try {
-                let child = buildCacheFlowBoxChild(downloadFolder, file);
+                let file = Gio.file_new_for_path(downloadFolder + file_name);
+                let child = buildCacheFlowBoxChild(file);
                 cacheFlowBox.add(child);
                 i++;
             } catch (err) {
