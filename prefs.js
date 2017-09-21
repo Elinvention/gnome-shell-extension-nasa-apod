@@ -61,8 +61,10 @@ function buildPrefsWidget(){
     let hideSwitch = buildable.get_object('hide');
     let notifySwitch = buildable.get_object('notifications');
     let transientSwitch = buildable.get_object('transient_notifications');
-    let bgSwitch = buildable.get_object('background');
-    let lsSwitch = buildable.get_object('lock_screen');
+    let bgSwitch = buildable.get_object('background_switch');
+    let lsSwitch = buildable.get_object('lock_screen_switch');
+    let bgCombo = buildable.get_object('background_combo');
+    let lsCombo = buildable.get_object('lock_screen_combo');
     let fileChooser = buildable.get_object('download_folder');
     let apiEntry = buildable.get_object('api_key');
     let cacheFlowBox = buildable.get_object('cache_flowbox');
@@ -85,6 +87,8 @@ function buildPrefsWidget(){
     // Wallpaper and lock screen
     settings.bind('set-background', bgSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('set-lock-screen', lsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
+    Utils.getBackgroundSettings().bind('picture-options', bgCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
+    Utils.getScreenSaverSettings().bind('picture-options', lsCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
 
     // Download folder
     fileChooser.set_filename(downloadFolder);
@@ -100,9 +104,8 @@ function buildPrefsWidget(){
 
     //API key
     settings.bind('api-key', apiEntry, 'text', Gio.SettingsBindFlags.DEFAULT);
-    settings.connect('changed::api-key', function() {
-        if (settings.get_string('api-key') == "")
-            settings.reset('api-key');
+    apiEntry.connect('icon-press', function() {
+        settings.reset('api-key');
     });
 
     // Cache page

@@ -269,11 +269,12 @@ Author: Elia Argentieri
                         <property name="margin_right">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
+                        <property name="column_spacing">32</property>
                         <child>
                           <object class="GtkLabel" id="background_label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Set background image</property>
+                            <property name="label" translatable="yes">Set background image:</property>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -281,7 +282,28 @@ Author: Elia Argentieri
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="background">
+                          <object class="GtkComboBoxText" id="background_combo">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="active">6</property>
+                            <items>
+                              <item id="none" translatable="yes">None</item>
+                              <item id="centered" translatable="yes">Centered</item>
+                              <item id="scaled" translatable="yes">Scaled</item>
+                              <item id="spanned" translatable="yes">Spanned</item>
+                              <item id="stretched" translatable="yes">Stretched</item>
+                              <item id="wallpaper" translatable="yes">Wallpaper</item>
+                              <item id="zoom" translatable="yes">Zoom</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSwitch" id="background_switch">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="halign">end</property>
@@ -313,7 +335,7 @@ Author: Elia Argentieri
                           <object class="GtkLabel" id="lock_screen_label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Set lock screen image</property>
+                            <property name="label" translatable="yes">Set lock screen image:</property>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -321,7 +343,28 @@ Author: Elia Argentieri
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="lock_screen">
+                          <object class="GtkComboBoxText" id="lock_screen_combo">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="active">6</property>
+                            <items>
+                              <item id="none" translatable="yes">None</item>
+                              <item id="centered" translatable="yes">Centered</item>
+                              <item id="scaled" translatable="yes">Scaled</item>
+                              <item id="spanned" translatable="yes">Spanned</item>
+                              <item id="stretched" translatable="yes">Stretched</item>
+                              <item id="wallpaper" translatable="yes">Wallpaper</item>
+                              <item id="zoom" translatable="yes">Zoom</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSwitch" id="lock_screen_switch">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="halign">end</property>
@@ -413,15 +456,13 @@ Author: Elia Argentieri
                         <property name="margin_right">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
-                        <property name="column_spacing">32</property>
+                        <property name="column_spacing">12</property>
                         <child>
                           <object class="GtkLabel" id="api_key_label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="halign">end</property>
                             <property name="hexpand">True</property>
                             <property name="label" translatable="yes">Custom NASA APOD API key:</property>
-                            <property name="wrap">True</property>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -435,27 +476,13 @@ Author: Elia Argentieri
                             <property name="can_focus">True</property>
                             <property name="valign">center</property>
                             <property name="hexpand">True</property>
+                            <property name="secondary_icon_stock">gtk-clear</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">False</property>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="top_attach">0</property>
-                            <property name="height">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="api_key_description">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">Leave empty to use default API key</property>
-                            <property name="wrap">True</property>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
                           </packing>
                         </child>
                       </object>
