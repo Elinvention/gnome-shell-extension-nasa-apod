@@ -14,6 +14,7 @@ function init() {
     settings = Utils.getSettings(Me);
     css = Gtk.CssProvider.get_default();
     css.load_from_path(Me.dir.get_path() + "/theme.css");
+    Utils.initTranslations("nasa_apod");
 }
 
 function buildCacheFlowBoxChild(file) {

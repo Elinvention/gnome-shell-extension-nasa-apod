@@ -15,6 +15,9 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Utils = Me.imports.utils;
 const Notifications = Me.imports.notifications;
 
+const Gettext = imports.gettext.domain('nasa_apod');
+const _ = Gettext.gettext;
+
 const NasaApodURL = "https://api.nasa.gov/planetary/apod";
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
@@ -50,11 +53,11 @@ const NasaApodIndicator = new Lang.Class({
             this.actor.visible = !this._settings.get_boolean('hide');
         }));
 
-        this.refreshStatusItem = new PopupMenu.PopupMenuItem("No refresh scheduled");
-        this.showItem = new PopupMenu.PopupMenuItem("Show description");
-        this.wallpaperItem = new PopupMenu.PopupMenuItem("Set wallpaper");
-        this.refreshItem = new PopupMenu.PopupMenuItem("Refresh");
-        this.settingsItem = new PopupMenu.PopupMenuItem("Settings");
+        this.refreshStatusItem = new PopupMenu.PopupMenuItem(_("No refresh scheduled"));
+        this.showItem = new PopupMenu.PopupMenuItem(_("Show description"));
+        this.wallpaperItem = new PopupMenu.PopupMenuItem(_("Set wallpaper"));
+        this.refreshItem = new PopupMenu.PopupMenuItem(_("Refresh"));
+        this.settingsItem = new PopupMenu.PopupMenuItem(_("Settings"));
         this.menu.addMenuItem(this.refreshStatusItem);
         this.menu.addMenuItem(this.showItem);
         this.menu.addMenuItem(this.wallpaperItem);
@@ -117,12 +120,12 @@ const NasaApodIndicator = new Lang.Class({
         if (this._timeout)
             Mainloop.source_remove(this._timeout);
         if (seconds < 0) {
-            this.refreshStatusItem.label.set_text('No refresh scheduled');
+            this.refreshStatusItem.label.set_text(_('No refresh scheduled'));
         } else {
             this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
             let timezone = GLib.TimeZone.new_local();
             let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
-            this.refreshStatusItem.label.set_text('Next refresh: ' + localTime);
+            this.refreshStatusItem.label.set_text(_('Next refresh: {0}').replace("{0}", localTime));
             Utils.log('Next check in ' + seconds + ' seconds @ local time ' + localTime);
         }
     },
@@ -142,7 +145,7 @@ const NasaApodIndicator = new Lang.Class({
         if (this._updatePending)
             return;
         this._updatePending = true;
-        this.refreshStatusItem.label.set_text('Pending refresh');
+        this.refreshStatusItem.label.set_text(_('Pending refresh'));
 
         let apiKey = this._settings.get_string('api-key');
 
@@ -173,17 +176,17 @@ const NasaApodIndicator = new Lang.Class({
                         if (this._settings.get_boolean('notify'))
                             this._showDescription();
                     else
-                        Notifications.notifyError("Error downloading image", err);
+                        Notifications.notifyError(_("Error downloading image"), err);
                     this._refreshDone();
                 }
             } else if (message.status_code == 403) {
                 this._refreshDone(-1);
-                Notifications.notifyError("Invalid NASA API key (error 403)", "Check that your key is correct or use the default key.");
+                Notifications.notifyError(_("Invalid NASA API key (error 403)"), _("Check that your key is correct or use the default key."));
             } else if (message.status_code == 429) {
-                Notifications.notifyError("Over rate limit (error 429)", "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you.");
+                Notifications.notifyError(_("Over rate limit (error 429)"), _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."));
                 this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
             } else {
-                Notifications.notifyError("Network error", message.status_code);
+                Notifications.notifyError(_("Network error"), message.status_code);
                 this._refreshDone();
             }
         }));
@@ -213,8 +216,8 @@ const NasaApodIndicator = new Lang.Class({
 
             return url;
         } else {
-            this.title = "Media type " + parsed['media_type'] + " not supported.";
-            this.explanation = "No picture for today 😞. Please visit NASA APOD website.";
+            this.title = _("Media type {0} not supported.").replace("{0}", parsed['media_type']);
+            this.explanation = _("No picture for today 😞. Please visit NASA APOD website.");
             this.filename = "";
             this.copyright = "";
             let error = new Error(this.title);
@@ -265,7 +268,7 @@ const NasaApodIndicator = new Lang.Class({
             if(total_size) {
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
-                this.refreshStatusItem.label.set_text("Download " + percent + "% done");
+                this.refreshStatusItem.label.set_text(_("Download {0} done").replace("{0}", percent + '%'));
             }
             fstream.write(chunk.get_data(), null, chunk.length);
         }));
@@ -281,7 +284,7 @@ const NasaApodIndicator = new Lang.Class({
                 if (this._settings.get_boolean('notify'))
                     this._showDescription();
             } else {
-                Notifications.notifyError("Couldn't fetch image from " + url);
+                Notifications.notifyError(_("Couldn't fetch image from {0}").replace("{0}", url));
                 file.delete(null);
             }
         }));
@@ -298,6 +301,7 @@ const NasaApodIndicator = new Lang.Class({
 function init(extensionMeta) {
     let theme = imports.gi.Gtk.IconTheme.get_default();
     theme.append_search_path(extensionMeta.path + "/icons");
+    Utils.initTranslations("nasa_apod");
 }
 
 function enable() {
@@ -309,3 +313,4 @@ function disable() {
     nasaApodIndicator.stop();
     nasaApodIndicator.destroy();
 }
+
