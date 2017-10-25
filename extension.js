@@ -18,6 +18,7 @@ const Notifications = Me.imports.notifications;
 const NasaApodURL = "https://api.nasa.gov/planetary/apod";
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
+const RETRY_RATE_LIMIT_SECONDS = 60 * 5;
 const ICON = "saturn";
 
 
@@ -115,11 +116,15 @@ const NasaApodIndicator = new Lang.Class({
     _restartTimeout: function(seconds = TIMEOUT_SECONDS) {
         if (this._timeout)
             Mainloop.source_remove(this._timeout);
-        this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
-        let timezone = GLib.TimeZone.new_local();
-        let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
-        this.refreshStatusItem.label.set_text('Next refresh: ' + localTime);
-        Utils.log('Next check in ' + seconds + ' seconds @ local time ' + localTime);
+        if (seconds < 0) {
+            this.refreshStatusItem.label.set_text('No refresh scheduled');
+        } else {
+            this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
+            let timezone = GLib.TimeZone.new_local();
+            let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
+            this.refreshStatusItem.label.set_text('Next refresh: ' + localTime);
+            Utils.log('Next check in ' + seconds + ' seconds @ local time ' + localTime);
+        }
     },
 
     _showDescription: function() {
@@ -152,6 +157,11 @@ const NasaApodIndicator = new Lang.Class({
         // queue the http request
         httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
             if (message.status_code == 200) {
+                // log remaining requests
+                let limit = message.response_headers.get("X-RateLimit-Limit");
+                let remaining = message.response_headers.get("X-RateLimit-Remaining");
+                Utils.log(remaining + "/" + limit + " requests per hour remaining");
+
                 let data = message.response_body.data;
                 this._settings.set_string("last-json", data);
                 this._settings.set_uint64("last-refresh", Date.now());
@@ -167,18 +177,21 @@ const NasaApodIndicator = new Lang.Class({
                     this._refreshDone();
                 }
             } else if (message.status_code == 403) {
-                Notifications.notifyError("Error 403: check your NASA API key");
-                this._refreshDone();
+                this._refreshDone(-1);
+                Notifications.notifyError("Invalid NASA API key (error 403)", "Check that your key is correct or use the default key.");
+            } else if (message.status_code == 429) {
+                Notifications.notifyError("Over rate limit (error 429)", "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you.");
+                this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
             } else {
-                Notifications.notifyError("Network error", message.error_code);
+                Notifications.notifyError("Network error", message.status_code);
                 this._refreshDone();
             }
         }));
     },
 
-    _refreshDone: function() {
+    _refreshDone: function(seconds = TIMEOUT_SECONDS) {
         this._updatePending = false;
-        this._restartTimeout();
+        this._restartTimeout(seconds);
         this._updateMenuItems();
         Utils.log("Refresh done.");
     },
