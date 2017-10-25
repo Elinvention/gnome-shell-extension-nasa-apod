@@ -2,6 +2,8 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const Util = imports.misc.util;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 
 const NasaApodWebsiteURL = "https://apod.nasa.gov/apod/";
 
@@ -38,13 +40,24 @@ function notify(msg, details, transient) {
     source.notify(notification);
 }
 
-function notifyError(msg, details) {
+function notifyError(msg, details, transient) {
     let prefix = 'NASA APOD extension error';
+    let source = new MessageTray.Source("NASA APOD", "saturn");
+    Main.messageTray.add(source);
+    let notification;
     if (details) {
-        log(prefix + ': ' + msg + ': ' + details);
-        Main.notify(prefix, msg + ': ' + details);
+        prefix += ": " + msg;
+        log(prefix + ': ' + details);
+        notification = new MessageTray.Notification(source, prefix, details);
     } else {
         log(prefix + ': ' + msg);
-        Main.notify(prefix, msg);
+        notification = new MessageTray.Notification(source, prefix, msg);
     }
+    notification.setTransient(transient);
+    // Add action to open settings
+    notification.addAction("Settings", Lang.bind(this, function() {
+        Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
+    }));
+    source.notify(notification);
 }
+
