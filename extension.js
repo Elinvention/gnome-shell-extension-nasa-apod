@@ -257,8 +257,8 @@ const NasaApodIndicator = new Lang.Class({
 
         // got_headers event
         request.connect('got_headers', Lang.bind(this, function(message){
-            Utils.log("got_headers")
             total_size = message.response_headers.get_content_length()
+            Utils.log("Download size: " + total_size + "B")
         }));
 
         // got_chunk event
@@ -270,7 +270,9 @@ const NasaApodIndicator = new Lang.Class({
                 let percent = Math.floor(fraction * 100);
                 this.refreshStatusItem.label.set_text(_("Download {0} done").replace("{0}", percent + '%'));
             }
-            fstream.write(chunk.get_data(), null, chunk.length);
+            let written = fstream.write(chunk.get_data(), null);
+            if (written != chunk.length)
+                Utils.log("Write error: fstream.write returned " + written + ", but " + chunk.length + " expected");
         }));
 
         // queue the http request
