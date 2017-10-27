@@ -19,6 +19,9 @@ const Gettext = imports.gettext.domain('nasa_apod');
 const _ = Gettext.gettext;
 
 const NasaApodURL = "https://api.nasa.gov/planetary/apod";
+const NasaApodWebsiteURL = "https://apod.nasa.gov/apod/";
+const NasaApodGetYourAPIURL = "https://api.nasa.gov/";
+
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
 const RETRY_RATE_LIMIT_SECONDS = 60 * 5;
@@ -30,9 +33,24 @@ let httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
 
 
+function openPrefs() {
+    Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
+}
+
+function xdg_open(url) {
+    Utils.log("xdg-open " + url);
+    Util.spawn(["xdg-open", url]);
+}
+
 const NasaApodIndicator = new Lang.Class({
     Name: IndicatorName,
     Extends: PanelMenu.Button,
+
+    _descriptionActions:  [ {"name": _("NASA APOD website"), "fun": function() { xdg_open(NasaApodWebsiteURL) }} ],
+    _apiKeyErrorActions:  [ {"name": _("Get an API key"),    "fun": function() { xdg_open(NasaApodGetYourAPIURL) }},
+                            {"name": _("Settings"),          "fun": openPrefs} ],
+    _networkErrorActions: [ {"name": _("Retry"),             "fun": Lang.bind(this, function() { this._refresh() })},
+                            {"name": _("Settings"),          "fun": openPrefs} ],
 
     _init: function() {
         this.parent(0.0, IndicatorName);
@@ -67,9 +85,7 @@ const NasaApodIndicator = new Lang.Class({
         this.showItem.connect('activate', Lang.bind(this, this._showDescription));
         this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
         this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
-        this.settingsItem.connect('activate', function() {
-            Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
-        });
+        this.settingsItem.connect('activate', openPrefs);
         this.actor.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
 
         this._bgSettings = Utils.getBackgroundSettings();
@@ -137,7 +153,7 @@ const NasaApodIndicator = new Lang.Class({
             let message = this.explanation;
             if (this.copyright != "")
                 message += "\n**Copyright © " + this.copyright + "**"
-            Notifications.notify(this.title, message, this._settings.get_boolean('transient'));
+            Notifications.notify(this.title, message, this._settings.get_boolean('transient'), this._descriptionActions);
         }
     },
 
@@ -181,12 +197,21 @@ const NasaApodIndicator = new Lang.Class({
                 }
             } else if (message.status_code == 403) {
                 this._refreshDone(-1);
-                Notifications.notifyError(_("Invalid NASA API key (error 403)"), _("Check that your key is correct or use the default key."));
+                Notifications.notifyError(_("Invalid NASA API key (error 403)"), 
+                    _("Check that your key is correct or use the default key."),
+                    this._apiKeyErrorActions
+                );
             } else if (message.status_code == 429) {
-                Notifications.notifyError(_("Over rate limit (error 429)"), _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."));
+                Notifications.notifyError(_("Over rate limit (error 429)"),
+                    _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
+                    this._apiKeyErrorActions
+                );
                 this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
             } else {
-                Notifications.notifyError(_("Network error"), message.status_code);
+                Notifications.notifyError(_("Network error"),
+                    _("HTTP status code {0}").replace("{0}", message.status_code),
+                    this._networkErrorActions
+                );
                 this._refreshDone();
             }
         }));
@@ -286,7 +311,10 @@ const NasaApodIndicator = new Lang.Class({
                 if (this._settings.get_boolean('notify'))
                     this._showDescription();
             } else {
-                Notifications.notifyError(_("Couldn't fetch image from {0}").replace("{0}", url));
+                Notifications.notifyError(_("Couldn't fetch image from {0}").replace("{0}", url), 
+                    _("HTTP status code {0}").replace("{0}", message.status_code),
+                    this._networkErrorActions
+                );
                 file.delete(null);
             }
         }));

@@ -1,11 +1,7 @@
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
-const Util = imports.misc.util;
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
 
-const NasaApodWebsiteURL = "https://apod.nasa.gov/apod/";
 
 const LongNotification = new Lang.Class({
     Name: 'LongNotification',
@@ -19,7 +15,13 @@ const LongNotification = new Lang.Class({
     }
 });
 
-function notify(msg, details, transient) {
+function addActionsToNotification(notification, actions) {
+    actions.forEach(function(action) {
+        notification.addAction(action['name'], action['fun']);
+    });
+}
+
+function notify(msg, details, transient, actions=[]) {
     // set notifications icon
     let source = new MessageTray.Source("NASA APOD", "saturn");
     // force expanded notification
@@ -33,14 +35,11 @@ function notify(msg, details, transient) {
     Main.messageTray.add(source);
     let notification = new LongNotification(source, msg, details);
     notification.setTransient(transient);
-    // Add action to open NASA APOD website with default browser
-    notification.addAction("NASA APOD website", Lang.bind(this, function() {
-        Util.spawn(["xdg-open", NasaApodWebsiteURL]);
-    }));
+    addActionsToNotification(notification, actions);
     source.notify(notification);
 }
 
-function notifyError(msg, details, transient) {
+function notifyError(msg, details, actions=[]) {
     let prefix = 'NASA APOD extension error';
     let source = new MessageTray.Source("NASA APOD", "saturn");
     Main.messageTray.add(source);
@@ -53,11 +52,8 @@ function notifyError(msg, details, transient) {
         log(prefix + ': ' + msg);
         notification = new MessageTray.Notification(source, prefix, msg);
     }
-    notification.setTransient(transient);
-    // Add action to open settings
-    notification.addAction("Settings", Lang.bind(this, function() {
-        Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
-    }));
+    notification.setTransient(false);
+    addActionsToNotification(notification, actions);
     source.notify(notification);
 }
 
