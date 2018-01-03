@@ -16,7 +16,8 @@ function dump(object) {
     log(output);
 }
 
-function getDownloadFolder(settings) {
+function getDownloadFolder() {
+    let settings = getSettings();
     let NasaApodDir = settings.get_string('download-folder');
     if (NasaApodDir == "")
         NasaApodDir = GLib.get_home_dir() + "/.cache/apod/";
@@ -25,20 +26,29 @@ function getDownloadFolder(settings) {
     return NasaApodDir;
 }
 
-function doSetBackground(uri, schema) {
-    let gsettings = new Gio.Settings({schema: schema});
-    if (!uri.startsWith('file://'))
-        uri = 'file://' + uri
-    gsettings.set_string('picture-uri', uri);
-    Gio.Settings.sync();
-    gsettings.apply();
-}
+function setBackgroundBasedOnSettings(filename=null) {
+    let settings = getSettings();
+    let backgroundSettings = getBackgroundSettings();
+    let screensaverSettings = getScreenSaverSettings();
 
-function setBackgroundBasedOnSettings(filename, settings) {
-    if (settings.get_boolean('set-background'))
-        doSetBackground(filename, 'org.gnome.desktop.background');
-    if (settings.get_boolean('set-lock-screen'))
-        doSetBackground(filename, 'org.gnome.desktop.screensaver');
+    if ((typeof filename === 'string' || filename instanceof String) && !filename.startsWith('file://'))
+        filename = 'file://' + filename;
+
+    if (settings.get_boolean('set-background')) {
+        if (filename !== null)
+            backgroundSettings.set_string('picture-uri', filename);
+        let option = settings.get_string('background-options');
+        backgroundSettings.set_string('picture-options', option);
+    }
+    if (settings.get_boolean('set-lock-screen')) {
+        if (filename !== null)
+            screensaverSettings.set_string('picture-uri', filename);
+        let option = settings.get_string('screensaver-options');
+        screensaverSettings.set_string('picture-options', option);
+    }
+    Gio.Settings.sync();
+    backgroundSettings.apply();
+    screensaverSettings.apply();
 }
 
 function list_files(path) {
@@ -75,14 +85,23 @@ function parse_uri(uri) {
 }
 
 function getBackgroundSettings() {
-    return new Gio.Settings({schema: 'org.gnome.desktop.background'});
+    if (getBackgroundSettings._instance)
+        return getBackgroundSettings._instance;
+    getBackgroundSettings._instance = new Gio.Settings({schema: 'org.gnome.desktop.background'});
+    return getBackgroundSettings._instance;
 }
 
 function getScreenSaverSettings() {
-    return new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
+    if (getScreenSaverSettings._instance)
+        return getScreenSaverSettings._instance;
+    getScreenSaverSettings._instance = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
+    return getScreenSaverSettings._instance;
 }
 
 function getSettings() {
+    if (getSettings._instance)
+        return getSettings._instance;
+
 	let extension = ExtensionUtils.getCurrentExtension();
 	let schema = 'org.gnome.shell.extensions.nasa-apod';
 
@@ -109,7 +128,8 @@ function getSettings() {
 				extension.metadata.uuid + '. Please check your installation.');
 	}
 
-	return new Gio.Settings({settings_schema: schemaObj});
+	getSettings._instance = new Gio.Settings({settings_schema: schemaObj});
+    return getSettings._instance;
 }
 
 function initTranslations(domain) {

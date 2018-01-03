@@ -129,7 +129,7 @@ const NasaApodIndicator = new Lang.Class({
         if (this.filename == "")
             return;
         this._bgChanged = true;
-        Utils.setBackgroundBasedOnSettings(this.filename, this._settings);
+        Utils.setBackgroundBasedOnSettings(this.filename);
     },
 
     _restartTimeout: function(seconds = TIMEOUT_SECONDS) {
@@ -203,7 +203,7 @@ const NasaApodIndicator = new Lang.Class({
                 );
             } else if (message.status_code == 429) {
                 Notifications.notifyError(_("Over rate limit (error 429)"),
-                    _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
+                    _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you. Will retry in 5 minutes."),
                     this._apiKeyErrorActions
                 );
                 this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
@@ -231,12 +231,12 @@ const NasaApodIndicator = new Lang.Class({
             this.title = parsed['title']
             this.explanation = parsed['explanation'];
             if ('copyright' in parsed)
-                this.copyright = parsed['copyright'];
+                this.copyright = parsed['copyright'].replace("\n", " ");
             let url = ('hdurl' in parsed) ? parsed['hdurl'] : parsed['url'];
             let url_split = url.split(".");
             let extension = url_split[url_split.length - 1];
 
-            let NasaApodDir = Utils.getDownloadFolder(this._settings);
+            let NasaApodDir = Utils.getDownloadFolder();
             this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.' + extension;
 
             return url;
@@ -253,7 +253,7 @@ const NasaApodIndicator = new Lang.Class({
 
     _prepareDownload: function(url) {
         let file = Gio.file_new_for_path(this.filename);
-        let NasaApodDir = Utils.getDownloadFolder(this._settings);
+        let NasaApodDir = Utils.getDownloadFolder();
         if (!file.query_exists(null)) {
             let dir = Gio.file_new_for_path(NasaApodDir);
             if (!dir.query_exists(null)) {

@@ -11,7 +11,7 @@ let settings;
 let css;
 
 function init() {
-    settings = Utils.getSettings(Me);
+    settings = Utils.getSettings();
     css = Gtk.CssProvider.get_default();
     css.load_from_path(Me.dir.get_path() + "/theme.css");
     Utils.initTranslations("nasa_apod");
@@ -35,7 +35,7 @@ function buildCacheFlowBoxChild(file) {
     let date_label = buildable.get_object("date");
     let image = buildable.get_object("image");
     event.connect('button-press-event', function(widget, event) {
-        Utils.setBackgroundBasedOnSettings(path, settings);
+        Utils.setBackgroundBasedOnSettings(path);
     });
 
     let stream = file.read(null);
@@ -71,7 +71,7 @@ function buildPrefsWidget(){
     let cacheFlowBox = buildable.get_object('cache_flowbox');
     let cacheScroll = buildable.get_object('cache_scroll');
 
-    let downloadFolder = Utils.getDownloadFolder(settings);
+    let downloadFolder = Utils.getDownloadFolder();
 
     // Indicator
     settings.bind('hide', hideSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
@@ -88,8 +88,11 @@ function buildPrefsWidget(){
     // Wallpaper and lock screen
     settings.bind('set-background', bgSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('set-lock-screen', lsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
-    Utils.getBackgroundSettings().bind('picture-options', bgCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
-    Utils.getScreenSaverSettings().bind('picture-options', lsCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
+    settings.bind('background-options', bgCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
+    settings.bind('screensaver-options', lsCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
+    settings.connect('changed::background-options', function() { Utils.setBackgroundBasedOnSettings() });
+    settings.connect('changed::screensaver-options', function() { Utils.setBackgroundBasedOnSettings() });
+
 
     // Download folder
     fileChooser.set_filename(downloadFolder);
