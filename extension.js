@@ -25,6 +25,7 @@ const NasaApodGetYourAPIURL = "https://api.nasa.gov/";
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
 const RETRY_RATE_LIMIT_SECONDS = 60 * 5;
+const RETRY_NETWORK_UNAVAILABLE = 60;
 const ICON = "saturn";
 
 
@@ -62,6 +63,8 @@ const NasaApodIndicator = new Lang.Class({
         this.explanation = "";
         this.filename = "";
         this.copyright = "";
+
+        this._network_monitor = Gio.network_monitor_get_default();
 
         this._updatePending = false;
         this._timeout = null;
@@ -120,7 +123,7 @@ const NasaApodIndicator = new Lang.Class({
 
     _updateMenuItems: function() {
         // Grey out menu items if an update is pending
-        this.refreshItem.setSensitive(!this._updatePending);
+        this.refreshItem.setSensitive(!this._updatePending && this._network_monitor.get_network_available());
         this.showItem.setSensitive(!this._updatePending && this.title != "" && this.explanation != "");
         this.wallpaperItem.setSensitive(!this._updatePending && this.filename != "");
     },
@@ -158,8 +161,9 @@ const NasaApodIndicator = new Lang.Class({
     },
 
     _refresh: function(date = null) {
-        if (this._updatePending)
-            return;
+        if (this._updatePending || !this._network_monitor.get_network_available())
+            return true;
+
         this._updatePending = true;
         this.refreshStatusItem.label.set_text(_('Pending refresh'));
 
