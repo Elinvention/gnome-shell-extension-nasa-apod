@@ -75,17 +75,31 @@ const NasaApodIndicator = new Lang.Class({
         }));
 
         this.refreshStatusItem = new PopupMenu.PopupMenuItem(_("No refresh scheduled"));
-        this.showItem = new PopupMenu.PopupMenuItem(_("Show description"));
+
+        this.titleItem = new PopupMenu.PopupMenuItem(_("No title available"));
+        this.titleItem.setSensitive(false);
+        this.titleItem.actor.remove_style_pseudo_class('insensitive');
+
+        this.descItem = new PopupMenu.PopupMenuItem(_("No description available"));
+        this.descItem.label.get_clutter_text().set_line_wrap(true);
+        this.descItem.label.set_style("max-width: 400px;");
+        this.descItem.setSensitive(false);
+        this.descItem.actor.remove_style_pseudo_class('insensitive');
+
         this.wallpaperItem = new PopupMenu.PopupMenuItem(_("Set wallpaper"));
         this.refreshItem = new PopupMenu.PopupMenuItem(_("Refresh"));
         this.settingsItem = new PopupMenu.PopupMenuItem(_("Settings"));
+
+        this.menu.addMenuItem(this.titleItem);
+        this.menu.addMenuItem(this.descItem);
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.menu.addMenuItem(this.refreshStatusItem);
-        this.menu.addMenuItem(this.showItem);
-        this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.refreshItem);
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.settingsItem);
         this.refreshStatusItem.setSensitive(false);
-        this.showItem.connect('activate', Lang.bind(this, this._showDescription));
+
         this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
         this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
         this.settingsItem.connect('activate', openPrefs);
@@ -124,7 +138,14 @@ const NasaApodIndicator = new Lang.Class({
     _updateMenuItems: function() {
         // Grey out menu items if an update is pending
         this.refreshItem.setSensitive(!this._updatePending && this._network_monitor.get_network_available());
-        this.showItem.setSensitive(!this._updatePending && this.title != "" && this.explanation != "");
+        if (this._updatePending) {
+            this.descItem.label.set_text(_("Update pending"));
+        } else if (this.title != "" || this.explanation != "") {
+            this.titleItem.label.set_text(this.title);
+            this.descItem.label.set_text(this.explanation);
+        } else {
+            this.descItem.label.set_text(_("No description available"));
+        }
         this.wallpaperItem.setSensitive(!this._updatePending && this.filename != "");
     },
 

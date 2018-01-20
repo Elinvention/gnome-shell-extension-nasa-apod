@@ -24,8 +24,6 @@ function buildCacheFlowBoxChild(file) {
     if (['jpg', 'png', 'gif'].indexOf(info.extension) < 0)
         throw path + " is not an image";
 
-    Utils.log("Loading: " + path);
-
     let buildable = new Gtk.Builder();
     buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ["cache_flowchild"]);
 
