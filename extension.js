@@ -43,12 +43,34 @@ function xdg_open(url) {
     Util.spawn(["xdg-open", url]);
 }
 
+function open_website() {
+    xdg_open(NasaApodWebsiteURL);
+}
+
+function open_getapi() {
+    xdg_open(NasaApodGetYourAPIURL);
+}
+
+function MediaTypeError(parsed) {
+    this.title = _("Media type {0} not supported.").replace("{0}", parsed['media_type']);
+    this.message = _("No picture for today 😞. Please visit NASA APOD website.")
+    this.parsed = parsed;
+}
+MediaTypeError.prototype = Object.create(Error.prototype);
+MediaTypeError.prototype.name = "MediaTypeError";
+MediaTypeError.prototype.constructor = MediaTypeError;
+
+function set_text(item, text) {
+    item.actor.visible = Boolean(text);
+    item.label.set_text(text);
+}
+
 const NasaApodIndicator = new Lang.Class({
     Name: IndicatorName,
     Extends: PanelMenu.Button,
 
-    _descriptionActions:  [ {"name": _("NASA APOD website"), "fun": function() { xdg_open(NasaApodWebsiteURL) }} ],
-    _apiKeyErrorActions:  [ {"name": _("Get an API key"),    "fun": function() { xdg_open(NasaApodGetYourAPIURL) }},
+    _descriptionActions:  [ {"name": _("NASA APOD website"), "fun": open_website} ],
+    _apiKeyErrorActions:  [ {"name": _("Get an API key"),    "fun": open_getapi},
                             {"name": _("Settings"),          "fun": openPrefs} ],
     _networkErrorActions: [ {"name": _("Retry"),             "fun": Lang.bind(this, function() { this._refresh() })},
                             {"name": _("Settings"),          "fun": openPrefs} ],
@@ -59,23 +81,22 @@ const NasaApodIndicator = new Lang.Class({
         this.icon = new St.Icon({icon_name: ICON, style_class: 'system-status-icon'});
         this.actor.add_child(this.icon);
 
-        this.title = "";
-        this.explanation = "";
-        this.filename = "";
-        this.copyright = "";
+        // This object holds title, explanation, copyright and filename
+        this.data = {};
 
         this._network_monitor = Gio.network_monitor_get_default();
 
         this._updatePending = false;
         this._timeout = null;
         this._settings = Utils.getSettings();
-        this.actor.visible = !this._settings.get_boolean('hide'); // set initial indicator visibility state
+
+        // Indicator visibility
+        this.actor.visible = !this._settings.get_boolean('hide'); // set initial state
         this._settings.connect('changed::hide', Lang.bind(this, function() {
             this.actor.visible = !this._settings.get_boolean('hide');
         }));
 
-        this.refreshStatusItem = new PopupMenu.PopupMenuItem(_("No refresh scheduled"));
-
+        // Build the menu
         this.titleItem = new PopupMenu.PopupMenuItem(_("No title available"));
         this.titleItem.setSensitive(false);
         this.titleItem.actor.remove_style_pseudo_class('insensitive');
@@ -86,42 +107,67 @@ const NasaApodIndicator = new Lang.Class({
         this.descItem.setSensitive(false);
         this.descItem.actor.remove_style_pseudo_class('insensitive');
 
+        this.copyItem = new PopupMenu.PopupMenuItem(_("No copyright information available"));
+        this.copyItem.setSensitive(false);
+        this.copyItem.actor.remove_style_pseudo_class('insensitive');
+
+        this.webItem = new PopupMenu.PopupMenuItem(_("NASA APOD website"));
+        this.webItem.connect('activate', open_website);
+
+        this.refreshStatusItem = new PopupMenu.PopupMenuItem(_("No refresh scheduled"));
+        this.refreshStatusItem.setSensitive(false);
+
         this.wallpaperItem = new PopupMenu.PopupMenuItem(_("Set wallpaper"));
+        this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
+
         this.refreshItem = new PopupMenu.PopupMenuItem(_("Refresh"));
+        this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
+
         this.settingsItem = new PopupMenu.PopupMenuItem(_("Settings"));
+        this.settingsItem.connect('activate', openPrefs);
 
         this.menu.addMenuItem(this.titleItem);
         this.menu.addMenuItem(this.descItem);
+        this.menu.addMenuItem(this.copyItem);
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addMenuItem(this.webItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.menu.addMenuItem(this.refreshStatusItem);
         this.menu.addMenuItem(this.refreshItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.settingsItem);
-        this.refreshStatusItem.setSensitive(false);
 
-        this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
-        this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
-        this.settingsItem.connect('activate', openPrefs);
         this.actor.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
 
+        // Detect background change by user
         this._bgSettings = Utils.getBackgroundSettings();
         this._bgSettings.connect('changed::picture-uri', Lang.bind(this, this._backgroundChanged));
         this._bgChanged = false;
 
+        // Try to parse stored JSON
         let json = this._settings.get_string("last-json");
         try {
             this._parseData(json);
-        } catch (err) {
-            Utils.log("Refresh of JSON data is needed.");
-            this._restartTimeout(60);
+        } catch (e) {
+            if (e instanceof MediaTypeError) {
+                Utils.log(e.title);
+                this._restartTimeout();
+            } else {
+                Utils.log("Error parsing stored JSON.");
+                Utils.dump(e);
+                this._settings.reset("last-json");
+                this._settings.reset("last-refresh");
+                this._restartTimeout(60);
+            }
             return;
         }
 
         let last_refresh = this._settings.get_uint64("last-refresh");
         let seconds = Math.floor(TIMEOUT_SECONDS - (Date.now() - last_refresh) / 1000);
+        // Wait at least 60 seconds and up to 119 to prevent startup slowness
         if (seconds < 60)
-            this._restartTimeout(60);
+            this._restartTimeout(60 + Math.floor(Math.random() * 60));
         else
             this._restartTimeout(seconds);
     },
@@ -139,21 +185,30 @@ const NasaApodIndicator = new Lang.Class({
         // Grey out menu items if an update is pending
         this.refreshItem.setSensitive(!this._updatePending && this._network_monitor.get_network_available());
         if (this._updatePending) {
-            this.descItem.label.set_text(_("Update pending"));
-        } else if (this.title != "" || this.explanation != "") {
-            this.titleItem.label.set_text(this.title);
-            this.descItem.label.set_text(this.explanation);
+            set_text(this.titleItem, "");
+            set_text(this.descItem, _("Update pending"));
+            set_text(this.copyItem, "");
+        } else if ('error' in this.data) {
+            set_text(this.titleItem, this.data.error.title);
+            set_text(this.descItem, this.data.error.message);
+            set_text(this.copyItem, "");
+        } else if (!('title' in this.data) || !('explanation' in this.data)) {
+            set_text(this.titleItem, "");
+            set_text(this.descItem, _("Here will be displayed an explanation of the current NASA's APOD wallpaper. Please press refresh to download a new wallpaper along with the explanation."));
+            set_text(this.copyItem, "");
         } else {
-            this.descItem.label.set_text(_("No description available"));
+            set_text(this.titleItem, this.data['title']);
+            set_text(this.descItem, this.data['explanation']);
+            set_text(this.copyItem, "Copyright © " + this.data['copyright']);
         }
-        this.wallpaperItem.setSensitive(!this._updatePending && this.filename != "");
+        this.wallpaperItem.setSensitive(!this._updatePending && 'filename' in this.data);
     },
 
     _setBackground: function() {
-        if (this.filename == "")
+        if (!('filename' in this.data))
             return;
         this._bgChanged = true;
-        Utils.setBackgroundBasedOnSettings(this.filename);
+        Utils.setBackgroundBasedOnSettings(this.data['filename']);
     },
 
     _restartTimeout: function(seconds = TIMEOUT_SECONDS) {
@@ -161,7 +216,12 @@ const NasaApodIndicator = new Lang.Class({
             Mainloop.source_remove(this._timeout);
         if (seconds < 0) {
             this.refreshStatusItem.label.set_text(_('No refresh scheduled'));
+            Utils.log('Timeout removed');
         } else {
+            if (seconds < 60) {
+                seconds = 60; // ensure the timeout is not fired too many times
+                Utils.log('Less than 60 seconds timeout?');
+            }
             this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
             let timezone = GLib.TimeZone.new_local();
             let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
@@ -170,15 +230,22 @@ const NasaApodIndicator = new Lang.Class({
         }
     },
 
-    _showDescription: function() {
-        if (this.title == "" && this.explanation == "") {
-            this._refresh();
-        } else {
-            let message = this.explanation;
-            if (this.copyright != "")
-                message += "\n**Copyright © " + this.copyright + "**"
-            Notifications.notify(this.title, message, this._settings.get_boolean('transient'), this._descriptionActions);
-        }
+    _notify: function() {
+        if (!this._settings.get_boolean('notify'))
+            return;
+        let title, message;
+        if ('error' in this.data) {
+            title = this.data['error'].title;
+            message = this.data['error'].message;
+        } else if ('title' in this.data && 'explanation' in this.data) {
+            title = this.data['title'];
+            message = this.data['explanation'];
+            if ('copyright' in this.data)
+                message += "\n**Copyright © " + this.data['copyright'] + "**";
+        } else
+            return;
+        let transient = this._settings.get_boolean('transient');
+        Notifications.notify(title, message, transient, this._descriptionActions);
     },
 
     _refresh: function(date = null) {
@@ -210,12 +277,11 @@ const NasaApodIndicator = new Lang.Class({
                 this._settings.set_string("last-json", data);
                 this._settings.set_uint64("last-refresh", Date.now());
                 try {
-                    let url = this._parseData(data);
-                    this._prepareDownload(url);
-                } catch(err) {
-                    if ('media_type' in err)
-                        if (this._settings.get_boolean('notify'))
-                            this._showDescription();
+                    this._parseData(data);
+                    this._prepareDownload(this.data['url']);
+                } catch(e) {
+                    if (e instanceof MediaTypeError)
+                        this._notify();
                     else
                         Notifications.notifyError(_("Error downloading image"), err);
                     this._refreshDone();
@@ -253,31 +319,30 @@ const NasaApodIndicator = new Lang.Class({
         let parsed = JSON.parse(json);
 
         if (parsed['media_type'] == "image") {
-            this.title = parsed['title']
-            this.explanation = parsed['explanation'];
-            if ('copyright' in parsed)
-                this.copyright = parsed['copyright'].replace("\n", " ");
-            let url = ('hdurl' in parsed) ? parsed['hdurl'] : parsed['url'];
-            let url_split = url.split(".");
-            let extension = url_split[url_split.length - 1];
+            let get_filename = function() {
+                let url_split = parsed['url'].split(".");
+                let extension = url_split[url_split.length - 1];
+                let NasaApodDir = Utils.getDownloadFolder();
+                return NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.' + extension;
+            };
 
-            let NasaApodDir = Utils.getDownloadFolder();
-            this.filename = NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.' + extension;
+            this.data = {
+                'title':  parsed['title'],
+                'explanation': parsed['explanation'],
+                'copyright': ('copyright' in parsed) ? parsed['copyright'].replace('\n', ' ') : undefined,
+                'url': ('hdurl' in parsed) ? parsed['hdurl'] : parsed['url'],
+                'filename': get_filename(),
+            };
 
-            return url;
         } else {
-            this.title = _("Media type {0} not supported.").replace("{0}", parsed['media_type']);
-            this.explanation = _("No picture for today 😞. Please visit NASA APOD website.");
-            this.filename = "";
-            this.copyright = "";
-            let error = new Error(this.title);
-            error.media_type = parsed['media_type'];
-            throw error;
+            this.data = {'error': new MediaTypeError(parsed)};
+            throw this.data['error'];
         }
     },
 
-    _prepareDownload: function(url) {
-        let file = Gio.file_new_for_path(this.filename);
+    _prepareDownload: function() {
+        let url = this.data['url'];
+        let file = Gio.file_new_for_path(this.data['filename']);
         let NasaApodDir = Utils.getDownloadFolder();
         if (!file.query_exists(null)) {
             let dir = Gio.file_new_for_path(NasaApodDir);
@@ -286,7 +351,7 @@ const NasaApodIndicator = new Lang.Class({
             }
             this._download_image(url, file);
         } else {
-            Utils.log(this.filename + " already downloaded");
+            Utils.log(this.data['filename'] + " already downloaded");
             this._setBackground();
             this._refreshDone();
         }
@@ -333,8 +398,7 @@ const NasaApodIndicator = new Lang.Class({
             if (message.status_code == 200) {
                 Utils.log('Download successful');
                 this._setBackground();
-                if (this._settings.get_boolean('notify'))
-                    this._showDescription();
+                this._notify();
             } else {
                 Notifications.notifyError(_("Couldn't fetch image from {0}").replace("{0}", url), 
                     _("HTTP status code {0}").replace("{0}", message.status_code),
@@ -368,4 +432,3 @@ function disable() {
     nasaApodIndicator.stop();
     nasaApodIndicator.destroy();
 }
-
