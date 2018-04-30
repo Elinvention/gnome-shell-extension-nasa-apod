@@ -152,24 +152,27 @@ const NasaApodIndicator = new Lang.Class({
         } catch (e) {
             if (e instanceof MediaTypeError) {
                 Utils.log(e.title);
-                this._restartTimeout();
             } else {
                 Utils.log("Error parsing stored JSON.");
                 Utils.dump(e);
                 this._settings.reset("last-json");
                 this._settings.reset("last-refresh");
                 this._restartTimeout(60);
+                return;
             }
-            return;
         }
 
-        let last_refresh = this._settings.get_uint64("last-refresh");
-        let seconds = Math.floor(TIMEOUT_SECONDS - (Date.now() - last_refresh) / 1000);
+        let seconds = Math.floor(TIMEOUT_SECONDS - this._secondsFromLastRefresh());
         // Wait at least 60 seconds and up to 119 to prevent startup slowness
         if (seconds < 60)
             this._restartTimeout(60 + Math.floor(Math.random() * 60));
         else
             this._restartTimeout(seconds);
+    },
+
+    _secondsFromLastRefresh: function() {
+        let last_refresh = this._settings.get_uint64("last-refresh");
+        return (Date.now() - last_refresh) / 1000;
     },
 
     _backgroundChanged: function() {
@@ -186,7 +189,7 @@ const NasaApodIndicator = new Lang.Class({
         this.refreshItem.setSensitive(!this._updatePending && this._network_monitor.get_network_available());
         if (this._updatePending) {
             set_text(this.titleItem, "");
-            set_text(this.descItem, _("Update pending"));
+            set_text(this.descItem, "");
             set_text(this.copyItem, "");
         } else if ('error' in this.data) {
             set_text(this.titleItem, this.data.error.title);
@@ -283,7 +286,7 @@ const NasaApodIndicator = new Lang.Class({
                     if (e instanceof MediaTypeError)
                         this._notify();
                     else
-                        Notifications.notifyError(_("Error downloading image"), err);
+                        Notifications.notifyError(_("Error downloading image"), e);
                     this._refreshDone();
                 }
             } else if (message.status_code == 403) {
