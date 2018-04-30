@@ -24,7 +24,7 @@ const NasaApodGetYourAPIURL = "https://api.nasa.gov/";
 
 const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
-const RETRY_RATE_LIMIT_SECONDS = 60 * 5;
+const RETRY_RATE_LIMIT_SECONDS = 60 * 30;
 const RETRY_NETWORK_UNAVAILABLE = 60;
 const ICON = "saturn";
 
@@ -72,8 +72,9 @@ const NasaApodIndicator = new Lang.Class({
     _descriptionActions:  [ {"name": _("NASA APOD website"), "fun": open_website} ],
     _apiKeyErrorActions:  [ {"name": _("Get an API key"),    "fun": open_getapi},
                             {"name": _("Settings"),          "fun": openPrefs} ],
-    _networkErrorActions: [ {"name": _("Retry"),             "fun": Lang.bind(this, function() { this._refresh() })},
+    _networkErrorActions: [ {"name": _("Retry"),             "fun": Lang.bind(this, function() { this._refresh(true) })},
                             {"name": _("Settings"),          "fun": openPrefs} ],
+    _bgChangedActions:    [ {'name': _("Settings"),          'fun': openPrefs} ],
 
     _init: function() {
         this.parent(0.0, IndicatorName);
@@ -121,7 +122,7 @@ const NasaApodIndicator = new Lang.Class({
         this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
 
         this.refreshItem = new PopupMenu.PopupMenuItem(_("Refresh"));
-        this.refreshItem.connect('activate', Lang.bind(this, this._refresh));
+        this.refreshItem.connect('activate', Lang.bind(this, function() { this._refresh(true) }));
 
         this.settingsItem = new PopupMenu.PopupMenuItem(_("Settings"));
         this.settingsItem.connect('activate', openPrefs);
@@ -144,6 +145,7 @@ const NasaApodIndicator = new Lang.Class({
         this._bgSettings = Utils.getBackgroundSettings();
         this._bgSettings.connect('changed::picture-uri', Lang.bind(this, this._backgroundChanged));
         this._bgChanged = false;
+        this._refreshDate = null;
 
         // Try to parse stored JSON
         let json = this._settings.get_string("last-json");
@@ -175,18 +177,26 @@ const NasaApodIndicator = new Lang.Class({
         return (Date.now() - last_refresh) / 1000;
     },
 
-    _backgroundChanged: function() {
-        let uri = this._bgSettings.get_string("picture-uri");
-        let info = Utils.parse_uri(uri);
-        if (!this._bgChanged && info.directory == Utils.getDownloadFolder(this._settings)) {
-            this._refresh(info.date);
+    _backgroundChanged: function(gsettings, key) {
+        let uri = gsettings.get_string(key);
+        if (!this._bgChanged) {
+            // extension didn't change the background
+            this.data = {};
+            let info = Utils.parse_uri(uri);
+            if (info.directory == Utils.getDownloadFolder(this._settings)) {
+                this._refreshDate = info.date;
+                this._restartTimeout(60);
+            } else {
+                //Do not interfere with the user
+                this._restartTimeout();
+            }
         }
         this._bgChanged = false;
     },
 
     _updateMenuItems: function() {
         // Grey out menu items if an update is pending
-        this.refreshItem.setSensitive(!this._updatePending && this._network_monitor.get_network_available());
+        this.refreshItem.setSensitive(!this._updatePending && this._network_monitor.get_network_available() && this._secondsFromLastRefresh() > 10);
         if (this._updatePending) {
             set_text(this.titleItem, "");
             set_text(this.descItem, "");
@@ -200,7 +210,7 @@ const NasaApodIndicator = new Lang.Class({
             set_text(this.descItem, _("Here will be displayed an explanation of the current NASA's APOD wallpaper. Please press refresh to download a new wallpaper along with the explanation."));
             set_text(this.copyItem, "");
         } else {
-            set_text(this.titleItem, this.data['title']);
+            set_text(this.titleItem, this.data['title'] + ' (' + this.data['date'] + ')');
             set_text(this.descItem, this.data['explanation']);
             set_text(this.copyItem, "Copyright © " + this.data['copyright']);
         }
@@ -219,13 +229,14 @@ const NasaApodIndicator = new Lang.Class({
             Mainloop.source_remove(this._timeout);
         if (seconds < 0) {
             this.refreshStatusItem.label.set_text(_('No refresh scheduled'));
+            this._timeout = undefined;
             Utils.log('Timeout removed');
         } else {
             if (seconds < 60) {
                 seconds = 60; // ensure the timeout is not fired too many times
                 Utils.log('Less than 60 seconds timeout?');
             }
-            this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, this._refresh));
+            this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, function() { this._refresh(false) }));
             let timezone = GLib.TimeZone.new_local();
             let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
             this.refreshStatusItem.label.set_text(_('Next refresh: {0}').replace("{0}", localTime));
@@ -251,9 +262,22 @@ const NasaApodIndicator = new Lang.Class({
         Notifications.notify(title, message, transient, this._descriptionActions);
     },
 
-    _refresh: function(date = null) {
-        if (this._updatePending || !this._network_monitor.get_network_available())
-            return true;
+    _refresh: function(verbose = false) {
+        if (this._updatePending) {
+            Utils.log('refresh: a previous refresh is still pending');
+            this._refreshDone();
+            return;
+        }
+        if (this._secondsFromLastRefresh() < 10) {
+            Utils.log('refresh: wait at least 10 seconds between each requests');
+            this._refreshDone(10);
+            return;
+        }
+        if (!this._network_monitor.get_network_available()) {
+            Utils.log('refresh: network is not available');
+            this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
+            return;
+        }
 
         this._updatePending = true;
         this.refreshStatusItem.label.set_text(_('Pending refresh'));
@@ -261,8 +285,8 @@ const NasaApodIndicator = new Lang.Class({
         let apiKey = this._settings.get_string('api-key');
 
         let url = NasaApodURL + '?api_key=' + apiKey;
-        if (typeof date == "string" || date instanceof String)
-            url += '&date=' + date;
+        if (typeof this._refreshDate == "string" || this._refreshDate instanceof String)
+            url += '&date=' + this._refreshDate;
         Utils.log(url);
 
         // create an http message
@@ -296,10 +320,11 @@ const NasaApodIndicator = new Lang.Class({
                     this._apiKeyErrorActions
                 );
             } else if (message.status_code == 429) {
-                Notifications.notifyError(_("Over rate limit (error 429)"),
-                    _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you. Will retry in 5 minutes."),
-                    this._apiKeyErrorActions
-                );
+                if (verbose)
+                    Notifications.notifyError(_("Over rate limit (error 429)"),
+                        _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
+                        this._apiKeyErrorActions
+                    );
                 this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
             } else {
                 Notifications.notifyError(_("Network error"),
@@ -335,6 +360,7 @@ const NasaApodIndicator = new Lang.Class({
                 'copyright': ('copyright' in parsed) ? parsed['copyright'].replace('\n', ' ') : undefined,
                 'url': ('hdurl' in parsed) ? parsed['hdurl'] : parsed['url'],
                 'filename': get_filename(),
+                'date': parsed['date'],
             };
 
         } else {
