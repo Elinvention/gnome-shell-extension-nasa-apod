@@ -18,7 +18,10 @@ You can install the latest release from [extensions.gnome.org][].
 You can help with development by testing and reporting issues.  
 The command below downloads and install the current development version:
 
-`git clone https://github.com/Elinvention/gnome-shell-extension-nasa-apod.git $HOME/.local/share/gnome-shell/extensions/nasa_apod@elinvention.ovh`
+```
+git clone https://github.com/Elinvention/gnome-shell-extension-nasa-apod.git $HOME/.local/share/gnome-shell/extensions/nasa_apod@elinvention.ovh
+gnome-shell-extension-tool -e nasa_apod@elinvention.ovh
+```
 
 ## Screenshots
 
