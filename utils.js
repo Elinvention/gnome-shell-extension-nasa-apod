@@ -38,13 +38,15 @@ function setBackgroundBasedOnSettings(filename=null) {
         if (filename !== null)
             backgroundSettings.set_string('picture-uri', filename);
         let option = settings.get_string('background-options');
-        backgroundSettings.set_string('picture-options', option);
+        if (option != "default")
+            backgroundSettings.set_string('picture-options', option);
     }
     if (settings.get_boolean('set-lock-screen')) {
         if (filename !== null)
             screensaverSettings.set_string('picture-uri', filename);
         let option = settings.get_string('screensaver-options');
-        screensaverSettings.set_string('picture-options', option);
+        if (option != "default")
+            screensaverSettings.set_string('picture-options', option);
     }
     Gio.Settings.sync();
     backgroundSettings.apply();

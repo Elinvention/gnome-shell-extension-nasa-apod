@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 
+<!-- Generated with glade 3.22.0 
 
 Copyright (C) 2017
 
@@ -286,7 +286,7 @@ Author: Elia Argentieri
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">end</property>
-                            <property name="active">6</property>
+                            <property name="active">7</property>
                             <items>
                               <item id="none" translatable="yes">None</item>
                               <item id="centered" translatable="yes">Centered</item>
@@ -295,6 +295,7 @@ Author: Elia Argentieri
                               <item id="stretched" translatable="yes">Stretched</item>
                               <item id="wallpaper" translatable="yes">Wallpaper</item>
                               <item id="zoom" translatable="yes">Zoom</item>
+                              <item id="default" translatable="yes">Default</item>
                             </items>
                           </object>
                           <packing>
@@ -347,7 +348,7 @@ Author: Elia Argentieri
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">end</property>
-                            <property name="active">6</property>
+                            <property name="active">7</property>
                             <items>
                               <item id="none" translatable="yes">None</item>
                               <item id="centered" translatable="yes">Centered</item>
@@ -356,6 +357,7 @@ Author: Elia Argentieri
                               <item id="stretched" translatable="yes">Stretched</item>
                               <item id="wallpaper" translatable="yes">Wallpaper</item>
                               <item id="zoom" translatable="yes">Zoom</item>
+                              <item id="default" translatable="yes">Default</item>
                             </items>
                           </object>
                           <packing>
@@ -564,7 +566,7 @@ Author: Elia Argentieri
           <object class="GtkImage" id="logo">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="pixbuf">./icons/nasa.svg</property>
+            <property name="pixbuf">icons/nasa.svg</property>
           </object>
           <packing>
             <property name="expand">False</property>

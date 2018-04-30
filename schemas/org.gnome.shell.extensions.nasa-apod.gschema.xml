@@ -58,13 +58,13 @@
     </key>
 
     <key name="background-options" type="s">
-      <default>""</default>
+      <default>"default"</default>
       <summary>Background image adjustment.</summary>
       <description></description>
     </key>
 
     <key name="screensaver-options" type="s">
-      <default>""</default>
+      <default>"default"</default>
       <summary>Screensaver image adjustment.</summary>
       <description></description>
     </key>
