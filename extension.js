@@ -27,6 +27,11 @@ const TIMEOUT_SECONDS = 6 * 3600;
 const RETRY_RATE_LIMIT_SECONDS = 60 * 30;
 const RETRY_NETWORK_UNAVAILABLE = 60;
 
+const DefaultApiKeys = [
+    "XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH",
+    "jCUjMOBpL523SxLoi4PogFZ3YsvvFtVNyEvRd0IB"
+]
+
 
 let nasaApodIndicator;
 let httpSession = new Soup.SessionAsync();
