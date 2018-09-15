@@ -40,7 +40,7 @@
     </key>
 
     <key name="api-key" type="s">
-      <default>"XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH"</default>
+      <default>"[Automatic]"</default>
       <summary>NASA APOD api key.</summary>
       <description>Get your API key from https://api.nasa.gov/</description>
     </key>

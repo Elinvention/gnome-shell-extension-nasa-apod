@@ -169,6 +169,8 @@ const NasaApodIndicator = new Lang.Class({
             }
         }
 
+        this._populateKeys();
+
         let seconds = Math.floor(TIMEOUT_SECONDS - this._secondsFromLastRefresh());
         // Wait at least 60 seconds and up to 119 to prevent startup slowness
         if (seconds < 60)
@@ -267,6 +269,19 @@ const NasaApodIndicator = new Lang.Class({
         Notifications.notify(title, message, transient, this._descriptionActions);
     },
 
+    _populateKeys: function() {
+        let keySetting = this._settings.get_string('api-key')
+        if (keySetting == "[Automatic]")
+        {
+            this._apiKeys = DefaultApiKeys
+                .map(k => [k, Math.random()])
+                .sort(([_, a], [__, b]) => a - b)
+                .map(([k, _]) => k)
+        } else {
+            this._apiKeys = [keySetting]
+        }
+    },
+
     _refresh: function(verbose = false) {
         if (this._updatePending) {
             Utils.log('refresh: a previous refresh is still pending');
@@ -283,13 +298,21 @@ const NasaApodIndicator = new Lang.Class({
             this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
             return;
         }
+        if (this._apiKeys.length == 0) {
+            if (verbose)
+                Notifications.notifyError(_("Over rate limit (error 429)"),
+                    _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
+                    this._apiKeyErrorActions
+                );
+            this._populateKeys();
+            this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
+            return;
+        }
 
         this._updatePending = true;
         this.refreshStatusItem.label.set_text(_('Pending refresh'));
 
-        let apiKey = this._settings.get_string('api-key');
-
-        let url = NasaApodURL + '?api_key=' + apiKey;
+        let url = NasaApodURL + '?api_key=' + this._apiKeys[0];
         if (typeof this._refreshDate == "string" || this._refreshDate instanceof String)
             url += '&date=' + this._refreshDate;
         Utils.log(url);
@@ -325,12 +348,8 @@ const NasaApodIndicator = new Lang.Class({
                     this._apiKeyErrorActions
                 );
             } else if (message.status_code == 429) {
-                if (verbose)
-                    Notifications.notifyError(_("Over rate limit (error 429)"),
-                        _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
-                        this._apiKeyErrorActions
-                    );
-                this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
+                this._apiKeys.shift();
+                this._refresh(verbose);
             } else {
                 Notifications.notifyError(_("Network error"),
                     _("HTTP status code {0}").replace("{0}", message.status_code),
