@@ -39,7 +39,7 @@ function notify(msg, details, transient, actions=[]) {
     source.notify(notification);
 }
 
-function notifyError(msg, details, actions=[]) {
+function notifyError(notifyOnErrors, msg, details, actions=[]) {
     let prefix = 'NASA APOD extension error';
     let source = new MessageTray.Source("NASA APOD", "saturn");
     Main.messageTray.add(source);
@@ -54,6 +54,8 @@ function notifyError(msg, details, actions=[]) {
     }
     notification.setTransient(false);
     addActionsToNotification(notification, actions);
-    source.notify(notification);
+    if (notifyOnErrors) {
+        source.notify(notification);
+    }
 }
 

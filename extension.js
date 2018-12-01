@@ -294,6 +294,7 @@ const NasaApodIndicator = new Lang.Class({
 
         // queue the http request
         httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
+            let notifyOnErrors = this._settings.get_boolean('error-notifications');
             if (message.status_code == 200) {
                 // log remaining requests
                 let limit = message.response_headers.get("X-RateLimit-Limit");
@@ -310,24 +311,24 @@ const NasaApodIndicator = new Lang.Class({
                     if (e instanceof MediaTypeError)
                         this._notify();
                     else
-                        Notifications.notifyError(_("Error downloading image"), e);
+                        Notifications.notifyError(notifyOnErrors, _("Error downloading image"), e);
                     this._refreshDone();
                 }
             } else if (message.status_code == 403) {
                 this._refreshDone(-1);
-                Notifications.notifyError(_("Invalid NASA API key (error 403)"), 
+                Notifications.notifyError(notifyOnErrors, _("Invalid NASA API key (error 403)"), 
                     _("Check that your key is correct or use the default key."),
                     this._apiKeyErrorActions
                 );
             } else if (message.status_code == 429) {
                 if (verbose)
-                    Notifications.notifyError(_("Over rate limit (error 429)"),
+                    Notifications.notifyError(notifyOnErrors, _("Over rate limit (error 429)"),
                         _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
                         this._apiKeyErrorActions
                     );
                 this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
             } else {
-                Notifications.notifyError(_("Network error"),
+                Notifications.notifyError(notifyOnErrors, _("Network error"),
                     _("HTTP status code {0}").replace("{0}", message.status_code),
                     this._networkErrorActions
                 );

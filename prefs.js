@@ -60,6 +60,7 @@ function buildPrefsWidget(){
     let hideSwitch = buildable.get_object('hide');
     let notifySwitch = buildable.get_object('notifications');
     let transientSwitch = buildable.get_object('transient_notifications');
+    let notifyErrorsSwitch = buildable.get_object('error_notifications');
     let bgSwitch = buildable.get_object('background_switch');
     let lsSwitch = buildable.get_object('lock_screen_switch');
     let bgCombo = buildable.get_object('background_combo');
@@ -81,6 +82,13 @@ function buildPrefsWidget(){
     transientSwitch.set_sensitive(settings.get_boolean('notify'));
     settings.connect('changed::notify', function() {
         transientSwitch.set_sensitive(settings.get_boolean('notify'));
+    });
+
+    settings.bind('error-notifications', notifyErrorsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+    notifyErrorsSwitch.set_sensitive(settings.get_boolean('notify'));
+    settings.connect('changed::notify', function() {
+        notifyErrorsSwitch.set_sensitive(settings.get_boolean('notify'));
     });
 
     // Wallpaper and lock screen

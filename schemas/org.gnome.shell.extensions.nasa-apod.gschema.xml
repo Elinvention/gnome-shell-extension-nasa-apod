@@ -21,6 +21,12 @@
         <description></description>
     </key>
 
+    <key name="error-notifications" type="b">
+      <default>false</default>
+        <summary>Also notify on errors</summary>
+        <description></description>
+    </key>
+
     <key name="set-background" type="b">
       <default>true</default>
         <summary>Set background</summary>
