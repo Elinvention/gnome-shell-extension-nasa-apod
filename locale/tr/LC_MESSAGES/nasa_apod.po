@@ -1,0 +1,222 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Serdar Sağlam <teknomobil@yandex.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unnamed project\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-03 23:57+0100\n"
+"PO-Revision-Date: 2019-03-21 08:18+0300\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: tr\n"
+
+#: Settings.ui.h:1
+msgid "label"
+msgstr "etiket"
+
+#: Settings.ui.h:2
+msgid "Hide the indicator"
+msgstr "Göstergeyi gizle"
+
+#: Settings.ui.h:3
+msgid "Send a notification with explanation when a new image is downloaded."
+msgstr "Yeni bir resim indirilirken açıklama içeren bir bildirim gönder."
+
+#: Settings.ui.h:4
+msgid "Notifications"
+msgstr "Bildirimler"
+
+#: Settings.ui.h:5
+msgid "Use transient notifications (auto dismiss)"
+msgstr "Geçici bildirimleri kullan (görevi sonlandırma)"
+
+#: Settings.ui.h:6
+msgid "Set background image:"
+msgstr "Arka plan resmini ayarla:"
+
+#: Settings.ui.h:7
+msgid "None"
+msgstr "Yok"
+
+#: Settings.ui.h:8
+msgid "Centered"
+msgstr "Ortalanmış"
+
+#: Settings.ui.h:9
+msgid "Scaled"
+msgstr "Ölçekli"
+
+#: Settings.ui.h:10
+msgid "Spanned"
+msgstr "Yayılmış"
+
+#: Settings.ui.h:11
+msgid "Stretched"
+msgstr "Uzatılmış"
+
+#: Settings.ui.h:12
+msgid "Wallpaper"
+msgstr "Duvar kağıdı"
+
+#: Settings.ui.h:13
+msgid "Zoom"
+msgstr "Yakınlaştır"
+
+#: Settings.ui.h:14
+msgid "Set lock screen image:"
+msgstr "Kilit ekranı görüntüsünü ayarla:"
+
+#: Settings.ui.h:15
+msgid "Download folder:"
+msgstr "İndirme klasörü:"
+
+#: Settings.ui.h:16
+msgid "NASA APOD pictures folder"
+msgstr "NASA APOD resimler klasörü"
+
+#: Settings.ui.h:17
+msgid "Custom NASA APOD API key:"
+msgstr "Özel NASA APOD API anahtarı:"
+
+#: Settings.ui.h:18 extension.js:52 extension.js:54 extension.js:81
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: Settings.ui.h:19
+msgid "Cache"
+msgstr "Önbellek"
+
+#: Settings.ui.h:20
+msgid "version: "
+msgstr "sürüm:"
+
+#: Settings.ui.h:21
+msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
+msgstr ""
+"Duvar kağıdınızı günlük olarak NASA'nın günün astronomi resmine göre "
+"değiştirin"
+
+#: Settings.ui.h:22
+msgid ""
+"Maintained by:\n"
+"Elia Argentieri (<a href=\"mailto:elia.argentieri@openmailbox.org\">elia."
+"argentieri@openmailbox.org</a>)"
+msgstr ""
+"Yapımcı:\n"
+"Elia Argentieri (<a href=\"mailto:elia.argentieri@openmailbox.org\">elia."
+"argentieri@openmailbox.org</a>)"
+
+#: Settings.ui.h:24
+msgid "Extension's GitHub Webpage"
+msgstr "Eklentinin GitHub Web Sayfası"
+
+#: Settings.ui.h:25
+msgid "Changelog"
+msgstr "Değişiklikler"
+
+#: Settings.ui.h:26
+msgid ""
+"<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
+"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+"\">GNU General Public License, version 3 or later</a> for details.</span>"
+msgstr ""
+"<span size=\"small\">Bu uygulama HİÇBİR GARANTİ SUNMAZ\n"
+"Bakın <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU "
+"Genel Kamu Lisansı, sürüm 3 veya üstü</a> ayrıntılar.</span>"
+
+#: Settings.ui.h:28
+msgid "About"
+msgstr "Hakkında"
+
+#: extension.js:50
+msgid "NASA APOD website"
+msgstr "NASA APOD web sitesi"
+
+#: extension.js:51
+msgid "Get an API key"
+msgstr "Bir API anahtarı al"
+
+#: extension.js:53
+msgid "Retry"
+msgstr "Yinele"
+
+#: extension.js:77 extension.js:142
+msgid "No refresh scheduled"
+msgstr "Yenileme planlanmadı"
+
+#: extension.js:78
+msgid "Show description"
+msgstr "Açıklamayı göster"
+
+#: extension.js:79
+msgid "Set wallpaper"
+msgstr "Duvar kağıdı ayarla"
+
+#: extension.js:80
+msgid "Refresh"
+msgstr "Yenile"
+
+#: extension.js:147
+msgid "Next refresh: {0}"
+msgstr "Sonraki yenileme: {0}"
+
+#: extension.js:168
+msgid "Pending refresh"
+msgstr "Bekleyen yenileme"
+
+#: extension.js:199
+msgid "Error downloading image"
+msgstr "Resim indirilirken hata oluştu"
+
+#: extension.js:204
+msgid "Invalid NASA API key (error 403)"
+msgstr "Geçersiz NASA API anahtarı (hata 403)"
+
+#: extension.js:205
+msgid "Check that your key is correct or use the default key."
+msgstr "Anahtarınızın doğruluğunu kontrol et veya varsayılan anahtarı kullan."
+
+#: extension.js:209
+msgid "Over rate limit (error 429)"
+msgstr "Limit aşımı (hata 429)"
+
+#: extension.js:210
+msgid ""
+"Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
+"just for you. Will retry in 5 minutes."
+msgstr ""
+"API anahtarını https://api.nasa.gov/ adresinden al. Saatte 1000 istek "
+"alınabilir. 5 dakika içinde tekrar denenecek."
+
+#: extension.js:215
+msgid "Network error"
+msgstr "Ağ hatası"
+
+#: extension.js:216 extension.js:319
+msgid "HTTP status code {0}"
+msgstr "HTTP durum kodu {0}"
+
+#: extension.js:248
+msgid "Media type {0} not supported."
+msgstr "Media türü {0} desteklenmiyor."
+
+#: extension.js:249
+msgid "No picture for today 😞. Please visit NASA APOD website."
+msgstr "Bugün resim yok 😞. Lütfen NASA APOD web sitesini ziyaret edin."
+
+#: extension.js:300
+msgid "Download {0} done"
+msgstr "İndirme {0} tamamlandı"
+
+#: extension.js:318
+msgid "Couldn't fetch image from {0}"
+msgstr "{0} kaynağından resim alınamadı"
