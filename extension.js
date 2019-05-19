@@ -26,7 +26,6 @@ const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
 const RETRY_RATE_LIMIT_SECONDS = 60 * 30;
 const RETRY_NETWORK_UNAVAILABLE = 60;
-const ICON = "saturn";
 
 
 let nasaApodIndicator;
@@ -79,8 +78,9 @@ const NasaApodIndicator = new Lang.Class({
     _init: function() {
         this.parent(0.0, IndicatorName);
 
-        this.icon = new St.Icon({icon_name: ICON, style_class: 'system-status-icon'});
-        this.actor.add_child(this.icon);
+        this.indicatorIcon = new St.Icon({style_class: 'system-status-icon'});
+        this.indicatorIcon.gicon = Gio.icon_new_for_string(`${Me.path}/icons/saturn.svg`);
+        this.actor.add_child(this.indicatorIcon);
 
         // This object holds title, explanation, copyright and filename
         this.data = {};
@@ -447,8 +447,6 @@ const NasaApodIndicator = new Lang.Class({
 });
 
 function init(extensionMeta) {
-    let theme = imports.gi.Gtk.IconTheme.get_default();
-    theme.append_search_path(extensionMeta.path + "/icons");
     Utils.initTranslations("nasa_apod");
 }
 
