@@ -72,7 +72,6 @@ const NasaApodIndicator = new Lang.Class({
                             {"name": _("Settings"),          "fun": openPrefs} ],
     _networkErrorActions: [ {"name": _("Retry"),             "fun": Lang.bind(this, function() { this._refresh(true) })},
                             {"name": _("Settings"),          "fun": openPrefs} ],
-    _bgChangedActions:    [ {'name': _("Settings"),          'fun': openPrefs} ],
 
     _init: function() {
         this.parent(0.0, IndicatorName);
@@ -140,12 +139,6 @@ const NasaApodIndicator = new Lang.Class({
 
         this.actor.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
 
-        // Detect background change by user
-        this._bgSettings = Utils.getBackgroundSettings();
-        this._bgSettings.connect('changed::picture-uri', Lang.bind(this, this._backgroundChanged));
-        this._bgChanged = false;
-        this._refreshDate = null;
-
         // Try to parse stored JSON
         let json = this._settings.get_string("last-json");
         try {
@@ -164,6 +157,7 @@ const NasaApodIndicator = new Lang.Class({
         }
 
         this._settings.connect('changed::api-keys', Lang.bind(this, this._populateKeys));
+        this._settings.connect('changed::pinned-background', Lang.bind(this, this._pinnedBackground));
 
         let seconds = Math.floor(TIMEOUT_SECONDS - this._secondsFromLastRefresh());
         // Wait at least 60 seconds and up to 119 to prevent startup slowness
@@ -176,23 +170,6 @@ const NasaApodIndicator = new Lang.Class({
     _secondsFromLastRefresh: function() {
         let last_refresh = this._settings.get_uint64("last-refresh");
         return (Date.now() - last_refresh) / 1000;
-    },
-
-    _backgroundChanged: function(gsettings, key) {
-        let uri = gsettings.get_string(key);
-        if (!this._bgChanged) {
-            // extension didn't change the background
-            this.data = {};
-            let info = Utils.parse_uri(uri);
-            if (info.directory == Utils.getDownloadFolder(this._settings)) {
-                this._refreshDate = info.date;
-                this._restartTimeout(60);
-            } else {
-                //Do not interfere with the user
-                this._restartTimeout();
-            }
-        }
-        this._bgChanged = false;
     },
 
     _updateMenuItems: function() {
@@ -221,7 +198,6 @@ const NasaApodIndicator = new Lang.Class({
     _setBackground: function() {
         if (!('filename' in this.data))
             return;
-        this._bgChanged = true;
         Utils.setBackgroundBasedOnSettings(this.data['filename']);
     },
 
@@ -261,6 +237,15 @@ const NasaApodIndicator = new Lang.Class({
             return;
         let transient = this._settings.get_boolean('transient');
         Notifications.notify(title, message, transient, this._descriptionActions);
+    },
+
+    _pinnedBackground: function(settings, key) {
+        let pin = settings.get_string(key);
+        if (pin == "")
+            return;
+        this.data = {filename: pin};
+        this._setBackground();
+        this._restartTimeout(10);
     },
 
     _populateKeys: function() {
@@ -304,9 +289,10 @@ const NasaApodIndicator = new Lang.Class({
             }
 
             let apiKey = this._apiKeys[0];
+            let pinned = this._settings.get_string('pinned-background');
             let url = NasaApodURL + '?api_key=' + apiKey;
-            if (typeof this._refreshDate == "string" || this._refreshDate instanceof String)
-                url += '&date=' + this._refreshDate;
+            if (pinned.length > 0)
+                url += '&date=' + Utils.parse_path(pinned).date;
             Utils.log(url);
 
             // create an http message

@@ -69,5 +69,11 @@
       <description></description>
     </key>
 
+    <key name="pinned-background" type="s">
+      <default>""</default>
+      <summary>Pinned Background</summary>
+      <description>Pinned Background allows you to pin an old background and prevent the extension from replacing it with a new one.</description>
+    </key>
+
   </schema>
 </schemalist>

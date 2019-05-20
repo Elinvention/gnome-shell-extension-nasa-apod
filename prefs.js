@@ -17,24 +17,18 @@ function init() {
     Utils.initTranslations("nasa_apod");
 }
 
-function buildCacheFlowBoxChild(file) {
-    let path = file.get_path();
-    let info = Utils.parse_path(path);
+function buildHistoryFlowBoxChild(file, info) {
 
     if (['jpg', 'png', 'gif'].indexOf(info.extension) < 0)
-        throw path + " is not an image";
+        throw info.path + " is not an image";
 
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ["cache_flowchild"]);
+    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ["history_flowboxchild"]);
 
-    let row = buildable.get_object("cache_flowchild");
-    let event = buildable.get_object("event");
+    let row = buildable.get_object("history_flowboxchild");
     let title_label = buildable.get_object("title");
     let date_label = buildable.get_object("date");
     let image = buildable.get_object("image");
-    event.connect('button-press-event', function(widget, event) {
-        Utils.setBackgroundBasedOnSettings(path);
-    });
 
     let stream = file.read(null);
     GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream, 200, 200, true, null, function(source, res) {
@@ -89,8 +83,8 @@ function buildPrefsWidget(){
     let apiKeysListBox = buildable.get_object('api_keys_listbox');
     let apiKeysAdd = buildable.get_object('api_keys_add');
     let apiKeysReset = buildable.get_object('api_keys_reset');
-    let cacheFlowBox = buildable.get_object('cache_flowbox');
-    let cacheScroll = buildable.get_object('cache_scroll');
+    let historyFlowBox = buildable.get_object('history_flowbox');
+    let historyScroll = buildable.get_object('history_scroll');
 
     let downloadFolder = Utils.getDownloadFolder();
 
@@ -121,8 +115,8 @@ function buildPrefsWidget(){
     fileChooser.connect('file-set', function(widget) {
         downloadFolder = widget.get_filename() + '/';
         settings.set_string('download-folder', downloadFolder);
-        // Empty cache page
-        cacheFlowBox.get_children().forEach(function(child) {
+        // Empty history page
+        historyFlowBox.get_children().forEach(function(child) {
             child.destroy();
         });
     });
@@ -166,16 +160,22 @@ function buildPrefsWidget(){
         settings.reset('api-keys');
     });
 
-    // Cache page
+    // History page
     let file_names = [];
+    let pinned = settings.get_string('pinned-background');
 
     function load_files_thumbnails(limit = 6) {
         let file_name, i = 0;
         while ((file_name = file_names.pop()) != null && i < limit) {
             try {
-                let file = Gio.file_new_for_path(downloadFolder + file_name);
-                let child = buildCacheFlowBoxChild(file);
-                cacheFlowBox.add(child);
+                let path = downloadFolder + file_name;
+                let file = Gio.file_new_for_path(path);
+                let info = Utils.parse_path(path);
+                let child = buildHistoryFlowBoxChild(file, info);
+                child.set_name(info.filename);
+                historyFlowBox.add(child);
+                if (pinned == info.filename)
+                    historyFlowBox.select_child(child);
                 i++;
             } catch (err) {
                 Utils.log(err);
@@ -183,14 +183,32 @@ function buildPrefsWidget(){
         };
     };
 
-    cacheScroll.connect('edge-reached', function(window, pos) {
+    let previous_selection = null;
+    historyFlowBox.connect('selected_children_changed', function () {
+        let selected = historyFlowBox.get_selected_children();
+        if (selected.length > 0) {
+            if (selected[0] == previous_selection) {
+                historyFlowBox.unselect_child(previous_selection);
+            } else {
+                Utils.log('Background ' + selected[0].get_name() + ' pinned');
+                settings.set_string('pinned-background', Utils.getDownloadFolder() + selected[0].get_name());
+                previous_selection = selected[0];
+            }
+        } else {
+            Utils.log('Background unpinned');
+            settings.reset('pinned-background');
+            previous_selection = null;
+        }
+    });
+
+    historyScroll.connect('edge-reached', function(window, pos) {
         if (pos == 3) {  // if user reached the bottom of the SrolledWindow
             load_files_thumbnails();
         }
     });
 
     notebook.connect('switch-page', function(widget, page, page_index) {
-        if (page_index == 1 && cacheFlowBox.get_children().length == 0) {
+        if (page_index == 1 && historyFlowBox.get_children().length == 0) {
             file_names = Utils.list_files(downloadFolder);
             load_files_thumbnails();
         }

@@ -66,7 +66,7 @@ function list_files(path) {
 }
 
 function parse_path(path) {
-    let info = {};
+    let info = {path: path};
     let splitSlash = path.split('/');
     info.filename = splitSlash.pop();
     info.directory = splitSlash.join('/') + '/';
