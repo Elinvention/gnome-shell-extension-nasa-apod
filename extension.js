@@ -49,6 +49,10 @@ function open_getapi() {
     xdg_open(NasaApodGetYourAPIURL);
 }
 
+function open_wallpapers_folder() {
+    xdg_open(Utils.getDownloadFolder());
+}
+
 function MediaTypeError(parsed) {
     this.title = _("Media type {0} not supported.").replace("{0}", parsed['media_type']);
     this.message = _("No picture for today 😞. Please visit NASA APOD website.")
@@ -116,7 +120,10 @@ const NasaApodIndicator = new Lang.Class({
         this.refreshStatusItem = new PopupMenu.PopupMenuItem(_("No refresh scheduled"));
         this.refreshStatusItem.setSensitive(false);
 
-        this.wallpaperItem = new PopupMenu.PopupMenuItem(_("Set wallpaper"));
+        this.openWallpaperFolderItem = new PopupMenu.PopupMenuItem(_("Open Wallpaper Folder"));
+        this.openWallpaperFolderItem.connect('activate', open_wallpapers_folder);
+
+        this.wallpaperItem = new PopupMenu.PopupMenuItem(_("Set Wallpaper"));
         this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
 
         this.refreshItem = new PopupMenu.PopupMenuItem(_("Refresh"));
@@ -134,6 +141,7 @@ const NasaApodIndicator = new Lang.Class({
         this.menu.addMenuItem(this.refreshStatusItem);
         this.menu.addMenuItem(this.refreshItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addMenuItem(this.openWallpaperFolderItem);
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.settingsItem);
 
