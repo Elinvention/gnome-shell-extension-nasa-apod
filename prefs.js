@@ -48,6 +48,27 @@ function buildCacheFlowBoxChild(file) {
     return row;
 }
 
+function buildApiKeyItem(apiKey) {
+    let buildable = new Gtk.Builder();
+    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ['api_key_item']);
+
+    let item = buildable.get_object('api_key_item');
+    let label = buildable.get_object('api_key_label');
+    let button = buildable.get_object('api_key_remove');
+    label.set_text(apiKey);
+    return [item, button];
+}
+
+function buildNewApiKeyDialog() {
+    let buildable = new Gtk.Builder();
+    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ['new_api_key_dialog']);
+
+    let dialog = buildable.get_object('new_api_key_dialog');
+    let entry = buildable.get_object('new_api_key_entry');
+
+    return [dialog, entry];
+}
+
 function buildPrefsWidget(){
 
     // Prepare labels and controls
@@ -65,7 +86,9 @@ function buildPrefsWidget(){
     let bgCombo = buildable.get_object('background_combo');
     let lsCombo = buildable.get_object('lock_screen_combo');
     let fileChooser = buildable.get_object('download_folder');
-    let apiEntry = buildable.get_object('api_key');
+    let apiKeysListBox = buildable.get_object('api_keys_listbox');
+    let apiKeysAdd = buildable.get_object('api_keys_add');
+    let apiKeysReset = buildable.get_object('api_keys_reset');
     let cacheFlowBox = buildable.get_object('cache_flowbox');
     let cacheScroll = buildable.get_object('cache_scroll');
 
@@ -105,9 +128,42 @@ function buildPrefsWidget(){
     });
 
     //API key
-    settings.bind('api-key', apiEntry, 'text', Gio.SettingsBindFlags.DEFAULT);
-    apiEntry.connect('icon-press', function() {
-        settings.reset('api-key');
+    function populateApiKeysListBox() {
+        let keys = settings.get_strv('api-keys');
+        apiKeysListBox.get_children().forEach(function(child) {
+            child.destroy();
+        });
+        keys.forEach(function(key, index) {
+            let [item, button] = buildApiKeyItem(key);
+            button.connect('clicked', function () {
+                keys.pop(index);
+                settings.set_strv('api-keys', keys);
+            });
+            apiKeysListBox.add(item);
+        });
+    }
+
+    populateApiKeysListBox();
+    settings.connect('changed::api-keys', populateApiKeysListBox);
+
+    apiKeysAdd.connect('clicked', function () {
+        let [dialog, entry] = buildNewApiKeyDialog();
+        dialog.show();
+        dialog.connect('response', function(_, response) {
+            if (response == Gtk.ResponseType.OK) {
+                let key = entry.get_text();
+                if (key.length != 40)
+                    return;
+                let keys = settings.get_strv('api-keys');
+                keys.push(key);
+                settings.set_strv('api-keys', keys);
+            }
+            dialog.destroy();
+        });
+    });
+
+    apiKeysReset.connect('clicked', function() {
+        settings.reset('api-keys');
     });
 
     // Cache page

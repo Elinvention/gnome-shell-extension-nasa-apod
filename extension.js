@@ -27,12 +27,6 @@ const TIMEOUT_SECONDS = 6 * 3600;
 const RETRY_RATE_LIMIT_SECONDS = 60 * 30;
 const RETRY_NETWORK_UNAVAILABLE = 60;
 
-const DefaultApiKeys = [
-    "XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH",
-    "jCUjMOBpL523SxLoi4PogFZ3YsvvFtVNyEvRd0IB"
-]
-
-
 let nasaApodIndicator;
 let httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
@@ -169,7 +163,7 @@ const NasaApodIndicator = new Lang.Class({
             }
         }
 
-        this._populateKeys();
+        this._settings.connect('changed::api-keys', Lang.bind(this, this._populateKeys));
 
         let seconds = Math.floor(TIMEOUT_SECONDS - this._secondsFromLastRefresh());
         // Wait at least 60 seconds and up to 119 to prevent startup slowness
@@ -270,16 +264,10 @@ const NasaApodIndicator = new Lang.Class({
     },
 
     _populateKeys: function() {
-        let keySetting = this._settings.get_string('api-key')
-        if (keySetting == "[Automatic]")
-        {
-            this._apiKeys = DefaultApiKeys
+        this._apiKeys = this._settings.get_strv('api-keys')
                 .map(k => [k, Math.random()])
                 .sort(([_, a], [__, b]) => a - b)
                 .map(([k, _]) => k)
-        } else {
-            this._apiKeys = [keySetting]
-        }
     },
 
     _refresh: function(verbose = false) {
@@ -298,66 +286,73 @@ const NasaApodIndicator = new Lang.Class({
             this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
             return;
         }
-        if (this._apiKeys.length == 0) {
-            if (verbose)
-                Notifications.notifyError(_("Over rate limit (error 429)"),
-                    _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
-                    this._apiKeyErrorActions
-                );
-            this._populateKeys();
-            this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
-            return;
-        }
 
         this._updatePending = true;
+        this._populateKeys();
         this.refreshStatusItem.label.set_text(_('Pending refresh'));
 
-        let url = NasaApodURL + '?api_key=' + this._apiKeys[0];
-        if (typeof this._refreshDate == "string" || this._refreshDate instanceof String)
-            url += '&date=' + this._refreshDate;
-        Utils.log(url);
+        let makeRequest = Lang.bind(this, function () {
+            if (this._apiKeys.length == 0) {
+                if (verbose)
+                    Notifications.notifyError(_("Over rate limit (error 429)"),
+                        _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
+                       this._apiKeyErrorActions
+                    );
+                this._populateKeys();
+                this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
+                return;
+            }
 
-        // create an http message
-        let request = Soup.Message.new('GET', url);
+            let apiKey = this._apiKeys[0];
+            let url = NasaApodURL + '?api_key=' + apiKey;
+            if (typeof this._refreshDate == "string" || this._refreshDate instanceof String)
+                url += '&date=' + this._refreshDate;
+            Utils.log(url);
 
-        // queue the http request
-        httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
-            if (message.status_code == 200) {
-                // log remaining requests
-                let limit = message.response_headers.get("X-RateLimit-Limit");
-                let remaining = message.response_headers.get("X-RateLimit-Remaining");
-                Utils.log(remaining + "/" + limit + " requests per hour remaining");
+            // create an http message
+            let request = Soup.Message.new('GET', url);
 
-                let data = message.response_body.data;
-                this._settings.set_string("last-json", data);
-                this._settings.set_uint64("last-refresh", Date.now());
-                try {
-                    this._parseData(data);
-                    this._prepareDownload(this.data['url']);
-                } catch(e) {
-                    if (e instanceof MediaTypeError)
-                        this._notify();
-                    else
-                        Notifications.notifyError(_("Error downloading image"), e);
+            // queue the http request
+            httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
+                if (message.status_code == 200) {
+                    // log remaining requests
+                    let limit = message.response_headers.get("X-RateLimit-Limit");
+                    let remaining = message.response_headers.get("X-RateLimit-Remaining");
+                    Utils.log(remaining + "/" + limit + " requests per hour remaining");
+
+                    let data = message.response_body.data;
+                    this._settings.set_string("last-json", data);
+                    this._settings.set_uint64("last-refresh", Date.now());
+                    try {
+                        this._parseData(data);
+                        this._prepareDownload(this.data['url']);
+                    } catch(e) {
+                        if (e instanceof MediaTypeError)
+                            this._notify();
+                        else
+                            Notifications.notifyError(_("Error downloading image"), e);
+                        this._refreshDone();
+                    }
+                } else if (message.status_code == 403) {
+                    this._refreshDone(-1);
+                    Notifications.notifyError(_("Invalid NASA API key (error 403)"),
+                        _("Check that your key is correct or use the default key."),
+                        this._apiKeyErrorActions
+                    );
+                } else if (message.status_code == 429) {
+                    Utils.log("API key " + this._apiKeys[0] + "is rate limited.");
+                    this._apiKeys.shift();
+                    makeRequest();
+                } else {
+                    Notifications.notifyError(_("Network error"),
+                        _("HTTP status code {0}").replace("{0}", message.status_code),
+                        this._networkErrorActions
+                    );
                     this._refreshDone();
                 }
-            } else if (message.status_code == 403) {
-                this._refreshDone(-1);
-                Notifications.notifyError(_("Invalid NASA API key (error 403)"), 
-                    _("Check that your key is correct or use the default key."),
-                    this._apiKeyErrorActions
-                );
-            } else if (message.status_code == 429) {
-                this._apiKeys.shift();
-                this._refresh(verbose);
-            } else {
-                Notifications.notifyError(_("Network error"),
-                    _("HTTP status code {0}").replace("{0}", message.status_code),
-                    this._networkErrorActions
-                );
-                this._refreshDone();
-            }
-        }));
+            }));
+        });
+        makeRequest();
     },
 
     _refreshDone: function(seconds = TIMEOUT_SECONDS) {

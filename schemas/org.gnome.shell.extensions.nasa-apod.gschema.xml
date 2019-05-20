@@ -39,8 +39,8 @@
       <description>An empty string means that the default folder is used: ~/.cache/apod/</description>
     </key>
 
-    <key name="api-key" type="s">
-      <default>"[Automatic]"</default>
+    <key name="api-keys" type="as">
+      <default>["XKSoS8Bv05ij8JH8UWa7eqMavXgGfFStcc6Pu3KH", "jCUjMOBpL523SxLoi4PogFZ3YsvvFtVNyEvRd0IB"]</default>
       <summary>NASA APOD api key.</summary>
       <description>Get your API key from https://api.nasa.gov/</description>
     </key>
