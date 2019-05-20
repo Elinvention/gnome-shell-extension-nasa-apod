@@ -3,18 +3,6 @@ const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 
 
-const LongNotification = new Lang.Class({
-    Name: 'LongNotification',
-    Extends: MessageTray.Notification,
-
-    createBanner: function() {
-        // Explanations are usually longer than default
-        let banner = this.source.createBanner(this);
-        banner.setExpandedLines(20);
-        return banner;
-    }
-});
-
 function addActionsToNotification(notification, actions) {
     actions.forEach(function(action) {
         notification.addAction(action['name'], action['fun']);
@@ -33,7 +21,7 @@ function notify(msg, details, transient, actions=[]) {
                                         detailsInLockScreen: true
                                       });
     Main.messageTray.add(source);
-    let notification = new LongNotification(source, msg, details);
+    let notification = new MessageTray.Notification(source, msg, details);
     notification.setTransient(transient);
     addActionsToNotification(notification, actions);
     source.notify(notification);
