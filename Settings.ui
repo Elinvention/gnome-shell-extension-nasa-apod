@@ -645,21 +645,6 @@ Author: Elia Argentieri
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="maintainer_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Maintained by:
-Elia Argentieri (&lt;a href="mailto:elia.argentieri@openmailbox.org"&gt;elia.argentieri@openmailbox.org&lt;/a&gt;)</property>
-            <property name="use_markup">True</property>
-            <property name="justify">center</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLinkButton" id="homepage_link">
             <property name="label" translatable="yes">Extension's GitHub Webpage</property>
             <property name="visible">True</property>
@@ -668,6 +653,21 @@ Elia Argentieri (&lt;a href="mailto:elia.argentieri@openmailbox.org"&gt;elia.arg
             <property name="events"/>
             <property name="halign">center</property>
             <property name="uri">https://github.com/Elinvention/gnome-shell-extension-nasa-apod</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLinkButton" id="issue_tracker_link">
+            <property name="label" translatable="yes">Issue Tracker</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="relief">none</property>
+            <property name="uri">https://github.com/Elinvention/gnome-shell-extension-nasa-apod/issues</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -691,6 +691,21 @@ Elia Argentieri (&lt;a href="mailto:elia.argentieri@openmailbox.org"&gt;elia.arg
           </packing>
         </child>
         <child>
+          <object class="GtkLabel" id="maintainer_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Brought to you by:
+Elia Argentieri</property>
+            <property name="use_markup">True</property>
+            <property name="justify">center</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkLabel" id="GNU_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -704,7 +719,7 @@ See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;G
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="pack_type">end</property>
-            <property name="position">7</property>
+            <property name="position">8</property>
           </packing>
         </child>
       </object>
