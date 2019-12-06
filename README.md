@@ -29,7 +29,7 @@ gnome-shell-extension-tool -e nasa_apod@elinvention.ovh
 ![Settings][screenshot2]  
 ![Settings About][screenshot3]  
 
-[screenshot1]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/1.png
-[screenshot2]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/2.png
-[screenshot3]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/3.png
+[screenshot1]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/4.png
+[screenshot2]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/5.png
+[screenshot3]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/master/screenshots/6.png
 [extensions.gnome.org]: https://extensions.gnome.org/extension/1202/nasa-apod/
