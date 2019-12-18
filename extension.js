@@ -127,7 +127,7 @@ const NasaApodIndicator = new Lang.Class({
         this.wallpaperItem.connect('activate', Lang.bind(this, this._setBackground));
 
         this.refreshItem = new PopupMenu.PopupMenuItem(_("Refresh"));
-        this.refreshItem.connect('activate', Lang.bind(this, function() { this._refresh(true) }));
+        this.refreshItem.connect('activate', Lang.bind(this, this._refreshButton));
 
         this.settingsItem = new PopupMenu.PopupMenuItem(_("Settings"));
         this.settingsItem.connect('activate', openPrefs);
@@ -167,12 +167,15 @@ const NasaApodIndicator = new Lang.Class({
         this._settings.connect('changed::api-keys', Lang.bind(this, this._populateKeys));
         this._settings.connect('changed::pinned-background', Lang.bind(this, this._pinnedBackground));
 
-        let seconds = Math.floor(TIMEOUT_SECONDS - this._secondsFromLastRefresh());
-        // Wait at least 60 seconds and up to 119 to prevent startup slowness
-        if (seconds < 60)
-            this._restartTimeout(60 + Math.floor(Math.random() * 60));
-        else
-            this._restartTimeout(seconds);
+        if (this._settings.get_string('pinned-background') == "") {
+            // Schedule a refresh only if user did not pin a background.
+            let seconds = Math.floor(TIMEOUT_SECONDS - this._secondsFromLastRefresh());
+            // Wait at least 60 seconds and up to 119 to prevent startup slowness
+            if (seconds < 60)
+                this._restartTimeout(60 + Math.floor(Math.random() * 60));
+            else
+                this._restartTimeout(seconds);
+        }
     },
 
     _secondsFromLastRefresh: function() {
@@ -180,9 +183,31 @@ const NasaApodIndicator = new Lang.Class({
         return (Date.now() - last_refresh) / 1000;
     },
 
+    _canRefresh: function() {
+        return !this._updatePending
+            && this._network_monitor.get_network_available()
+            && this._secondsFromLastRefresh() > 10;
+    },
+
     _updateMenuItems: function() {
-        // Grey out menu items if an update is pending
-        this.refreshItem.setSensitive(!this._updatePending && this._network_monitor.get_network_available() && this._secondsFromLastRefresh() > 10);
+        // refreshItem
+        if (this._updatePending) {
+            this.refreshItem.setSensitive(false);
+            set_text(this.refreshItem, _("Refreshing..."));
+        } else if (!this._network_monitor.get_network_available()) {
+            this.refreshItem.setSensitive(false);
+            set_text(this.refreshItem, _("Network unavailable"));
+        } else if (this._secondsFromLastRefresh() < 10) {
+            this.refreshItem.setSensitive(false);
+            set_text(this.refreshItem, _("Wait 10 seconds..."));
+        } else {
+            this.refreshItem.setSensitive(true);
+            if (this._settings.get_string('pinned-background') != "")
+                set_text(this.refreshItem, _("Unpin and Refresh"));
+            else
+                set_text(this.refreshItem, _("Refresh"));
+        }
+
         if (this._updatePending) {
             set_text(this.titleItem, "");
             set_text(this.descItem, "");
@@ -198,7 +223,7 @@ const NasaApodIndicator = new Lang.Class({
         } else {
             set_text(this.titleItem, this.data['title'] + ' (' + this.data['date'] + ')');
             set_text(this.descItem, this.data['explanation']);
-            set_text(this.copyItem, "Copyright © " + this.data['copyright']);
+            set_text(this.copyItem, this.data['copyright'] != undefined ? "Copyright © " + this.data['copyright'] : '');
         }
         this.wallpaperItem.setSensitive(!this._updatePending && 'filename' in this.data);
     },
@@ -217,15 +242,20 @@ const NasaApodIndicator = new Lang.Class({
             this._timeout = undefined;
             Utils.log('Timeout removed');
         } else {
-            if (seconds < 60) {
-                seconds = 60; // ensure the timeout is not fired too many times
-                Utils.log('Less than 60 seconds timeout?');
+            if (seconds < 10) {
+                seconds = 10; // ensure the timeout is not fired too many times
+                Utils.log('Less than 10 seconds timeout?');
             }
             this._timeout = Mainloop.timeout_add_seconds(seconds, Lang.bind(this, function() { this._refresh(false) }));
-            let timezone = GLib.TimeZone.new_local();
-            let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
-            this.refreshStatusItem.label.set_text(_('Next refresh: {0}').replace("{0}", localTime));
-            Utils.log('Next check in ' + seconds + ' seconds @ local time ' + localTime);
+            if (seconds > 60) {
+                let timezone = GLib.TimeZone.new_local();
+                let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
+                this.refreshStatusItem.label.set_text(_("Next refresh: {0}").replace('{0}', localTime));
+                Utils.log('Next check @ local time ' + localTime);
+            } else {
+                this.refreshStatusItem.label.set_text(_("Next refresh in less than a minute"));
+                Utils.log('Next check in less than a minute');
+            }
         }
     },
 
@@ -249,10 +279,10 @@ const NasaApodIndicator = new Lang.Class({
 
     _pinnedBackground: function(settings, key) {
         let pin = settings.get_string(key);
-        if (pin == "")
-            return;
-        this.data = {filename: pin};
-        this._setBackground();
+        if (pin != "") {
+            this.data = {filename: Utils.getDownloadFolder() + pin};
+            this._setBackground();
+        }
         this._restartTimeout(10);
     },
 
@@ -261,6 +291,12 @@ const NasaApodIndicator = new Lang.Class({
                 .map(k => [k, Math.random()])
                 .sort(([_, a], [__, b]) => a - b)
                 .map(([k, _]) => k)
+    },
+
+    _refreshButton: function() {
+        if (this._settings.get_string('pinned-background') != "")
+            this._settings.reset('pinned-background');
+        this._refresh(true);
     },
 
     _refresh: function(verbose = false) {
@@ -395,7 +431,10 @@ const NasaApodIndicator = new Lang.Class({
         } else {
             Utils.log(this.data['filename'] + " already downloaded");
             this._setBackground();
-            this._refreshDone();
+            if (this._settings.get_string('pinned-background') == "")
+                this._refreshDone();
+            else
+                this._refreshDone(-1);
         }
     },
 
@@ -436,17 +475,22 @@ const NasaApodIndicator = new Lang.Class({
         httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
             // request completed
             fstream.close(null);
-            this._refreshDone();
+
             if (message.status_code == 200) {
                 Utils.log('Download successful');
                 this._setBackground();
                 this._notify();
+                if (this._settings.get_string('pinned-background') == "")
+                    this._refreshDone();
+                else
+                    this._refreshDone(-1);
             } else {
                 Notifications.notifyError(_("Couldn't fetch image from {0}").replace("{0}", url), 
                     _("HTTP status code {0}").replace("{0}", message.status_code),
                     this._networkErrorActions
                 );
                 file.delete(null);
+                this._refreshDone();
             }
         }));
     },

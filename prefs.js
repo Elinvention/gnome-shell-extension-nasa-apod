@@ -191,7 +191,7 @@ function buildPrefsWidget(){
                 historyFlowBox.unselect_child(previous_selection);
             } else {
                 Utils.log('Background ' + selected[0].get_name() + ' pinned');
-                settings.set_string('pinned-background', Utils.getDownloadFolder() + selected[0].get_name());
+                settings.set_string('pinned-background', selected[0].get_name());
                 previous_selection = selected[0];
             }
         } else {
@@ -200,6 +200,13 @@ function buildPrefsWidget(){
             previous_selection = null;
         }
     });
+    settings.connect('changed::pinned-background', function(s, key, value) {
+        if (value === undefined && previous_selection != null) {
+            historyFlowBox.unselect_child(previous_selection);
+            previous_selection = null;
+        }
+    });
+
 
     historyScroll.connect('edge-reached', function(window, pos) {
         if (pos == 3) {  // if user reached the bottom of the SrolledWindow
