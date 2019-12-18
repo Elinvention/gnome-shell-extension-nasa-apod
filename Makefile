@@ -28,5 +28,5 @@ locale:
 	intltool-extract --type=gettext/glade Settings.ui
 	xgettext -L Perl -k_ -kN_ -o locale/indicator.pot extension.js prefs.js --from-code=UTF-8
 	xgettext -L C -k_ -kN_ -o locale/prefs.pot Settings.ui.h --from-code=UTF-8
-	msgcat locale/*.pot > nasa_apod.pot
+	msgcat locale/*.pot > locale/nasa_apod.pot
 	rm locale/indicator.pot locale/prefs.pot
