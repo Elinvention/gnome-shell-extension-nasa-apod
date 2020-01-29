@@ -26,6 +26,7 @@ const IndicatorName = "NasaApodIndicator";
 const TIMEOUT_SECONDS = 6 * 3600;
 const RETRY_RATE_LIMIT_SECONDS = 60 * 30;
 const RETRY_NETWORK_UNAVAILABLE = 60;
+const RETRY_NETWORK_ERROR = 600;
 
 let nasaApodIndicator;
 let httpSession = new Soup.SessionAsync();
@@ -299,7 +300,7 @@ const NasaApodIndicator = new Lang.Class({
         this._refresh(true);
     },
 
-    _refresh: function(verbose = false) {
+    _refresh: function(user_initiated = false) {
         if (this._updatePending) {
             Utils.log('refresh: a previous refresh is still pending');
             this._refreshDone();
@@ -322,11 +323,11 @@ const NasaApodIndicator = new Lang.Class({
 
         let makeRequest = Lang.bind(this, function () {
             if (this._apiKeys.length == 0) {
-                if (verbose)
-                    Notifications.notifyError(_("Over rate limit (error 429)"),
-                        _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
-                       this._apiKeyErrorActions
-                    );
+                Notifications.notifyError(_("Over rate limit (error 429)"),
+                    _("Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you."),
+                    this._apiKeyErrorActions,
+                    user_initiated
+                );
                 this._populateKeys();
                 this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
                 return;
@@ -345,6 +346,7 @@ const NasaApodIndicator = new Lang.Class({
             // queue the http request
             httpSession.queue_message(request, Lang.bind(this, function(httpSession, message) {
                 if (message.status_code == 200) {
+                    // Successful request
                     // log remaining requests
                     let limit = message.response_headers.get("X-RateLimit-Limit");
                     let remaining = message.response_headers.get("X-RateLimit-Remaining");
@@ -376,9 +378,10 @@ const NasaApodIndicator = new Lang.Class({
                 } else {
                     Notifications.notifyError(_("Network error"),
                         _("HTTP status code {0}.").replace('{0}', message.status_code),
-                        this._networkErrorActions
+                        this._networkErrorActions,
+                        user_initiated
                     );
-                    this._refreshDone();
+                    this._refreshDone(RETRY_NETWORK_ERROR);
                 }
             }));
         });
