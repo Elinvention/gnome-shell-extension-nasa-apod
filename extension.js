@@ -259,7 +259,7 @@ const NasaApodIndicator = new Lang.Class({
         }
     },
 
-    _notify: function() {
+    _notifyAPIResults: function() {
         if (!this._settings.get_boolean('notify'))
             return;
         let title, message;
@@ -358,7 +358,7 @@ const NasaApodIndicator = new Lang.Class({
                         this._prepareDownload(this.data['url']);
                     } catch(e) {
                         if (e instanceof MediaTypeError)
-                            this._notify();
+                            this._notifyAPIResults();
                         else
                             Notifications.notifyError(_("Error downloading image"), e);
                         this._refreshDone();
@@ -375,7 +375,7 @@ const NasaApodIndicator = new Lang.Class({
                     makeRequest();
                 } else {
                     Notifications.notifyError(_("Network error"),
-                        _("HTTP status code {0}").replace("{0}", message.status_code),
+                        _("HTTP status code {0}.").replace('{0}', message.status_code),
                         this._networkErrorActions
                     );
                     this._refreshDone();
@@ -464,7 +464,7 @@ const NasaApodIndicator = new Lang.Class({
             if(total_size) {
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
-                this.refreshStatusItem.label.set_text(_("Download {0} done").replace("{0}", percent + '%'));
+                this.refreshStatusItem.label.set_text(_("Download {0} done").replace('{0}', percent + '%'));
             }
             let written = fstream.write(chunk.get_data(), null);
             if (written != chunk.length)
@@ -479,14 +479,14 @@ const NasaApodIndicator = new Lang.Class({
             if (message.status_code == 200) {
                 Utils.log('Download successful');
                 this._setBackground();
-                this._notify();
+                this._notifyAPIResults();
                 if (this._settings.get_string('pinned-background') == "")
                     this._refreshDone();
                 else
                     this._refreshDone(-1);
             } else {
-                Notifications.notifyError(_("Couldn't fetch image from {0}").replace("{0}", url), 
-                    _("HTTP status code {0}").replace("{0}", message.status_code),
+                Notifications.notifyError(_("Couldn't fetch image from {0}").replace('{0}', url),
+                    _("HTTP status code {0}.").replace('{0}', message.status_code),
                     this._networkErrorActions
                 );
                 file.delete(null);
