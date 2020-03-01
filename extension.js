@@ -64,7 +64,7 @@ MediaTypeError.prototype.name = "MediaTypeError";
 MediaTypeError.prototype.constructor = MediaTypeError;
 
 function set_text(item, text) {
-    item.actor.visible = Boolean(text);
+    item.visible = Boolean(text);
     item.label.set_text(text);
 }
 
@@ -83,7 +83,7 @@ const NasaApodIndicator = new Lang.Class({
 
         this.indicatorIcon = new St.Icon({style_class: 'system-status-icon'});
         this.indicatorIcon.gicon = Gio.icon_new_for_string(`${Me.path}/icons/saturn.svg`);
-        this.actor.add_child(this.indicatorIcon);
+        this.add_child(this.indicatorIcon);
 
         // This object holds title, explanation, copyright and filename
         this.data = {};
@@ -95,25 +95,25 @@ const NasaApodIndicator = new Lang.Class({
         this._settings = Utils.getSettings();
 
         // Indicator visibility
-        this.actor.visible = !this._settings.get_boolean('hide'); // set initial state
+        this.visible = !this._settings.get_boolean('hide'); // set initial state
         this._settings.connect('changed::hide', Lang.bind(this, function() {
-            this.actor.visible = !this._settings.get_boolean('hide');
+            this.visible = !this._settings.get_boolean('hide');
         }));
 
         // Build the menu
         this.titleItem = new PopupMenu.PopupMenuItem(_("No title available"));
         this.titleItem.setSensitive(false);
-        this.titleItem.actor.remove_style_pseudo_class('insensitive');
+        this.titleItem.remove_style_pseudo_class('insensitive');
 
         this.descItem = new PopupMenu.PopupMenuItem(_("No description available"));
         this.descItem.label.get_clutter_text().set_line_wrap(true);
         this.descItem.label.set_style("max-width: 400px;");
         this.descItem.setSensitive(false);
-        this.descItem.actor.remove_style_pseudo_class('insensitive');
+        this.descItem.remove_style_pseudo_class('insensitive');
 
         this.copyItem = new PopupMenu.PopupMenuItem(_("No copyright information available"));
         this.copyItem.setSensitive(false);
-        this.copyItem.actor.remove_style_pseudo_class('insensitive');
+        this.copyItem.remove_style_pseudo_class('insensitive');
 
         this.webItem = new PopupMenu.PopupMenuItem(_("NASA APOD website"));
         this.webItem.connect('activate', open_website);
@@ -146,7 +146,7 @@ const NasaApodIndicator = new Lang.Class({
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.settingsItem);
 
-        this.actor.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
+        this.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
 
         // Try to parse stored JSON
         let json = this._settings.get_string("last-json");
