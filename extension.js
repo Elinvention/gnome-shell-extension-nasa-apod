@@ -146,7 +146,10 @@ const NasaApodIndicator = new Lang.Class({
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.settingsItem);
 
-        this.connect('button-press-event', Lang.bind(this, this._updateMenuItems));
+        this.menu.connect('open-state-changed', Lang.bind(this, function(menu, isOpen) {
+		if (isOpen)
+			this._updateMenuItems()
+		}));
 
         // Try to parse stored JSON
         let json = this._settings.get_string("last-json");
