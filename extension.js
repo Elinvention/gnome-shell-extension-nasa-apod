@@ -34,7 +34,7 @@ Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefau
 
 
 function openPrefs() {
-    Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
+    Util.spawn(["gnome-extensions", "prefs", Me.metadata.uuid]);
 }
 
 function xdg_open(url) {
