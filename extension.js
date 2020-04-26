@@ -15,7 +15,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Utils = Me.imports.utils;
 const Notifications = Me.imports.notifications;
 
-const Gettext = imports.gettext.domain('nasa_apod');
+const Gettext = imports.gettext.domain('nasa-apod');
 const _ = Gettext.gettext;
 
 const NasaApodURL = "https://api.nasa.gov/planetary/apod";
@@ -92,7 +92,7 @@ const NasaApodIndicator = new Lang.Class({
 
         this._updatePending = false;
         this._timeout = null;
-        this._settings = Utils.getSettings();
+        this._settings = ExtensionUtils.getSettings();
 
         // Indicator visibility
         this.visible = !this._settings.get_boolean('hide'); // set initial state
@@ -510,7 +510,7 @@ const NasaApodIndicator = new Lang.Class({
 });
 
 function init(extensionMeta) {
-    Utils.initTranslations("nasa_apod");
+    ExtensionUtils.initTranslations('nasa-apod');
 }
 
 function enable() {

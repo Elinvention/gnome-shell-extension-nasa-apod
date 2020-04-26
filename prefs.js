@@ -1,20 +1,25 @@
+const {Gtk, Gio, GLib, GdkPixbuf} = imports.gi;
 
-const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 const Utils = Me.imports.utils;
-const GdkPixbuf = imports.gi.GdkPixbuf;
+
+// https://wiki.gnome.org/Projects/GnomeShell/Extensions/Writing#Extension_Translations
+const Gettext = imports.gettext;
+Gettext.textdomain('nasa-apod');
+Gettext.bindtextdomain('nasa-apod', Me.dir.get_child('locale').get_path());
+const _ = Gettext.gettext;
 
 
 let settings;
 let css;
 
+
 function init() {
-    settings = Utils.getSettings();
+    settings = ExtensionUtils.getSettings();
     css = Gtk.CssProvider.get_default();
     css.load_from_path(Me.dir.get_path() + "/theme.css");
-    Utils.initTranslations("nasa_apod");
+    ExtensionUtils.initTranslations();
 }
 
 function buildHistoryFlowBoxChild(file, info) {
