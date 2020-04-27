@@ -2,7 +2,10 @@ INSTALL_PATH = ~/.local/share/gnome-shell/extensions
 INSTALL_NAME = nasa_apod@elinvention.ovh
 FILES = extension.js icons LICENSE metadata.json prefs.js README.md schemas Settings.ui utils.js theme.css notifications.js locale
 
-.PHONY: install uninstall zip clean locale
+MSGSRC = $(wildcard po/*.po)
+TOLOCALIZE = extension.js prefs.js
+
+.PHONY: install uninstall zip clean potfile mergepo release
 
 install: schemas/gschemas.compiled
 	-mkdir -p $(INSTALL_PATH)/$(INSTALL_NAME)
@@ -14,7 +17,7 @@ uninstall:
 
 zip: nasa_apod.zip
 
-nasa_apod.zip: schemas/gschemas.compiled
+nasa_apod.zip: schemas/gschemas.compiled locale
 	zip -r nasa_apod.zip $(FILES)
 
 schemas/gschemas.compiled: schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml
@@ -23,10 +26,33 @@ schemas/gschemas.compiled: schemas/org.gnome.shell.extensions.nasa-apod.gschema.
 clean:
 	-rm nasa_apod.zip
 	-rm schemas/gschemas.compiled
+	-rm locale -r
+	-rm po/nasa-apod.pot
+	-rm Settings.ui.h
 
-locale:
+Settings.ui.h:
 	intltool-extract --type=gettext/glade Settings.ui
-	xgettext -L Perl -k_ -kN_ -o locale/indicator.pot extension.js prefs.js --from-code=UTF-8
-	xgettext -L C -k_ -kN_ -o locale/prefs.pot Settings.ui.h --from-code=UTF-8
-	msgcat locale/*.pot > locale/nasa_apod.pot
-	rm locale/indicator.pot locale/prefs.pot
+
+po/nasa-apod.pot: $(TOLOCALIZE) Settings.ui.h
+	xgettext -L Perl -k_ -kN_ --from-code=UTF-8 --package-name "NASA APOD Wallpaper Changer" -o po/nasa-apod.pot $(TOLOCALIZE)
+	xgettext -L C -k_ -kN_ --join-existing --from-code=UTF-8 -o po/nasa-apod.pot Settings.ui.h
+
+potfile: po/nasa-apod.pot
+
+mergepo: po/nasa-apod.pot
+	for l in $(MSGSRC); do \
+		msgmerge -U $$l po/nasa-apod.pot; \
+	done;
+
+po/%.mo: po/%.po
+	msgfmt -c $< -o $@
+
+locale: mergepo $(MSGSRC:.po=.mo)
+	for l in $(MSGSRC:.po=.mo) ; do \
+		lf=locale/`basename $$l .mo`; \
+		mkdir -p $$lf/LC_MESSAGES; \
+		mv $$l $$lf/LC_MESSAGES/nasa-apod.mo; \
+	done;
+
+release: clean locale zip
+

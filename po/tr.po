@@ -2,225 +2,231 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Serdar Sağlam <teknomobil@yandex.com>, 2019.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 18:13+0100\n"
-"PO-Revision-Date: 2020-04-27 16:43+0200\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2020-04-27 23:22+0200\n"
+"PO-Revision-Date: 2019-03-21 08:18+0300\n"
+"Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
-"Last-Translator: \n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Language: ja\n"
 
 #: extension.js:58
 msgid "Media type {0} not supported."
-msgstr "メディアタイプ「{0}」対応されません。"
+msgstr "Media türü {0} desteklenmiyor."
 
 #: extension.js:59
 msgid "No picture for today 😞. Please visit NASA APOD website."
-msgstr "今日は絵がありません😞。NASA APODのウェブサイトをご覧下さい。"
+msgstr "Bugün resim yok 😞. Lütfen NASA APOD web sitesini ziyaret edin."
 
 #: extension.js:75 extension.js:118
 msgid "NASA APOD website"
-msgstr "NASA APOD ウェブサイト"
+msgstr "NASA APOD web sitesi"
 
 #: extension.js:76
 msgid "Get an API key"
-msgstr "APIキーを取る"
+msgstr "Bir API anahtarı al"
 
 #: extension.js:77 extension.js:79 extension.js:133 Settings.ui.h:24
 msgid "Settings"
-msgstr "設定"
+msgstr "Ayarlar"
 
 #: extension.js:78
 msgid "Retry"
-msgstr "再試行"
+msgstr "Yinele"
 
 #: extension.js:104
 msgid "No title available"
-msgstr "題名がありません"
+msgstr ""
 
 #: extension.js:108
+#, fuzzy
 msgid "No description available"
-msgstr "記述がありません"
+msgstr "Açıklamayı göster"
 
 #: extension.js:114
 msgid "No copyright information available"
-msgstr "著作権の情報がありません"
+msgstr ""
 
 #: extension.js:121
 msgid "No refresh scheduled"
-msgstr "更新予定をされていません"
+msgstr "Yenileme planlanmadı"
 
 #: extension.js:124
+#, fuzzy
 msgid "Open Wallpaper Folder"
-msgstr "壁紙フォルダを開く"
+msgstr "Duvar kağıdı"
 
 #: extension.js:127
+#, fuzzy
 msgid "Set Wallpaper"
-msgstr "壁紙を設定する"
+msgstr "Duvar kağıdı ayarla"
 
-#: extension.js:130 extension.js:209
+#: extension.js:130 extension.js:212
 msgid "Refresh"
-msgstr "更新"
-
-#: extension.js:197
-msgid "Refreshing..."
-msgstr "更新中"
+msgstr "Yenile"
 
 #: extension.js:200
-msgid "Network unavailable"
-msgstr "ネットワークを利用出来ません"
+#, fuzzy
+msgid "Refreshing..."
+msgstr "Yenile"
 
 #: extension.js:203
+msgid "Network unavailable"
+msgstr ""
+
+#: extension.js:206
 msgid "Wait 10 seconds..."
-msgstr "10秒を待って下さい…"
+msgstr ""
 
-#: extension.js:207
+#: extension.js:210
+#, fuzzy
 msgid "Unpin and Refresh"
-msgstr "固定を解除して更新"
+msgstr "Bekleyen yenileme"
 
-#: extension.js:222
+#: extension.js:225
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
 msgstr ""
-"ここでは、現在のNASAのAPOD壁紙の説明が表示されます。 説明とともに新しい壁紙を"
-"ダウンロードするには、更新を押してください。"
-
-#: extension.js:254
-msgid "Next refresh: {0}"
-msgstr "次の更新 {0}"
 
 #: extension.js:257
+msgid "Next refresh: {0}"
+msgstr "Sonraki yenileme: {0}"
+
+#: extension.js:260
 msgid "Next refresh in less than a minute"
-msgstr "一分未満で次の更新"
+msgstr ""
 
-#: extension.js:322
+#: extension.js:325
 msgid "Pending refresh"
-msgstr "保留中の更新"
+msgstr "Bekleyen yenileme"
 
-#: extension.js:326
+#: extension.js:329
 msgid "Over rate limit (error 429)"
-msgstr "レート制限を超えています（エラー429）"
+msgstr "Limit aşımı (hata 429)"
 
-#: extension.js:327
+#: extension.js:330
+#, fuzzy
 msgid ""
 "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
 "just for you."
 msgstr ""
-"https://api.nasa.gov/でAPIキーを取得して、1時間あたり1000件のリクエストを取得"
-"します。"
+"API anahtarını https://api.nasa.gov/ adresinden al. Saatte 1000 istek "
+"alınabilir. 5 dakika içinde tekrar denenecek."
 
-#: extension.js:365
+#: extension.js:368
 msgid "Error downloading image"
-msgstr "画像のダウンロード中にエラーが発生しました"
+msgstr "Resim indirilirken hata oluştu"
 
-#: extension.js:370
+#: extension.js:373
 msgid "Invalid NASA API key (error 403)"
-msgstr "無効なNASA APIキー （エラー 403）"
+msgstr "Geçersiz NASA API anahtarı (hata 403)"
 
-#: extension.js:371
+#: extension.js:374
 msgid "Check that your key is correct or use the default key."
-msgstr "キーが正しいことを確認するか、デフォルトのキーを使用してください。"
+msgstr "Anahtarınızın doğruluğunu kontrol et veya varsayılan anahtarı kullan."
 
-#: extension.js:379
+#: extension.js:382
 msgid "Network error"
-msgstr "ネットワークエラー"
+msgstr "Ağ hatası"
 
-#: extension.js:380 extension.js:492
+#: extension.js:383 extension.js:495
+#, fuzzy
 msgid "HTTP status code {0}."
-msgstr "HTTPステータスコード {0}。"
+msgstr "HTTP durum kodu {0}"
 
-#: extension.js:491
+#: extension.js:494
 msgid "Couldn't fetch image from {0}"
-msgstr "{0}から画像を取得できませんでした"
+msgstr "{0} kaynağından resim alınamadı"
 
 #: Settings.ui.h:1
 msgid "label"
-msgstr "ラベル"
+msgstr "etiket"
 
 #: Settings.ui.h:2
 msgid "Test"
-msgstr "テスト"
+msgstr ""
 
 #: Settings.ui.h:3
 msgid "Please paste here your API key."
-msgstr "ここにAPIキーを貼り付けてください。"
+msgstr ""
 
 #: Settings.ui.h:4
 msgid "The API key has to be 40 characters long."
-msgstr "APIキーは40文字にする必要があります。"
+msgstr ""
 
 #: Settings.ui.h:5
 msgid "Hide the indicator"
-msgstr "インジケーターを隠す"
+msgstr "Göstergeyi gizle"
 
 #: Settings.ui.h:6
 msgid "Send a notification with explanation when a new image is downloaded."
-msgstr "新しい絵がダウンロードされたときに説明付きの通知を送信します。"
+msgstr "Yeni bir resim indirilirken açıklama içeren bir bildirim gönder."
 
 #: Settings.ui.h:7
 msgid "Notifications"
-msgstr "通知"
+msgstr "Bildirimler"
 
 #: Settings.ui.h:8
 msgid "Use transient notifications (auto dismiss)"
-msgstr "一時的な通知を使う（自動却下）"
+msgstr "Geçici bildirimleri kullan (görevi sonlandırma)"
 
 #: Settings.ui.h:9
 msgid "Set background image:"
-msgstr "壁紙を設定する"
+msgstr "Arka plan resmini ayarla:"
 
 #: Settings.ui.h:10
 msgid "None"
-msgstr ""
+msgstr "Yok"
 
 #: Settings.ui.h:11
 msgid "Centered"
-msgstr ""
+msgstr "Ortalanmış"
 
 #: Settings.ui.h:12
 msgid "Scaled"
-msgstr ""
+msgstr "Ölçekli"
 
 #: Settings.ui.h:13
 msgid "Spanned"
-msgstr ""
+msgstr "Yayılmış"
 
 #: Settings.ui.h:14
 msgid "Stretched"
-msgstr ""
+msgstr "Uzatılmış"
 
 #: Settings.ui.h:15
 msgid "Wallpaper"
-msgstr ""
+msgstr "Duvar kağıdı"
 
 #: Settings.ui.h:16
 msgid "Zoom"
-msgstr "ズーム"
+msgstr "Yakınlaştır"
 
 #: Settings.ui.h:17
 msgid "Default"
-msgstr "既定"
+msgstr ""
 
 #: Settings.ui.h:18
 msgid "Set lock screen image:"
-msgstr "ロック画面の画像を設定します。"
+msgstr "Kilit ekranı görüntüsünü ayarla:"
 
 #: Settings.ui.h:19
 msgid "Download folder:"
-msgstr "ダウンロードフォルダ"
+msgstr "İndirme klasörü:"
 
 #: Settings.ui.h:20
 msgid "NASA APOD pictures folder"
-msgstr "NASA APOD 画像フォルダ"
+msgstr "NASA APOD resimler klasörü"
 
 #: Settings.ui.h:21
 msgid ""
@@ -229,55 +235,49 @@ msgid ""
 "Each key is limited to 1000 requests per hour, and hence you may not be able "
 "to refresh with the default keys."
 msgstr ""
-"APIキーは<a href=\"https://api.nasa.gov/index.html#apply-for-an-api-key"
-"\">NASA APODウエブサイト</a>から取得できます。\n"
-"各キーは1時間あたり1000リクエストに制限されているため、デフォルトのキーでは更"
-"新できない場合があります。"
 
 #: Settings.ui.h:23
+#, fuzzy
 msgid "API keys"
-msgstr "APIキー"
+msgstr "Bir API anahtarı al"
 
 #: Settings.ui.h:25
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
 msgstr ""
-"壁紙を選択して固定が出来ます。\n"
-"固定された壁紙が新しい壁紙に置き換えられません。"
 
 #: Settings.ui.h:27
 msgid "History"
-msgstr "歴史"
+msgstr ""
 
 #: Settings.ui.h:28
 msgid "version: "
-msgstr "バージョン"
+msgstr "sürüm:"
 
 #: Settings.ui.h:29
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
-msgstr "NASAのその日の天文学写真に壁紙を毎日変更します"
+msgstr ""
+"Duvar kağıdınızı günlük olarak NASA'nın günün astronomi resmine göre "
+"değiştirin"
 
 #: Settings.ui.h:30
 msgid "Extension's GitHub Webpage"
-msgstr "エクステンションGitHubウエブページ"
+msgstr "Eklentinin GitHub Web Sayfası"
 
 #: Settings.ui.h:31
 msgid "Issue Tracker"
-msgstr "課題追跡"
+msgstr ""
 
 #: Settings.ui.h:32
 msgid "Changelog"
-msgstr "変更ログ"
+msgstr "Değişiklikler"
 
 #: Settings.ui.h:33
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
 msgstr ""
-"の提供で：\n"
-"Elia Argentieri\n"
-"エリア・アルジェンティエリ"
 
 #: Settings.ui.h:35
 msgid ""
@@ -285,10 +285,28 @@ msgid ""
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
-"<span size=\"small\">このプログラムには絶対に保証はありません。\n"
-"詳細は<a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU "
-"General Public License, version 3 or later</a>をご覧ください。</span>"
+"<span size=\"small\">Bu uygulama HİÇBİR GARANTİ SUNMAZ\n"
+"Bakın <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU "
+"Genel Kamu Lisansı, sürüm 3 veya üstü</a> ayrıntılar.</span>"
 
 #: Settings.ui.h:37
 msgid "About"
-msgstr "について"
+msgstr "Hakkında"
+
+#~ msgid "Custom NASA APOD API key:"
+#~ msgstr "Özel NASA APOD API anahtarı:"
+
+#~ msgid "Cache"
+#~ msgstr "Önbellek"
+
+#~ msgid ""
+#~ "Maintained by:\n"
+#~ "Elia Argentieri (<a href=\"mailto:elia.argentieri@openmailbox.org\">elia."
+#~ "argentieri@openmailbox.org</a>)"
+#~ msgstr ""
+#~ "Yapımcı:\n"
+#~ "Elia Argentieri (<a href=\"mailto:elia.argentieri@openmailbox.org\">elia."
+#~ "argentieri@openmailbox.org</a>)"
+
+#~ msgid "Download {0} done"
+#~ msgstr "İndirme {0} tamamlandı"
