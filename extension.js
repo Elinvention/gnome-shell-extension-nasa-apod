@@ -34,7 +34,16 @@ Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefau
 
 
 function openPrefs() {
-    Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
+    if (typeof ExtensionUtils.openPrefs === 'function') {
+        ExtensionUtils.openPrefs();
+    } else {
+        Util.spawn(['sh', '-c',
+            'command -v gnome-extensions 2>&1 && gnome-extensions prefs ' +
+            Me.uuid +
+            ' || gnome-shell-extension-prefs ' +
+            Me.uuid
+        ]);
+    }
 }
 
 function xdg_open(url) {
