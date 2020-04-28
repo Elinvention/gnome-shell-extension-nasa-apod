@@ -1,0 +1,295 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-27 23:55+0200\n"
+"PO-Revision-Date: 2020-04-27 23:23+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+#: extension.js:58
+msgid "Media type {0} not supported."
+msgstr "Видео тип файлов {0} не поддерживается."
+
+#: extension.js:59
+msgid "No picture for today 😞. Please visit NASA APOD website."
+msgstr "На сегодня нет изображения 😞. Пожалуйста, посетите веб-сайт НАСА APOD."
+
+#: extension.js:75 extension.js:118
+msgid "NASA APOD website"
+msgstr "НАСА APOD веб-сайт"
+
+#: extension.js:76
+msgid "Get an API key"
+msgstr "Получить ключ API"
+
+#: extension.js:77 extension.js:79 extension.js:133 Settings.ui.h:24
+msgid "Settings"
+msgstr "Настройки"
+
+#: extension.js:78
+msgid "Retry"
+msgstr "Повторить"
+
+#: extension.js:104
+msgid "No title available"
+msgstr "Название не доступно"
+
+#: extension.js:108
+msgid "No description available"
+msgstr "Нет доступного описания"
+
+#: extension.js:114
+msgid "No copyright information available"
+msgstr "Информация об авторских правах недоступна"
+
+#: extension.js:121
+msgid "No refresh scheduled"
+msgstr "Обновление не запланировано"
+
+#: extension.js:124
+msgid "Open Wallpaper Folder"
+msgstr "Открыть папку обоев"
+
+#: extension.js:127
+msgid "Set Wallpaper"
+msgstr "Установка обоев"
+
+#: extension.js:130 extension.js:212
+msgid "Refresh"
+msgstr "Обновить"
+
+#: extension.js:200
+msgid "Refreshing..."
+msgstr "Обновление ..."
+
+#: extension.js:203
+msgid "Network unavailable"
+msgstr "Сеть недоступна"
+
+#: extension.js:206
+msgid "Wait 10 seconds..."
+msgstr "Подождите 10 секунд ..."
+
+#: extension.js:210
+msgid "Unpin and Refresh"
+msgstr "Открепить и обновить"
+
+#: extension.js:225
+msgid ""
+"Here will be displayed an explanation of the current NASA's APOD wallpaper. "
+"Please press refresh to download a new wallpaper along with the explanation."
+msgstr ""
+"Здесь будет отображаться объяснение текущих обоев APOD НАСА. Пожалуйста, "
+"нажмите Обновить, чтобы загрузить новые обои вместе с объяснением."
+
+#: extension.js:257
+msgid "Next refresh: {0}"
+msgstr "Следующее обновление: {0}"
+
+#: extension.js:260
+msgid "Next refresh in less than a minute"
+msgstr "Следующее обновление менее чем за минуту"
+
+#: extension.js:325
+msgid "Pending refresh"
+msgstr "Ожидание обновления"
+
+#: extension.js:329
+msgid "Over rate limit (error 429)"
+msgstr "Превышение скорости (ошибка 429)"
+
+#: extension.js:330
+msgid ""
+"Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
+"just for you."
+msgstr ""
+"Получите ключ API по адресу https://api.nasa.gov/, чтобы иметь 1000 запросов "
+"в час только для вас."
+
+#: extension.js:368
+msgid "Error downloading image"
+msgstr "Ошибка при загрузке изображения"
+
+#: extension.js:373
+msgid "Invalid NASA API key (error 403)"
+msgstr "Неверный ключ API НАСА (ошибка 403)"
+
+#: extension.js:374
+msgid "Check that your key is correct or use the default key."
+msgstr "Убедитесь, что ваш ключ правильный или используйте ключ по умолчанию."
+
+#: extension.js:382
+msgid "Network error"
+msgstr "Сетевая ошибка"
+
+#: extension.js:383 extension.js:495
+msgid "HTTP status code {0}."
+msgstr "Код состояния HTTP {0}."
+
+#: extension.js:494
+msgid "Couldn't fetch image from {0}"
+msgstr "Не удалось получить изображение из {0}"
+
+#: Settings.ui.h:1
+msgid "label"
+msgstr "Метка"
+
+#: Settings.ui.h:2
+msgid "Test"
+msgstr "Тест"
+
+#: Settings.ui.h:3
+msgid "Please paste here your API key."
+msgstr "Пожалуйста, вставьте сюда свой ключ API."
+
+#: Settings.ui.h:4
+msgid "The API key has to be 40 characters long."
+msgstr "Ключ API должен быть длиной 40 символов."
+
+#: Settings.ui.h:5
+msgid "Hide the indicator"
+msgstr "Скрыть индикатор"
+
+#: Settings.ui.h:6
+msgid "Send a notification with explanation when a new image is downloaded."
+msgstr "Отправьте уведомление с объяснением при загрузке нового изображения."
+
+#: Settings.ui.h:7
+msgid "Notifications"
+msgstr "Уведомления"
+
+#: Settings.ui.h:8
+msgid "Use transient notifications (auto dismiss)"
+msgstr "Использовать временные уведомления (автоматическое отклонение)"
+
+#: Settings.ui.h:9
+msgid "Set background image:"
+msgstr "Установить фоновое изображение:"
+
+#: Settings.ui.h:10
+msgid "None"
+msgstr "Никто"
+
+#: Settings.ui.h:11
+msgid "Centered"
+msgstr "По центру"
+
+#: Settings.ui.h:12
+msgid "Scaled"
+msgstr "Замостить"
+
+#: Settings.ui.h:13
+msgid "Spanned"
+msgstr "Растянуть"
+
+#: Settings.ui.h:14
+msgid "Stretched"
+msgstr "Натянуть"
+
+#: Settings.ui.h:15
+msgid "Wallpaper"
+msgstr "Обои"
+
+#: Settings.ui.h:16
+msgid "Zoom"
+msgstr "Увеличить"
+
+#: Settings.ui.h:17
+msgid "Default"
+msgstr "По умолчанию"
+
+#: Settings.ui.h:18
+msgid "Set lock screen image:"
+msgstr "Установить изображение экрана блокировки:"
+
+#: Settings.ui.h:19
+msgid "Download folder:"
+msgstr "Скачать папку:"
+
+#: Settings.ui.h:20
+msgid "NASA APOD pictures folder"
+msgstr "Папка изображений НАСА APOD"
+
+#: Settings.ui.h:21
+msgid ""
+"API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
+"html#apply-for-an-api-key\">NASA APOD website</a>.\n"
+"Each key is limited to 1000 requests per hour, and hence you may not be able "
+"to refresh with the default keys."
+msgstr ""
+"Ключи API можно получить на <a href=\"https://api.nasa.gov/index.html#apply-"
+"for-an-api-key\"> веб-сайте НАСА APOD </a>.\n"
+"Каждый ключ ограничен 1000 запросов в час, и, следовательно, вы не сможете "
+"обновить с ключами по умолчанию."
+
+#: Settings.ui.h:23
+msgid "API keys"
+msgstr "API ключи"
+
+#: Settings.ui.h:25
+msgid ""
+"You can pin a background by selecting it.\n"
+"A pinned background won't be replaced by newer ones."
+msgstr ""
+"Вы можете закрепить фон, выбрав его.\n"
+"Прикрепленный фон не будет заменен более новыми."
+
+#: Settings.ui.h:27
+msgid "History"
+msgstr "История"
+
+#: Settings.ui.h:28
+msgid "version: "
+msgstr "версия:"
+
+#: Settings.ui.h:29
+msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
+msgstr "Ежедневно меняйте обои на астрономическую картину НАСА"
+
+#: Settings.ui.h:30
+msgid "Extension's GitHub Webpage"
+msgstr "Расширение GitHub Webpage"
+
+#: Settings.ui.h:31
+msgid "Issue Tracker"
+msgstr "Отслеживание проблем"
+
+#: Settings.ui.h:32
+msgid "Changelog"
+msgstr "Изменения"
+
+#: Settings.ui.h:33
+msgid ""
+"Brought to you by:\n"
+"Elia Argentieri"
+msgstr ""
+"Привлечены к вам:\n"
+"Элия Арджентери"
+
+#: Settings.ui.h:35
+msgid ""
+"<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
+"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+"\">GNU General Public License, version 3 or later</a> for details.</span>"
+msgstr ""
+"<span size = \"small\"> Эта программа поставляется без АБСОЛЮТНОЙ ГАРАНТИИ.\n"
+"Для получения дополнительной информации см. <a href=\"https://www.gnu.org/"
+"licenses/old-licenses/gpl-2.0.html\"> Общедоступную лицензию GNU, версия 3 "
+"или более позднюю </a>. </ Span>"
+
+#: Settings.ui.h:37
+msgid "About"
+msgstr "О программе"
