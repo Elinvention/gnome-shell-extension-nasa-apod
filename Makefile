@@ -7,7 +7,7 @@ TOLOCALIZE = extension.js prefs.js
 
 .PHONY: install uninstall zip clean potfile mergepo release
 
-install: schemas/gschemas.compiled
+install: schemas/gschemas.compiled locale
 	-mkdir -p $(INSTALL_PATH)/$(INSTALL_NAME)
 	cp -r $(FILES) $(INSTALL_PATH)/$(INSTALL_NAME)
 	@echo "Installed to $(INSTALL_PATH)/$(INSTALL_NAME)"
