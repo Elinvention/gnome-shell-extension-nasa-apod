@@ -215,10 +215,14 @@ const NasaApodIndicator = new Lang.Class({
             set_text(this.refreshItem, _("Wait 10 seconds..."));
         } else {
             this.refreshItem.setSensitive(true);
+            let text = "";
             if (this._settings.get_string('pinned-background') != "")
-                set_text(this.refreshItem, _("Unpin and Refresh"));
+                text = _("Unpin and Refresh")
             else
-                set_text(this.refreshItem, _("Refresh"));
+                text = _("Refresh")
+            if (this._network_monitor.get_network_metered())
+                text += _(" (metered network)")
+            set_text(this.refreshItem, text);
         }
 
         if (this._updatePending) {
@@ -325,6 +329,11 @@ const NasaApodIndicator = new Lang.Class({
         }
         if (!this._network_monitor.get_network_available()) {
             Utils.log('refresh: network is not available');
+            this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
+            return;
+        }
+        if (!user_initiated && this._network_monitor.get_network_metered()) {
+            Utils.log('refresh: metered connection detected! Aborting refresh.');
             this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
             return;
         }
