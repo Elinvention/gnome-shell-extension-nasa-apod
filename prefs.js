@@ -85,6 +85,7 @@ function buildPrefsWidget(){
     let bgCombo = buildable.get_object('background_combo');
     let lsCombo = buildable.get_object('lock_screen_combo');
     let fileChooser = buildable.get_object('download_folder');
+    let netSwitch = buildable.get_object('network_metered_switch');
     let apiKeysListBox = buildable.get_object('api_keys_listbox');
     let apiKeysAdd = buildable.get_object('api_keys_add');
     let apiKeysReset = buildable.get_object('api_keys_reset');
@@ -113,7 +114,6 @@ function buildPrefsWidget(){
     settings.connect('changed::background-options', function() { Utils.setBackgroundBasedOnSettings() });
     settings.connect('changed::screensaver-options', function() { Utils.setBackgroundBasedOnSettings() });
 
-
     // Download folder
     fileChooser.set_filename(downloadFolder);
     fileChooser.add_shortcut_folder_uri("file://" + GLib.get_user_cache_dir() + "/apod");
@@ -125,6 +125,9 @@ function buildPrefsWidget(){
             child.destroy();
         });
     });
+
+    // Network metered
+    settings.bind('refresh-metered', netSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
     //API key
     function populateApiKeysListBox() {

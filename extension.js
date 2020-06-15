@@ -332,7 +332,8 @@ const NasaApodIndicator = new Lang.Class({
             this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
             return;
         }
-        if (!user_initiated && this._network_monitor.get_network_metered()) {
+        if (!user_initiated && this._network_monitor.get_network_metered() &&
+                !this._settings.get_boolean('refresh-metered')) {
             Utils.log('refresh: metered connection detected! Aborting refresh.');
             this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
             return;

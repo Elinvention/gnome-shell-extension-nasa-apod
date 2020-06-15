@@ -75,5 +75,11 @@
       <description>Pinned Background allows you to pin an old background and prevent the extension from replacing it with a new one.</description>
     </key>
 
+    <key name="refresh-metered" type="b">
+      <default>false</default>
+        <summary>Automatic refresh with metered network.</summary>
+        <description>If false disables automatic image download when the network is metered.</description>
+    </key>
+
   </schema>
 </schemalist>

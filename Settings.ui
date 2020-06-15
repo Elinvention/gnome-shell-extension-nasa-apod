@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 
+<!-- Generated with glade 3.36.0 
 
 Copyright (C) 2017
 
@@ -54,11 +54,10 @@ Author: Elia Argentieri
         </child>
         <child>
           <object class="GtkButton" id="api_key_remove">
-            <property name="label">gtk-remove</property>
+            <property name="label">Remove</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="use_stock">True</property>
             <property name="always_show_image">True</property>
           </object>
           <packing>
@@ -140,9 +139,6 @@ Author: Elia Argentieri
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -229,6 +225,9 @@ Author: Elia Argentieri
       <action-widget response="-6">button1</action-widget>
       <action-widget response="-5">button2</action-widget>
     </action-widgets>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkNotebook" id="prefs_widget">
     <property name="visible">True</property>
@@ -237,8 +236,6 @@ Author: Elia Argentieri
       <object class="GtkBox" id="settings_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">12</property>
-        <property name="margin_right">12</property>
         <property name="margin_top">12</property>
         <property name="margin_bottom">12</property>
         <property name="orientation">vertical</property>
@@ -247,6 +244,8 @@ Author: Elia Argentieri
           <object class="GtkFrame" id="gui_frame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_start">12</property>
+            <property name="margin_end">12</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">in</property>
             <child>
@@ -262,8 +261,8 @@ Author: Elia Argentieri
                       <object class="GtkGrid" id="hide_grid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
                         <property name="column_spacing">32</property>
@@ -305,8 +304,8 @@ Author: Elia Argentieri
                       <object class="GtkGrid" id="notifications_grid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
                         <property name="column_spacing">32</property>
@@ -377,8 +376,12 @@ Author: Elia Argentieri
                 </child>
               </object>
             </child>
-            <child type="label_item">
-              <placeholder/>
+            <child type="label">
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Indicator and notifications</property>
+              </object>
             </child>
           </object>
           <packing>
@@ -391,6 +394,8 @@ Author: Elia Argentieri
           <object class="GtkFrame" id="pictures_frame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_start">12</property>
+            <property name="margin_end">12</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">in</property>
             <child>
@@ -406,8 +411,8 @@ Author: Elia Argentieri
                       <object class="GtkGrid" id="background_grid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
                         <property name="column_spacing">32</property>
@@ -470,8 +475,8 @@ Author: Elia Argentieri
                       <object class="GtkGrid" id="lock_screen_grid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
                         <property name="column_spacing">32</property>
@@ -528,14 +533,16 @@ Author: Elia Argentieri
                 </child>
                 <child>
                   <object class="GtkListBoxRow" id="download_folder_listboxrow">
+                    <property name="width_request">100</property>
+                    <property name="height_request">80</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
                     <child>
                       <object class="GtkGrid" id="download_folder_grid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
                         <property name="column_spacing">32</property>
@@ -570,8 +577,83 @@ Author: Elia Argentieri
                 </child>
               </object>
             </child>
-            <child type="label_item">
-              <placeholder/>
+            <child type="label">
+              <object class="GtkLabel" id="pictures_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Background</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFrame" id="network_frame">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_start">12</property>
+            <property name="margin_end">12</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkListBox" id="network_listbox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="selectable">False</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="margin_top">6</property>
+                        <property name="margin_bottom">6</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Automatic refresh with metered network:</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSwitch" id="network_metered_switch">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="halign">end</property>
+                            <property name="valign">center</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="network_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Network</property>
+              </object>
             </child>
           </object>
           <packing>
@@ -584,12 +666,18 @@ Author: Elia Argentieri
           <object class="GtkFrame" id="api_keys_frame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_start">12</property>
+            <property name="margin_end">12</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">in</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
+                <property name="margin_top">12</property>
+                <property name="margin_bottom">12</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
                 <child>
@@ -621,17 +709,19 @@ Each key is limited to 1000 requests per hour, and hence you may not be able to 
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkButtonBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="hexpand">True</property>
+                    <property name="layout_style">start</property>
                     <child>
                       <object class="GtkButton" id="api_keys_reset">
-                        <property name="label">gtk-revert-to-saved</property>
+                        <property name="label">Default</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="receives_default">False</property>
                         <property name="hexpand">True</property>
-                        <property name="use_stock">True</property>
                         <property name="always_show_image">True</property>
                       </object>
                       <packing>
@@ -642,12 +732,11 @@ Each key is limited to 1000 requests per hour, and hence you may not be able to 
                     </child>
                     <child>
                       <object class="GtkButton" id="api_keys_add">
-                        <property name="label">gtk-add</property>
+                        <property name="label">Add</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="hexpand">True</property>
-                        <property name="use_stock">True</property>
                         <property name="always_show_image">True</property>
                       </object>
                       <packing>
@@ -656,6 +745,9 @@ Each key is limited to 1000 requests per hour, and hence you may not be able to 
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="linked"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -695,8 +787,8 @@ Each key is limited to 1000 requests per hour, and hence you may not be able to 
       <object class="GtkBox" id="history_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">2</property>
-        <property name="margin_right">2</property>
+        <property name="margin_start">2</property>
+        <property name="margin_end">2</property>
         <property name="margin_top">5</property>
         <property name="orientation">vertical</property>
         <property name="spacing">5</property>
@@ -728,8 +820,8 @@ A pinned background won't be replaced by newer ones.</property>
                   <object class="GtkFlowBox" id="history_flowbox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">6</property>
-                    <property name="margin_right">6</property>
+                    <property name="margin_start">6</property>
+                    <property name="margin_end">6</property>
                     <property name="margin_top">6</property>
                     <property name="margin_bottom">6</property>
                     <property name="homogeneous">True</property>
