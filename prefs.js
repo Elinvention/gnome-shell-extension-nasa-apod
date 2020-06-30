@@ -85,7 +85,9 @@ function buildPrefsWidget(){
     let bgCombo = buildable.get_object('background_combo');
     let lsCombo = buildable.get_object('lock_screen_combo');
     let fileChooser = buildable.get_object('download_folder');
-    let netSwitch = buildable.get_object('network_metered_switch');
+    let imageResCombo = buildable.get_object('image_resolution_combo');
+    let imageResMeteredCombo = buildable.get_object('image_resolution_metered_combo');
+    let refreshSwitch = buildable.get_object('autorefresh_metered_network_switch');
     let apiKeysListBox = buildable.get_object('api_keys_listbox');
     let apiKeysAdd = buildable.get_object('api_keys_add');
     let apiKeysReset = buildable.get_object('api_keys_reset');
@@ -126,10 +128,13 @@ function buildPrefsWidget(){
         });
     });
 
-    // Network metered
-    settings.bind('refresh-metered', netSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
+    // Network page
+    // - Network usage frame
+    settings.bind('image-resolution', imageResCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
+    settings.bind('image-resolution-metered', imageResMeteredCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
+    settings.bind('refresh-metered', refreshSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
-    //API key
+    // - API key frame
     function populateApiKeysListBox() {
         let keys = settings.get_strv('api-keys');
         apiKeysListBox.get_children().forEach(function(child) {

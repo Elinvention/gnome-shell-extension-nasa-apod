@@ -335,7 +335,7 @@ const NasaApodIndicator = new Lang.Class({
         if (!user_initiated && this._network_monitor.get_network_metered() &&
                 !this._settings.get_boolean('refresh-metered')) {
             Utils.log('refresh: metered connection detected! Aborting refresh.');
-            this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
+            this._refreshDone(-1);
             return;
         }
 
@@ -428,15 +428,24 @@ const NasaApodIndicator = new Lang.Class({
                 return NasaApodDir + parsed['date'] + '-' + parsed['title'] + '.' + extension;
             };
 
+            let url = parsed['url'];
+            if ('hdurl' in parsed) {
+                if (this._network_monitor.get_network_metered()) {
+                    if (this._settings.get_string('image-resolution-metered') == 'hd')
+                        url = parsed['hdurl'];
+                } else {
+                    if (this._settings.get_string('image-resolution') == 'hd')
+                        url = parsed['hdurl'];
+                }
+            }
             this.data = {
                 'title':  parsed['title'],
                 'explanation': parsed['explanation'],
                 'copyright': ('copyright' in parsed) ? parsed['copyright'].replace('\n', ' ') : undefined,
-                'url': ('hdurl' in parsed) ? parsed['hdurl'] : parsed['url'],
+                'url': url,
                 'filename': get_filename(),
                 'date': parsed['date'],
             };
-
         } else {
             this.data = {'error': new MediaTypeError(parsed)};
             throw this.data['error'];

@@ -74,6 +74,20 @@
       <summary>Pinned Background</summary>
       <description>Pinned Background allows you to pin an old background and prevent the extension from replacing it with a new one.</description>
     </key>
+    
+    <key name="image-resolution" type="s">
+      <default>"hd"</default>
+        <summary>Image resolution.</summary>
+        <description>Can be "hd" or "lowres".
+        "hd" downloads from hdurl as found in the JSON API.
+        "lowres" downloads from url as found in the JSON API.</description>
+    </key>
+    
+    <key name="image-resolution-metered" type="s">
+      <default>"lowres"</default>
+        <summary>Image resolution on metered networks.</summary>
+        <description>Same as image-resolution, but only applies to metered networks.</description>
+    </key>
 
     <key name="refresh-metered" type="b">
       <default>false</default>

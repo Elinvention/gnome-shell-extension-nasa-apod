@@ -22,7 +22,7 @@ Author: Elia Argentieri
 
 -->
 <interface domain="nasa-apod">
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.22"/>
   <!-- interface-license-type lgplv3 -->
   <!-- interface-name NASA APOD preferences -->
   <!-- interface-copyright 2017 -->
@@ -41,7 +41,7 @@ Author: Elia Argentieri
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
-            <property name="label" translatable="yes">label</property>
+            <property name="label">API key here</property>
             <property name="selectable">True</property>
             <property name="width_chars">40</property>
             <property name="max_width_chars">40</property>
@@ -85,7 +85,7 @@ Author: Elia Argentieri
           <object class="GtkLabel" id="title">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">label</property>
+            <property name="label">Title</property>
             <property name="justify">center</property>
             <property name="wrap">True</property>
             <property name="wrap_mode">word-char</property>
@@ -114,7 +114,7 @@ Author: Elia Argentieri
           <object class="GtkLabel" id="date">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">label</property>
+            <property name="label">Date 2020</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -126,12 +126,13 @@ Author: Elia Argentieri
       </object>
     </child>
   </object>
+  <object class="GtkListStore" id="liststore1"/>
   <object class="GtkDialog" id="new_api_key_dialog">
     <property name="width_request">350</property>
     <property name="height_request">150</property>
     <property name="can_focus">False</property>
     <property name="border_width">10</property>
-    <property name="title" translatable="yes">Test</property>
+    <property name="title" translatable="yes">Add NASA APOD API key</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
@@ -591,8 +592,28 @@ Author: Elia Argentieri
             <property name="position">1</property>
           </packing>
         </child>
+      </object>
+    </child>
+    <child type="tab">
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Settings</property>
+      </object>
+      <packing>
+        <property name="tab_fill">False</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="network_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_top">12</property>
+        <property name="margin_bottom">12</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
         <child>
-          <object class="GtkFrame" id="network_frame">
+          <object class="GtkFrame" id="network_usage_frame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_start">12</property>
@@ -603,11 +624,11 @@ Author: Elia Argentieri
               <object class="GtkListBox" id="network_listbox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="selection_mode">none</property>
                 <child>
                   <object class="GtkListBoxRow">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="selectable">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
@@ -616,11 +637,12 @@ Author: Elia Argentieri
                         <property name="margin_end">12</property>
                         <property name="margin_top">6</property>
                         <property name="margin_bottom">6</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Automatic refresh with metered network:</property>
+                            <property name="label" translatable="yes">Image resolution:</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -629,15 +651,105 @@ Author: Elia Argentieri
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="network_metered_switch">
+                          <object class="GtkComboBoxText" id="image_resolution_combo">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
+                            <property name="can_focus">False</property>
                             <property name="halign">end</property>
-                            <property name="valign">center</property>
+                            <property name="active">0</property>
+                            <items>
+                              <item id="hd" translatable="yes">HD version</item>
+                              <item id="lowres" translatable="yes">Low resolution version</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="margin_top">6</property>
+                        <property name="margin_bottom">6</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Image resolution on metered networks:</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="image_resolution_metered_combo">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="active">1</property>
+                            <items>
+                              <item id="hd" translatable="yes">HD version</item>
+                              <item id="lowres" translatable="yes">Low resolution version</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="margin_top">6</property>
+                        <property name="margin_bottom">6</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Automatic refresh on metered networks:</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSwitch" id="autorefresh_metered_network_switch">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
                             <property name="pack_type">end</property>
                             <property name="position">1</property>
                           </packing>
@@ -649,17 +761,17 @@ Author: Elia Argentieri
               </object>
             </child>
             <child type="label">
-              <object class="GtkLabel" id="network_label">
+              <object class="GtkLabel" id="network_usage_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Network</property>
+                <property name="label" translatable="yes">Network usage</property>
               </object>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -683,7 +795,7 @@ Author: Elia Argentieri
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
                     <property name="label" translatable="yes">API keys can be obtained from the &lt;a href="https://api.nasa.gov/index.html#apply-for-an-api-key"&gt;NASA APOD website&lt;/a&gt;.
 Each key is limited to 1000 requests per hour, and hence you may not be able to refresh with the default keys.</property>
                     <property name="use_markup">True</property>
@@ -768,18 +880,22 @@ Each key is limited to 1000 requests per hour, and hence you may not be able to 
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>
+      <packing>
+        <property name="position">1</property>
+      </packing>
     </child>
     <child type="tab">
-      <object class="GtkLabel" id="settings_label">
+      <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Settings</property>
+        <property name="label" translatable="yes">Network</property>
       </object>
       <packing>
+        <property name="position">1</property>
         <property name="tab_fill">False</property>
       </packing>
     </child>
@@ -843,7 +959,7 @@ A pinned background won't be replaced by newer ones.</property>
         </child>
       </object>
       <packing>
-        <property name="position">1</property>
+        <property name="position">2</property>
       </packing>
     </child>
     <child type="tab">
@@ -853,7 +969,7 @@ A pinned background won't be replaced by newer ones.</property>
         <property name="label" translatable="yes">History</property>
       </object>
       <packing>
-        <property name="position">1</property>
+        <property name="position">2</property>
         <property name="tab_fill">False</property>
       </packing>
     </child>
@@ -1023,7 +1139,7 @@ See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;G
         </child>
       </object>
       <packing>
-        <property name="position">2</property>
+        <property name="position">3</property>
       </packing>
     </child>
     <child type="tab">
@@ -1033,7 +1149,7 @@ See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;G
         <property name="label" translatable="yes">About</property>
       </object>
       <packing>
-        <property name="position">2</property>
+        <property name="position">3</property>
         <property name="tab_fill">False</property>
       </packing>
     </child>
