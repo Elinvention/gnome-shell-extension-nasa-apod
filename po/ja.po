@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 23:22+0200\n"
-"PO-Revision-Date: 2020-04-27 16:43+0200\n"
+"POT-Creation-Date: 2020-06-30 17:59+0200\n"
+"PO-Revision-Date: 2020-06-30 18:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -18,75 +18,79 @@ msgstr ""
 "X-Generator: Poedit 2.3\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: extension.js:58
+#: extension.js:67
 msgid "Media type {0} not supported."
 msgstr "メディアタイプ「{0}」対応されません。"
 
-#: extension.js:59
+#: extension.js:68
 msgid "No picture for today 😞. Please visit NASA APOD website."
 msgstr "今日は絵がありません😞。NASA APODのウェブサイトをご覧下さい。"
 
-#: extension.js:75 extension.js:118
+#: extension.js:84 extension.js:127
 msgid "NASA APOD website"
 msgstr "NASA APOD ウェブサイト"
 
-#: extension.js:76
+#: extension.js:85
 msgid "Get an API key"
 msgstr "APIキーを取る"
 
-#: extension.js:77 extension.js:79 extension.js:133 Settings.ui.h:24
+#: extension.js:86 extension.js:88 extension.js:142 Settings.ui.h:22
 msgid "Settings"
 msgstr "設定"
 
-#: extension.js:78
+#: extension.js:87
 msgid "Retry"
 msgstr "再試行"
 
-#: extension.js:104
+#: extension.js:113
 msgid "No title available"
 msgstr "題名がありません"
 
-#: extension.js:108
+#: extension.js:117
 msgid "No description available"
 msgstr "記述がありません"
 
-#: extension.js:114
+#: extension.js:123
 msgid "No copyright information available"
 msgstr "著作権の情報がありません"
 
-#: extension.js:121
+#: extension.js:130
 msgid "No refresh scheduled"
 msgstr "更新予定をされていません"
 
-#: extension.js:124
+#: extension.js:133
 msgid "Open Wallpaper Folder"
 msgstr "壁紙フォルダを開く"
 
-#: extension.js:127
+#: extension.js:136
 msgid "Set Wallpaper"
 msgstr "壁紙を設定する"
 
-#: extension.js:130 extension.js:212
+#: extension.js:139 extension.js:222
 msgid "Refresh"
 msgstr "更新"
 
-#: extension.js:200
+#: extension.js:209
 msgid "Refreshing..."
-msgstr "更新中"
+msgstr "更新中…"
 
-#: extension.js:203
+#: extension.js:212
 msgid "Network unavailable"
 msgstr "ネットワークを利用出来ません"
 
-#: extension.js:206
+#: extension.js:215
 msgid "Wait 10 seconds..."
 msgstr "10秒を待って下さい…"
 
-#: extension.js:210
+#: extension.js:220
 msgid "Unpin and Refresh"
 msgstr "固定を解除して更新"
 
-#: extension.js:225
+#: extension.js:224
+msgid " (metered network)"
+msgstr "（従量制ネットワーク）"
+
+#: extension.js:238
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
@@ -94,23 +98,23 @@ msgstr ""
 "ここでは、現在のNASAのAPOD壁紙の説明が表示されます。 説明とともに新しい壁紙を"
 "ダウンロードするには、更新を押してください。"
 
-#: extension.js:257
+#: extension.js:270
 msgid "Next refresh: {0}"
 msgstr "次の更新 {0}"
 
-#: extension.js:260
+#: extension.js:273
 msgid "Next refresh in less than a minute"
 msgstr "一分未満で次の更新"
 
-#: extension.js:325
+#: extension.js:344
 msgid "Pending refresh"
 msgstr "保留中の更新"
 
-#: extension.js:329
+#: extension.js:348
 msgid "Over rate limit (error 429)"
 msgstr "レート制限を超えています（エラー429）"
 
-#: extension.js:330
+#: extension.js:349
 msgid ""
 "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
 "just for you."
@@ -118,61 +122,61 @@ msgstr ""
 "https://api.nasa.gov/でAPIキーを取得して、1時間あたり1000件のリクエストを取得"
 "します。"
 
-#: extension.js:368
+#: extension.js:387
 msgid "Error downloading image"
 msgstr "画像のダウンロード中にエラーが発生しました"
 
-#: extension.js:373
+#: extension.js:392
 msgid "Invalid NASA API key (error 403)"
 msgstr "無効なNASA APIキー （エラー 403）"
 
-#: extension.js:374
+#: extension.js:393
 msgid "Check that your key is correct or use the default key."
 msgstr "キーが正しいことを確認するか、デフォルトのキーを使用してください。"
 
-#: extension.js:382
+#: extension.js:401
 msgid "Network error"
 msgstr "ネットワークエラー"
 
-#: extension.js:383 extension.js:495
+#: extension.js:402 extension.js:523
 msgid "HTTP status code {0}."
 msgstr "HTTPステータスコード {0}。"
 
-#: extension.js:494
+#: extension.js:522
 msgid "Couldn't fetch image from {0}"
 msgstr "{0}から画像を取得できませんでした"
 
 #: Settings.ui.h:1
-msgid "label"
-msgstr "ラベル"
+msgid "Add NASA APOD API key"
+msgstr "NASA APODのAPIキーを加える"
 
 #: Settings.ui.h:2
-msgid "Test"
-msgstr "テスト"
-
-#: Settings.ui.h:3
 msgid "Please paste here your API key."
 msgstr "ここにAPIキーを貼り付けてください。"
 
-#: Settings.ui.h:4
+#: Settings.ui.h:3
 msgid "The API key has to be 40 characters long."
 msgstr "APIキーは40文字にする必要があります。"
 
-#: Settings.ui.h:5
+#: Settings.ui.h:4
 msgid "Hide the indicator"
 msgstr "インジケーターを隠す"
 
-#: Settings.ui.h:6
+#: Settings.ui.h:5
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr "新しい絵がダウンロードされたときに説明付きの通知を送信します。"
 
-#: Settings.ui.h:7
+#: Settings.ui.h:6
 msgid "Notifications"
 msgstr "通知"
 
-#: Settings.ui.h:8
+#: Settings.ui.h:7
 msgid "Use transient notifications (auto dismiss)"
 msgstr "一時的な通知を使う（自動却下）"
+
+#: Settings.ui.h:8
+msgid "Indicator and notifications"
+msgstr "インディケータや通知"
 
 #: Settings.ui.h:9
 msgid "Set background image:"
@@ -223,6 +227,34 @@ msgid "NASA APOD pictures folder"
 msgstr "NASA APOD 画像フォルダ"
 
 #: Settings.ui.h:21
+msgid "Background"
+msgstr "背景"
+
+#: Settings.ui.h:23
+msgid "Image resolution:"
+msgstr "画像解像度"
+
+#: Settings.ui.h:24
+msgid "HD version"
+msgstr "HDバージョン"
+
+#: Settings.ui.h:25
+msgid "Low resolution version"
+msgstr "低い解像度のバージョン"
+
+#: Settings.ui.h:26
+msgid "Image resolution on metered networks:"
+msgstr "従量制ネットワークに画像解像度"
+
+#: Settings.ui.h:27
+msgid "Automatic refresh on metered networks:"
+msgstr "従量制ネットワークに更新"
+
+#: Settings.ui.h:28
+msgid "Network usage"
+msgstr "ネットワーク利用"
+
+#: Settings.ui.h:29
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -234,11 +266,15 @@ msgstr ""
 "各キーは1時間あたり1000リクエストに制限されているため、デフォルトのキーでは更"
 "新できない場合があります。"
 
-#: Settings.ui.h:23
+#: Settings.ui.h:31
 msgid "API keys"
 msgstr "APIキー"
 
-#: Settings.ui.h:25
+#: Settings.ui.h:32
+msgid "Network"
+msgstr "ネットワーク"
+
+#: Settings.ui.h:33
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
@@ -246,31 +282,31 @@ msgstr ""
 "壁紙を選択して固定が出来ます。\n"
 "固定された壁紙が新しい壁紙に置き換えられません。"
 
-#: Settings.ui.h:27
+#: Settings.ui.h:35
 msgid "History"
 msgstr "歴史"
 
-#: Settings.ui.h:28
+#: Settings.ui.h:36
 msgid "version: "
 msgstr "バージョン"
 
-#: Settings.ui.h:29
+#: Settings.ui.h:37
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr "NASAのその日の天文学写真に壁紙を毎日変更します"
 
-#: Settings.ui.h:30
+#: Settings.ui.h:38
 msgid "Extension's GitHub Webpage"
 msgstr "エクステンションGitHubウエブページ"
 
-#: Settings.ui.h:31
+#: Settings.ui.h:39
 msgid "Issue Tracker"
 msgstr "課題追跡"
 
-#: Settings.ui.h:32
+#: Settings.ui.h:40
 msgid "Changelog"
 msgstr "変更ログ"
 
-#: Settings.ui.h:33
+#: Settings.ui.h:41
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
@@ -279,7 +315,7 @@ msgstr ""
 "Elia Argentieri\n"
 "エリア・アルジェンティエリ"
 
-#: Settings.ui.h:35
+#: Settings.ui.h:43
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
@@ -289,6 +325,12 @@ msgstr ""
 "詳細は<a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU "
 "General Public License, version 3 or later</a>をご覧ください。</span>"
 
-#: Settings.ui.h:37
+#: Settings.ui.h:45
 msgid "About"
 msgstr "について"
+
+#~ msgid "label"
+#~ msgstr "ラベル"
+
+#~ msgid "Test"
+#~ msgstr "テスト"
