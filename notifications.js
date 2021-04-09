@@ -13,13 +13,13 @@ function notify(msg, details, transient, actions=[]) {
     // set notifications icon
     let source = new MessageTray.Source("NASA APOD", "saturn");
     // force expanded notification
-    source.policy = new MessageTray.NotificationPolicy({ enable: true,
-                                        enableSound: true,
-                                        showBanners: true,
-                                        forceExpanded: true,
-                                        showInLockScreen: true,
-                                        detailsInLockScreen: true
-                                      });
+    //source.policy = new MessageTray.NotificationPolicy({ enable: true,
+    //                                    enableSound: true,
+    //                                    showBanners: true,
+    //                                    forceExpanded: true,
+    //                                    showInLockScreen: true,
+    //                                    detailsInLockScreen: true
+    //                                  });
     Main.messageTray.add(source);
     let notification = new MessageTray.Notification(source, msg, details);
     notification.setTransient(transient);
