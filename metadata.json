@@ -2,13 +2,12 @@
   "uuid": "nasa_apod@elinvention.ovh",
   "name": "NASA APOD Wallpaper Changer",
   "shell-version": [
-    "3.34",
-    "3.36"
+    "40"
   ],
   "gettext-domain": "nasa-apod",
   "settings-schema": "org.gnome.shell.extensions.nasa-apod",
   "description": "Change your wallpaper daily to the NASA's astronomy picture of the day",
   "url": "https://github.com/Elinvention/gnome-shell-extension-nasa-apod",
-  "version": 21
+  "version": 22
 }
 
