@@ -13,7 +13,7 @@ install: schemas/gschemas.compiled locale
 	@echo "Installed to $(INSTALL_PATH)/$(INSTALL_NAME)"
 
 uninstall:
-	rm -ri $(INSTALL_PATH)/$(INSTALL_NAME)
+	rm -rI $(INSTALL_PATH)/$(INSTALL_NAME)
 
 zip: nasa_apod.zip
 
