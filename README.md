@@ -22,7 +22,7 @@ The command below downloads and install the current development version:
 git clone https://github.com/Elinvention/gnome-shell-extension-nasa-apod.git
 cd gnome-shell-extension-nasa-apod
 make install
-gnome-shell-extension-tool -e nasa_apod@elinvention.ovh
+gnome-extensions enable nasa_apod@elinvention.ovh
 ```
 
 You can uninstall by running `make uninstall`.
