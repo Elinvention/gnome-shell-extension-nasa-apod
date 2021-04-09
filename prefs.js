@@ -1,4 +1,4 @@
-const {Gtk, Gio, GLib, GdkPixbuf} = imports.gi;
+const {Gtk, Gdk, Gio, GLib, GdkPixbuf} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -12,13 +12,18 @@ const _ = Gettext.gettext;
 
 
 let settings;
-let css;
 
 
 function init() {
     settings = ExtensionUtils.getSettings();
-    css = Gtk.CssProvider.get_default();
-    css.load_from_path(Me.dir.get_path() + "/theme.css");
+
+    let provider = new Gtk.CssProvider();
+    provider.load_from_path(Me.dir.get_path() + "/prefs.css");
+    Gtk.StyleContext.add_provider_for_display(
+        Gdk.Display.get_default(),
+        provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+
     ExtensionUtils.initTranslations();
 }
 
@@ -28,7 +33,7 @@ function buildHistoryFlowBoxChild(file, info) {
         throw info.path + " is not an image";
 
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ["history_flowboxchild"]);
+    buildable.add_objects_from_file(Me.dir.get_path() + '/prefa.ui', ["history_flowboxchild"]);
 
     let row = buildable.get_object("history_flowboxchild");
     let title_label = buildable.get_object("title");
@@ -43,13 +48,13 @@ function buildHistoryFlowBoxChild(file, info) {
 
     title_label.set_text(info.title);
     date_label.set_text(info.date);
-    row.get_style_context().add_provider(css, 0);
+    //row.get_style_context().add_provider(css, 0);
     return row;
 }
 
 function buildApiKeyItem(apiKey) {
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ['api_key_item']);
+    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ['api_key_item']);
 
     let item = buildable.get_object('api_key_item');
     let label = buildable.get_object('api_key_label');
@@ -60,7 +65,7 @@ function buildApiKeyItem(apiKey) {
 
 function buildNewApiKeyDialog() {
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ['new_api_key_dialog']);
+    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ['new_api_key_dialog']);
 
     let dialog = buildable.get_object('new_api_key_dialog');
     let entry = buildable.get_object('new_api_key_entry');
@@ -72,7 +77,7 @@ function buildPrefsWidget(){
 
     // Prepare labels and controls
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/Settings.ui', ['prefs_widget']);
+    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ['prefs_widget']);
     let notebook = buildable.get_object('prefs_widget');
 
     buildable.get_object('extension_version').set_text(Me.metadata.version.toString());
@@ -117,7 +122,7 @@ function buildPrefsWidget(){
     settings.connect('changed::screensaver-options', function() { Utils.setBackgroundBasedOnSettings() });
 
     // Download folder
-    fileChooser.set_filename(downloadFolder);
+/*    fileChooser.set_filename(downloadFolder);
     fileChooser.add_shortcut_folder_uri("file://" + GLib.get_user_cache_dir() + "/apod");
     fileChooser.connect('file-set', function(widget) {
         downloadFolder = widget.get_filename() + '/';
@@ -127,7 +132,7 @@ function buildPrefsWidget(){
             child.destroy();
         });
     });
-
+*/
     // Network page
     // - Network usage frame
     settings.bind('image-resolution', imageResCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
@@ -137,16 +142,18 @@ function buildPrefsWidget(){
     // - API key frame
     function populateApiKeysListBox() {
         let keys = settings.get_strv('api-keys');
-        apiKeysListBox.get_children().forEach(function(child) {
+        let child = apiKeysListBox.get_first_child();
+        while (child != null) {
             child.destroy();
-        });
+            child = child.get_next_sibling();
+        }
         keys.forEach(function(key, index) {
             let [item, button] = buildApiKeyItem(key);
             button.connect('clicked', function () {
                 keys.pop(index);
                 settings.set_strv('api-keys', keys);
             });
-            apiKeysListBox.add(item);
+            apiKeysListBox.insert(item, index);
         });
     }
 
@@ -233,8 +240,6 @@ function buildPrefsWidget(){
             load_files_thumbnails();
         }
     });
-
-    notebook.show_all();
 
     return notebook;
 };

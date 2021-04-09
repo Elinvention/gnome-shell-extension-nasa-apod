@@ -1,6 +1,6 @@
 INSTALL_PATH = ~/.local/share/gnome-shell/extensions
 INSTALL_NAME = nasa_apod@elinvention.ovh
-FILES = extension.js icons LICENSE metadata.json prefs.js README.md schemas Settings.ui utils.js theme.css notifications.js locale
+FILES = extension.js icons LICENSE metadata.json prefs.js README.md schemas prefs.ui utils.js theme.css notifications.js locale
 
 MSGSRC = $(wildcard po/*.po)
 TOLOCALIZE = extension.js prefs.js
@@ -28,14 +28,14 @@ clean:
 	-rm schemas/gschemas.compiled
 	-rm locale -r
 	-rm po/nasa-apod.pot
-	-rm Settings.ui.h
+	-rm prefs.ui.h
 
-Settings.ui.h:
-	intltool-extract --type=gettext/glade Settings.ui
+prefs.ui.h:
+	intltool-extract --type=gettext/glade prefs.ui
 
-po/nasa-apod.pot: $(TOLOCALIZE) Settings.ui.h
+po/nasa-apod.pot: $(TOLOCALIZE) prefs.ui.h
 	xgettext -L Perl -k_ -kN_ --from-code=UTF-8 --package-name "NASA APOD Wallpaper Changer" -o po/nasa-apod.pot $(TOLOCALIZE)
-	xgettext -L C -k_ -kN_ --join-existing --from-code=UTF-8 -o po/nasa-apod.pot Settings.ui.h
+	xgettext -L C -k_ -kN_ --join-existing --from-code=UTF-8 -o po/nasa-apod.pot prefs.ui.h
 
 potfile: po/nasa-apod.pot
 
