@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-30 17:59+0200\n"
+"POT-Creation-Date: 2021-04-13 14:58+0200\n"
 "PO-Revision-Date: 2020-04-27 23:23+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -35,7 +35,7 @@ msgstr "НАСА APOD веб-сайт"
 msgid "Get an API key"
 msgstr "Получить ключ API"
 
-#: extension.js:86 extension.js:88 extension.js:142 Settings.ui.h:22
+#: extension.js:86 extension.js:88 extension.js:142 prefs.ui.h:21
 msgid "Settings"
 msgstr "Настройки"
 
@@ -147,118 +147,127 @@ msgstr "Код состояния HTTP {0}."
 msgid "Couldn't fetch image from {0}"
 msgstr "Не удалось получить изображение из {0}"
 
-#: Settings.ui.h:1
+#: prefs.js:133
+#, fuzzy
+msgid "Choose download folder"
+msgstr "Скачать папку:"
+
+#: prefs.js:138
+msgid "Cancel"
+msgstr ""
+
+#: prefs.js:139
+msgid "Select"
+msgstr ""
+
+#: prefs.ui.h:1
 msgid "Add NASA APOD API key"
 msgstr ""
 
-#: Settings.ui.h:2
+#: prefs.ui.h:2
 msgid "Please paste here your API key."
 msgstr "Пожалуйста, вставьте сюда свой ключ API."
 
-#: Settings.ui.h:3
+#: prefs.ui.h:3
 msgid "The API key has to be 40 characters long."
 msgstr "Ключ API должен быть длиной 40 символов."
 
-#: Settings.ui.h:4
+#: prefs.ui.h:4
 msgid "Hide the indicator"
 msgstr "Скрыть индикатор"
 
-#: Settings.ui.h:5
+#: prefs.ui.h:5
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr "Отправьте уведомление с объяснением при загрузке нового изображения."
 
-#: Settings.ui.h:6
+#: prefs.ui.h:6
 msgid "Notifications"
 msgstr "Уведомления"
 
-#: Settings.ui.h:7
+#: prefs.ui.h:7
 msgid "Use transient notifications (auto dismiss)"
 msgstr "Использовать временные уведомления (автоматическое отклонение)"
 
-#: Settings.ui.h:8
+#: prefs.ui.h:8
 #, fuzzy
 msgid "Indicator and notifications"
 msgstr "Уведомления"
 
-#: Settings.ui.h:9
+#: prefs.ui.h:9
 msgid "Set background image:"
 msgstr "Установить фоновое изображение:"
 
-#: Settings.ui.h:10
+#: prefs.ui.h:10
 msgid "None"
 msgstr "Никто"
 
-#: Settings.ui.h:11
+#: prefs.ui.h:11
 msgid "Centered"
 msgstr "По центру"
 
-#: Settings.ui.h:12
+#: prefs.ui.h:12
 msgid "Scaled"
 msgstr "Замостить"
 
-#: Settings.ui.h:13
+#: prefs.ui.h:13
 msgid "Spanned"
 msgstr "Растянуть"
 
-#: Settings.ui.h:14
+#: prefs.ui.h:14
 msgid "Stretched"
 msgstr "Натянуть"
 
-#: Settings.ui.h:15
+#: prefs.ui.h:15
 msgid "Wallpaper"
 msgstr "Обои"
 
-#: Settings.ui.h:16
+#: prefs.ui.h:16
 msgid "Zoom"
 msgstr "Увеличить"
 
-#: Settings.ui.h:17
+#: prefs.ui.h:17
 msgid "Default"
 msgstr "По умолчанию"
 
-#: Settings.ui.h:18
+#: prefs.ui.h:18
 msgid "Set lock screen image:"
 msgstr "Установить изображение экрана блокировки:"
 
-#: Settings.ui.h:19
+#: prefs.ui.h:19
 msgid "Download folder:"
 msgstr "Скачать папку:"
 
-#: Settings.ui.h:20
-msgid "NASA APOD pictures folder"
-msgstr "Папка изображений НАСА APOD"
-
-#: Settings.ui.h:21
+#: prefs.ui.h:20
 msgid "Background"
 msgstr ""
 
-#: Settings.ui.h:23
+#: prefs.ui.h:22
 msgid "Image resolution:"
 msgstr ""
 
-#: Settings.ui.h:24
+#: prefs.ui.h:23
 #, fuzzy
 msgid "HD version"
 msgstr "версия:"
 
-#: Settings.ui.h:25
+#: prefs.ui.h:24
 msgid "Low resolution version"
 msgstr ""
 
-#: Settings.ui.h:26
+#: prefs.ui.h:25
 msgid "Image resolution on metered networks:"
 msgstr ""
 
-#: Settings.ui.h:27
+#: prefs.ui.h:26
 msgid "Automatic refresh on metered networks:"
 msgstr ""
 
-#: Settings.ui.h:28
+#: prefs.ui.h:27
 #, fuzzy
 msgid "Network usage"
 msgstr "Сетевая ошибка"
 
-#: Settings.ui.h:29
+#: prefs.ui.h:28
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -270,16 +279,16 @@ msgstr ""
 "Каждый ключ ограничен 1000 запросов в час, и, следовательно, вы не сможете "
 "обновить с ключами по умолчанию."
 
-#: Settings.ui.h:31
+#: prefs.ui.h:30
 msgid "API keys"
 msgstr "API ключи"
 
-#: Settings.ui.h:32
+#: prefs.ui.h:31
 #, fuzzy
 msgid "Network"
 msgstr "Сетевая ошибка"
 
-#: Settings.ui.h:33
+#: prefs.ui.h:32
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
@@ -287,31 +296,31 @@ msgstr ""
 "Вы можете закрепить фон, выбрав его.\n"
 "Прикрепленный фон не будет заменен более новыми."
 
-#: Settings.ui.h:35
+#: prefs.ui.h:34
 msgid "History"
 msgstr "История"
 
-#: Settings.ui.h:36
+#: prefs.ui.h:35
 msgid "version: "
 msgstr "версия:"
 
-#: Settings.ui.h:37
+#: prefs.ui.h:36
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr "Ежедневно меняйте обои на астрономическую картину НАСА"
 
-#: Settings.ui.h:38
+#: prefs.ui.h:37
 msgid "Extension's GitHub Webpage"
 msgstr "Расширение GitHub Webpage"
 
-#: Settings.ui.h:39
+#: prefs.ui.h:38
 msgid "Issue Tracker"
 msgstr "Отслеживание проблем"
 
-#: Settings.ui.h:40
+#: prefs.ui.h:39
 msgid "Changelog"
 msgstr "Изменения"
 
-#: Settings.ui.h:41
+#: prefs.ui.h:40
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
@@ -319,7 +328,7 @@ msgstr ""
 "Привлечены к вам:\n"
 "Элия Арджентери"
 
-#: Settings.ui.h:43
+#: prefs.ui.h:42
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
@@ -330,9 +339,12 @@ msgstr ""
 "licenses/old-licenses/gpl-2.0.html\"> Общедоступную лицензию GNU, версия 3 "
 "или более позднюю </a>. </ Span>"
 
-#: Settings.ui.h:45
+#: prefs.ui.h:44
 msgid "About"
 msgstr "О программе"
+
+#~ msgid "NASA APOD pictures folder"
+#~ msgstr "Папка изображений НАСА APOD"
 
 #~ msgid "label"
 #~ msgstr "Метка"

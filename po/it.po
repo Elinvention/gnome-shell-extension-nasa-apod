@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-30 17:59+0200\n"
-"PO-Revision-Date: 2020-06-30 18:00+0200\n"
+"POT-Creation-Date: 2021-04-13 14:58+0200\n"
+"PO-Revision-Date: 2021-04-13 15:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: extension.js:67
@@ -34,7 +34,7 @@ msgstr "Sito web NASA APOD"
 msgid "Get an API key"
 msgstr "Ottieni una chiave API"
 
-#: extension.js:86 extension.js:88 extension.js:142 Settings.ui.h:22
+#: extension.js:86 extension.js:88 extension.js:142 prefs.ui.h:21
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -146,117 +146,125 @@ msgstr "Codice status HTTP {0}."
 msgid "Couldn't fetch image from {0}"
 msgstr "Impossibile scaricare immagine da {0}"
 
-#: Settings.ui.h:1
+#: prefs.js:133
+msgid "Choose download folder"
+msgstr "Scegli la cartella di download"
+
+#: prefs.js:138
+msgid "Cancel"
+msgstr "Annulla"
+
+#: prefs.js:139
+msgid "Select"
+msgstr "Seleziona"
+
+#: prefs.ui.h:1
 msgid "Add NASA APOD API key"
 msgstr "Aggiunta di una chiave API di NASA APOD"
 
-#: Settings.ui.h:2
+#: prefs.ui.h:2
 msgid "Please paste here your API key."
 msgstr "Per favore incolla qui la tua chiave API."
 
-#: Settings.ui.h:3
+#: prefs.ui.h:3
 msgid "The API key has to be 40 characters long."
 msgstr "La chiave API deve essere lunga 40 caratteri."
 
-#: Settings.ui.h:4
+#: prefs.ui.h:4
 msgid "Hide the indicator"
 msgstr "Nascondi l'indicatore"
 
-#: Settings.ui.h:5
+#: prefs.ui.h:5
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr ""
 "Invia una notifica con la spiegazione quando viene scaricata una nuova "
 "immagine."
 
-#: Settings.ui.h:6
+#: prefs.ui.h:6
 msgid "Notifications"
 msgstr "Notifiche"
 
-#: Settings.ui.h:7
+#: prefs.ui.h:7
 msgid "Use transient notifications (auto dismiss)"
 msgstr "Usa notifiche transitorie (auto cancellazione)"
 
-#: Settings.ui.h:8
+#: prefs.ui.h:8
 msgid "Indicator and notifications"
 msgstr "Indicatore e Notifiche"
 
-#: Settings.ui.h:9
+#: prefs.ui.h:9
 msgid "Set background image:"
 msgstr "Imposta l'immagine di sfondo:"
 
-#: Settings.ui.h:10
+#: prefs.ui.h:10
 msgid "None"
 msgstr "Nessuna"
 
-#: Settings.ui.h:11
+#: prefs.ui.h:11
 msgid "Centered"
 msgstr "Centrata"
 
-#: Settings.ui.h:12
+#: prefs.ui.h:12
 msgid "Scaled"
 msgstr "Scalata"
 
-#: Settings.ui.h:13
+#: prefs.ui.h:13
 msgid "Spanned"
 msgstr ""
 
-#: Settings.ui.h:14
+#: prefs.ui.h:14
 msgid "Stretched"
 msgstr ""
 
-#: Settings.ui.h:15
+#: prefs.ui.h:15
 msgid "Wallpaper"
 msgstr ""
 
-#: Settings.ui.h:16
+#: prefs.ui.h:16
 msgid "Zoom"
 msgstr "Ingrandita"
 
-#: Settings.ui.h:17
+#: prefs.ui.h:17
 msgid "Default"
 msgstr "Default"
 
-#: Settings.ui.h:18
+#: prefs.ui.h:18
 msgid "Set lock screen image:"
 msgstr "Imposta l'immagine del blocco schermo:"
 
-#: Settings.ui.h:19
+#: prefs.ui.h:19
 msgid "Download folder:"
 msgstr "Cartella di download:"
 
-#: Settings.ui.h:20
-msgid "NASA APOD pictures folder"
-msgstr "Cartella delle immagini di NASA APOD"
-
-#: Settings.ui.h:21
+#: prefs.ui.h:20
 msgid "Background"
 msgstr "Sfondo"
 
-#: Settings.ui.h:23
+#: prefs.ui.h:22
 msgid "Image resolution:"
 msgstr "Risoluzione delle immagini:"
 
-#: Settings.ui.h:24
+#: prefs.ui.h:23
 msgid "HD version"
 msgstr "Versione HD"
 
-#: Settings.ui.h:25
+#: prefs.ui.h:24
 msgid "Low resolution version"
 msgstr "Versione a bassa risoluzione"
 
-#: Settings.ui.h:26
+#: prefs.ui.h:25
 msgid "Image resolution on metered networks:"
 msgstr "Risoluzione delle immagini su reti a consumo:"
 
-#: Settings.ui.h:27
+#: prefs.ui.h:26
 msgid "Automatic refresh on metered networks:"
 msgstr "Aggiornamento automatico su reti a consumo:"
 
-#: Settings.ui.h:28
+#: prefs.ui.h:27
 msgid "Network usage"
 msgstr "Utilizzo della rete"
 
-#: Settings.ui.h:29
+#: prefs.ui.h:28
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -268,15 +276,15 @@ msgstr ""
 "Ogni chiave è limitata a 1000 richieste orarie e quindi potresti non essere "
 "in grado di aggiornare usando le chiavi predefinite."
 
-#: Settings.ui.h:31
+#: prefs.ui.h:30
 msgid "API keys"
 msgstr "Chiavi API"
 
-#: Settings.ui.h:32
+#: prefs.ui.h:31
 msgid "Network"
 msgstr "Rete"
 
-#: Settings.ui.h:33
+#: prefs.ui.h:32
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
@@ -284,33 +292,33 @@ msgstr ""
 "Puoi fissare uno sfondo selezionandolo.\n"
 "Uno sfondo fissato non verrà sostituito da quelli nuovi."
 
-#: Settings.ui.h:35
+#: prefs.ui.h:34
 msgid "History"
 msgstr "Storico"
 
-#: Settings.ui.h:36
+#: prefs.ui.h:35
 msgid "version: "
 msgstr "versione: "
 
-#: Settings.ui.h:37
+#: prefs.ui.h:36
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr ""
 "Cambia il tuo sfondo quotidianamente all'immagine astronomica del giorno "
 "della NASA"
 
-#: Settings.ui.h:38
+#: prefs.ui.h:37
 msgid "Extension's GitHub Webpage"
 msgstr "Pagina GitHub dell'estensione"
 
-#: Settings.ui.h:39
+#: prefs.ui.h:38
 msgid "Issue Tracker"
 msgstr ""
 
-#: Settings.ui.h:40
+#: prefs.ui.h:39
 msgid "Changelog"
 msgstr "Registro dei Cambiamenti"
 
-#: Settings.ui.h:41
+#: prefs.ui.h:40
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
@@ -318,16 +326,19 @@ msgstr ""
 "Realizzato da:\n"
 "Elia Argentieri"
 
-#: Settings.ui.h:43
+#: prefs.ui.h:42
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
-#: Settings.ui.h:45
+#: prefs.ui.h:44
 msgid "About"
 msgstr "Informazioni"
+
+#~ msgid "NASA APOD pictures folder"
+#~ msgstr "Cartella delle immagini di NASA APOD"
 
 #~ msgid ""
 #~ "Maintained by:\n"

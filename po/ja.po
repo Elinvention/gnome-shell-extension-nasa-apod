@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-30 17:59+0200\n"
-"PO-Revision-Date: 2020-06-30 18:57+0200\n"
+"POT-Creation-Date: 2021-04-13 14:58+0200\n"
+"PO-Revision-Date: 2021-04-13 15:14+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: extension.js:67
@@ -34,7 +34,7 @@ msgstr "NASA APOD ウェブサイト"
 msgid "Get an API key"
 msgstr "APIキーを取る"
 
-#: extension.js:86 extension.js:88 extension.js:142 Settings.ui.h:22
+#: extension.js:86 extension.js:88 extension.js:142 prefs.ui.h:21
 msgid "Settings"
 msgstr "設定"
 
@@ -146,115 +146,123 @@ msgstr "HTTPステータスコード {0}。"
 msgid "Couldn't fetch image from {0}"
 msgstr "{0}から画像を取得できませんでした"
 
-#: Settings.ui.h:1
+#: prefs.js:133
+msgid "Choose download folder"
+msgstr "ダウンロードフォルダを選ぶ"
+
+#: prefs.js:138
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: prefs.js:139
+msgid "Select"
+msgstr "選ぶ"
+
+#: prefs.ui.h:1
 msgid "Add NASA APOD API key"
 msgstr "NASA APODのAPIキーを加える"
 
-#: Settings.ui.h:2
+#: prefs.ui.h:2
 msgid "Please paste here your API key."
 msgstr "ここにAPIキーを貼り付けてください。"
 
-#: Settings.ui.h:3
+#: prefs.ui.h:3
 msgid "The API key has to be 40 characters long."
 msgstr "APIキーは40文字にする必要があります。"
 
-#: Settings.ui.h:4
+#: prefs.ui.h:4
 msgid "Hide the indicator"
 msgstr "インジケーターを隠す"
 
-#: Settings.ui.h:5
+#: prefs.ui.h:5
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr "新しい絵がダウンロードされたときに説明付きの通知を送信します。"
 
-#: Settings.ui.h:6
+#: prefs.ui.h:6
 msgid "Notifications"
 msgstr "通知"
 
-#: Settings.ui.h:7
+#: prefs.ui.h:7
 msgid "Use transient notifications (auto dismiss)"
 msgstr "一時的な通知を使う（自動却下）"
 
-#: Settings.ui.h:8
+#: prefs.ui.h:8
 msgid "Indicator and notifications"
 msgstr "インディケータや通知"
 
-#: Settings.ui.h:9
+#: prefs.ui.h:9
 msgid "Set background image:"
 msgstr "壁紙を設定する"
 
-#: Settings.ui.h:10
+#: prefs.ui.h:10
 msgid "None"
 msgstr ""
 
-#: Settings.ui.h:11
+#: prefs.ui.h:11
 msgid "Centered"
 msgstr ""
 
-#: Settings.ui.h:12
+#: prefs.ui.h:12
 msgid "Scaled"
 msgstr ""
 
-#: Settings.ui.h:13
+#: prefs.ui.h:13
 msgid "Spanned"
 msgstr ""
 
-#: Settings.ui.h:14
+#: prefs.ui.h:14
 msgid "Stretched"
 msgstr ""
 
-#: Settings.ui.h:15
+#: prefs.ui.h:15
 msgid "Wallpaper"
 msgstr ""
 
-#: Settings.ui.h:16
+#: prefs.ui.h:16
 msgid "Zoom"
 msgstr "ズーム"
 
-#: Settings.ui.h:17
+#: prefs.ui.h:17
 msgid "Default"
 msgstr "既定"
 
-#: Settings.ui.h:18
+#: prefs.ui.h:18
 msgid "Set lock screen image:"
 msgstr "ロック画面の画像を設定します。"
 
-#: Settings.ui.h:19
+#: prefs.ui.h:19
 msgid "Download folder:"
 msgstr "ダウンロードフォルダ"
 
-#: Settings.ui.h:20
-msgid "NASA APOD pictures folder"
-msgstr "NASA APOD 画像フォルダ"
-
-#: Settings.ui.h:21
+#: prefs.ui.h:20
 msgid "Background"
 msgstr "背景"
 
-#: Settings.ui.h:23
+#: prefs.ui.h:22
 msgid "Image resolution:"
 msgstr "画像解像度"
 
-#: Settings.ui.h:24
+#: prefs.ui.h:23
 msgid "HD version"
 msgstr "HDバージョン"
 
-#: Settings.ui.h:25
+#: prefs.ui.h:24
 msgid "Low resolution version"
 msgstr "低い解像度のバージョン"
 
-#: Settings.ui.h:26
+#: prefs.ui.h:25
 msgid "Image resolution on metered networks:"
 msgstr "従量制ネットワークに画像解像度"
 
-#: Settings.ui.h:27
+#: prefs.ui.h:26
 msgid "Automatic refresh on metered networks:"
 msgstr "従量制ネットワークに更新"
 
-#: Settings.ui.h:28
+#: prefs.ui.h:27
 msgid "Network usage"
 msgstr "ネットワーク利用"
 
-#: Settings.ui.h:29
+#: prefs.ui.h:28
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -266,15 +274,15 @@ msgstr ""
 "各キーは1時間あたり1000リクエストに制限されているため、デフォルトのキーでは更"
 "新できない場合があります。"
 
-#: Settings.ui.h:31
+#: prefs.ui.h:30
 msgid "API keys"
 msgstr "APIキー"
 
-#: Settings.ui.h:32
+#: prefs.ui.h:31
 msgid "Network"
 msgstr "ネットワーク"
 
-#: Settings.ui.h:33
+#: prefs.ui.h:32
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
@@ -282,31 +290,31 @@ msgstr ""
 "壁紙を選択して固定が出来ます。\n"
 "固定された壁紙が新しい壁紙に置き換えられません。"
 
-#: Settings.ui.h:35
+#: prefs.ui.h:34
 msgid "History"
 msgstr "歴史"
 
-#: Settings.ui.h:36
+#: prefs.ui.h:35
 msgid "version: "
 msgstr "バージョン"
 
-#: Settings.ui.h:37
+#: prefs.ui.h:36
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr "NASAのその日の天文学写真に壁紙を毎日変更します"
 
-#: Settings.ui.h:38
+#: prefs.ui.h:37
 msgid "Extension's GitHub Webpage"
 msgstr "エクステンションGitHubウエブページ"
 
-#: Settings.ui.h:39
+#: prefs.ui.h:38
 msgid "Issue Tracker"
 msgstr "課題追跡"
 
-#: Settings.ui.h:40
+#: prefs.ui.h:39
 msgid "Changelog"
 msgstr "変更ログ"
 
-#: Settings.ui.h:41
+#: prefs.ui.h:40
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
@@ -315,7 +323,7 @@ msgstr ""
 "Elia Argentieri\n"
 "エリア・アルジェンティエリ"
 
-#: Settings.ui.h:43
+#: prefs.ui.h:42
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
@@ -325,9 +333,12 @@ msgstr ""
 "詳細は<a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU "
 "General Public License, version 3 or later</a>をご覧ください。</span>"
 
-#: Settings.ui.h:45
+#: prefs.ui.h:44
 msgid "About"
 msgstr "について"
+
+#~ msgid "NASA APOD pictures folder"
+#~ msgstr "NASA APOD 画像フォルダ"
 
 #~ msgid "label"
 #~ msgstr "ラベル"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-30 17:59+0200\n"
+"POT-Creation-Date: 2021-04-13 14:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,7 +33,7 @@ msgstr ""
 msgid "Get an API key"
 msgstr ""
 
-#: extension.js:86 extension.js:88 extension.js:142 Settings.ui.h:22
+#: extension.js:86 extension.js:88 extension.js:142 prefs.ui.h:21
 msgid "Settings"
 msgstr ""
 
@@ -141,115 +141,123 @@ msgstr ""
 msgid "Couldn't fetch image from {0}"
 msgstr ""
 
-#: Settings.ui.h:1
+#: prefs.js:133
+msgid "Choose download folder"
+msgstr ""
+
+#: prefs.js:138
+msgid "Cancel"
+msgstr ""
+
+#: prefs.js:139
+msgid "Select"
+msgstr ""
+
+#: prefs.ui.h:1
 msgid "Add NASA APOD API key"
 msgstr ""
 
-#: Settings.ui.h:2
+#: prefs.ui.h:2
 msgid "Please paste here your API key."
 msgstr ""
 
-#: Settings.ui.h:3
+#: prefs.ui.h:3
 msgid "The API key has to be 40 characters long."
 msgstr ""
 
-#: Settings.ui.h:4
+#: prefs.ui.h:4
 msgid "Hide the indicator"
 msgstr ""
 
-#: Settings.ui.h:5
+#: prefs.ui.h:5
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr ""
 
-#: Settings.ui.h:6
+#: prefs.ui.h:6
 msgid "Notifications"
 msgstr ""
 
-#: Settings.ui.h:7
+#: prefs.ui.h:7
 msgid "Use transient notifications (auto dismiss)"
 msgstr ""
 
-#: Settings.ui.h:8
+#: prefs.ui.h:8
 msgid "Indicator and notifications"
 msgstr ""
 
-#: Settings.ui.h:9
+#: prefs.ui.h:9
 msgid "Set background image:"
 msgstr ""
 
-#: Settings.ui.h:10
+#: prefs.ui.h:10
 msgid "None"
 msgstr ""
 
-#: Settings.ui.h:11
+#: prefs.ui.h:11
 msgid "Centered"
 msgstr ""
 
-#: Settings.ui.h:12
+#: prefs.ui.h:12
 msgid "Scaled"
 msgstr ""
 
-#: Settings.ui.h:13
+#: prefs.ui.h:13
 msgid "Spanned"
 msgstr ""
 
-#: Settings.ui.h:14
+#: prefs.ui.h:14
 msgid "Stretched"
 msgstr ""
 
-#: Settings.ui.h:15
+#: prefs.ui.h:15
 msgid "Wallpaper"
 msgstr ""
 
-#: Settings.ui.h:16
+#: prefs.ui.h:16
 msgid "Zoom"
 msgstr ""
 
-#: Settings.ui.h:17
+#: prefs.ui.h:17
 msgid "Default"
 msgstr ""
 
-#: Settings.ui.h:18
+#: prefs.ui.h:18
 msgid "Set lock screen image:"
 msgstr ""
 
-#: Settings.ui.h:19
+#: prefs.ui.h:19
 msgid "Download folder:"
 msgstr ""
 
-#: Settings.ui.h:20
-msgid "NASA APOD pictures folder"
-msgstr ""
-
-#: Settings.ui.h:21
+#: prefs.ui.h:20
 msgid "Background"
 msgstr ""
 
-#: Settings.ui.h:23
+#: prefs.ui.h:22
 msgid "Image resolution:"
 msgstr ""
 
-#: Settings.ui.h:24
+#: prefs.ui.h:23
 msgid "HD version"
 msgstr ""
 
-#: Settings.ui.h:25
+#: prefs.ui.h:24
 msgid "Low resolution version"
 msgstr ""
 
-#: Settings.ui.h:26
+#: prefs.ui.h:25
 msgid "Image resolution on metered networks:"
 msgstr ""
 
-#: Settings.ui.h:27
+#: prefs.ui.h:26
 msgid "Automatic refresh on metered networks:"
 msgstr ""
 
-#: Settings.ui.h:28
+#: prefs.ui.h:27
 msgid "Network usage"
 msgstr ""
 
-#: Settings.ui.h:29
+#: prefs.ui.h:28
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -257,57 +265,57 @@ msgid ""
 "to refresh with the default keys."
 msgstr ""
 
-#: Settings.ui.h:31
+#: prefs.ui.h:30
 msgid "API keys"
 msgstr ""
 
-#: Settings.ui.h:32
+#: prefs.ui.h:31
 msgid "Network"
 msgstr ""
 
-#: Settings.ui.h:33
+#: prefs.ui.h:32
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
 msgstr ""
 
-#: Settings.ui.h:35
+#: prefs.ui.h:34
 msgid "History"
 msgstr ""
 
-#: Settings.ui.h:36
+#: prefs.ui.h:35
 msgid "version: "
 msgstr ""
 
-#: Settings.ui.h:37
+#: prefs.ui.h:36
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr ""
 
-#: Settings.ui.h:38
+#: prefs.ui.h:37
 msgid "Extension's GitHub Webpage"
 msgstr ""
 
-#: Settings.ui.h:39
+#: prefs.ui.h:38
 msgid "Issue Tracker"
 msgstr ""
 
-#: Settings.ui.h:40
+#: prefs.ui.h:39
 msgid "Changelog"
 msgstr ""
 
-#: Settings.ui.h:41
+#: prefs.ui.h:40
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
 msgstr ""
 
-#: Settings.ui.h:43
+#: prefs.ui.h:42
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
-#: Settings.ui.h:45
+#: prefs.ui.h:44
 msgid "About"
 msgstr ""
