@@ -67,15 +67,10 @@
     <property name="width_request">350</property>
     <property name="height_request">150</property>
     <property name="can_focus">0</property>
-    <property name="border_width">10</property>
     <property name="title" translatable="yes">Add NASA APOD API key</property>
     <property name="modal">1</property>
-    <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">1</property>
     <property name="icon_name">list-add</property>
-    <property name="type_hint">dialog</property>
-    <property name="skip_taskbar_hint">True</property>
-    <property name="skip_pager_hint">True</property>
     <child internal-child="content_area">
       <object class="GtkBox">
         <property name="visible">0</property>
@@ -95,7 +90,6 @@
           <object class="GtkLabel">
             <property name="can_focus">0</property>
             <property name="label" translatable="yes">The API key has to be 40 characters long.</property>
-            <property name="track_visited_links">False</property>
           </object>
         </child>
       </object>
@@ -115,7 +109,6 @@
           <object class="GtkButton" id="button1">
             <property name="label">gtk-cancel</property>
             <property name="receives_default">1</property>
-            <property name="use_stock">True</property>
             <property name="hexpand">1</property>
           </object>
         </child>
@@ -123,7 +116,6 @@
           <object class="GtkButton" id="button2">
             <property name="label">gtk-ok</property>
             <property name="receives_default">1</property>
-            <property name="use_stock">True</property>
             <property name="hexpand">1</property>
           </object>
         </child>
@@ -412,6 +404,7 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="download_folder">
+                                <property name="label">~/.cache/apod</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">end</property>
@@ -546,7 +539,10 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkSwitch" id="autorefresh_metered_network_switch"/>
+                              <object class="GtkSwitch" id="autorefresh_metered_network_switch">
+                                <property name="hexpand">1</property>
+                                <property name="halign">2</property>
+                              </object>
                             </child>
                           </object>
                         </property>
@@ -706,6 +702,7 @@ A pinned background won&apos;t be replaced by newer ones.</property>
               <object class="GtkImage" id="logo">
                 <property name="can_focus">0</property>
                 <property name="file">icons/nasa.svg</property>
+                <property name="height-request">290</property>
               </object>
             </child>
             <child>
@@ -721,7 +718,6 @@ A pinned background won&apos;t be replaced by newer ones.</property>
                 <property name="halign">center</property>
                 <child>
                   <object class="GtkLabel" id="extension_version_label">
-                    <property name="visible">0</property>
                     <property name="can_focus">0</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes">version: </property>
@@ -729,7 +725,6 @@ A pinned background won&apos;t be replaced by newer ones.</property>
                 </child>
                 <child>
                   <object class="GtkLabel" id="extension_version">
-                    <property name="visible">0</property>
                     <property name="can_focus">0</property>
                     <property name="halign">start</property>
                     <property name="label">...</property>
@@ -775,6 +770,8 @@ A pinned background won&apos;t be replaced by newer ones.</property>
 Elia Argentieri</property>
                 <property name="use_markup">1</property>
                 <property name="justify">center</property>
+                <property name="vexpand">1</property>
+                <property name="valign">2</property>
               </object>
             </child>
             <child>
@@ -785,6 +782,7 @@ See the &lt;a href=&quot;https://www.gnu.org/licenses/old-licenses/gpl-2.0.html&
                 <property name="use_markup">1</property>
                 <property name="justify">center</property>
                 <property name="wrap">1</property>
+                <property name="valign">2</property>
               </object>
             </child>
           </object>

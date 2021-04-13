@@ -12,6 +12,7 @@ const _ = Gettext.gettext;
 
 
 let settings;
+let window;
 
 
 function init() {
@@ -33,7 +34,7 @@ function buildHistoryFlowBoxChild(file, info) {
         throw info.path + " is not an image";
 
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/prefa.ui', ["history_flowboxchild"]);
+    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ["history_flowboxchild"]);
 
     let row = buildable.get_object("history_flowboxchild");
     let title_label = buildable.get_object("title");
@@ -48,7 +49,7 @@ function buildHistoryFlowBoxChild(file, info) {
 
     title_label.set_text(info.title);
     date_label.set_text(info.date);
-    //row.get_style_context().add_provider(css, 0);
+
     return row;
 }
 
@@ -78,7 +79,7 @@ function buildPrefsWidget(){
     // Prepare labels and controls
     let buildable = new Gtk.Builder();
     buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ['prefs_widget']);
-    let notebook = buildable.get_object('prefs_widget');
+    let prefsWidget = buildable.get_object('prefs_widget');
 
     buildable.get_object('extension_version').set_text(Me.metadata.version.toString());
 
@@ -89,7 +90,7 @@ function buildPrefsWidget(){
     let lsSwitch = buildable.get_object('lock_screen_switch');
     let bgCombo = buildable.get_object('background_combo');
     let lsCombo = buildable.get_object('lock_screen_combo');
-    let fileChooser = buildable.get_object('download_folder');
+    let downloadButton = buildable.get_object('download_folder');
     let imageResCombo = buildable.get_object('image_resolution_combo');
     let imageResMeteredCombo = buildable.get_object('image_resolution_metered_combo');
     let refreshSwitch = buildable.get_object('autorefresh_metered_network_switch');
@@ -98,6 +99,10 @@ function buildPrefsWidget(){
     let apiKeysReset = buildable.get_object('api_keys_reset');
     let historyFlowBox = buildable.get_object('history_flowbox');
     let historyScroll = buildable.get_object('history_scroll');
+
+    // Work around: GTK4 seems to require absolute file paths in builder files
+    let logo = buildable.get_object('logo');
+    logo.set_from_file(Me.dir.get_path() + '/icons/nasa.svg');
 
     let downloadFolder = Utils.getDownloadFolder();
 
@@ -122,17 +127,36 @@ function buildPrefsWidget(){
     settings.connect('changed::screensaver-options', function() { Utils.setBackgroundBasedOnSettings() });
 
     // Download folder
-/*    fileChooser.set_filename(downloadFolder);
-    fileChooser.add_shortcut_folder_uri("file://" + GLib.get_user_cache_dir() + "/apod");
-    fileChooser.connect('file-set', function(widget) {
-        downloadFolder = widget.get_filename() + '/';
-        settings.set_string('download-folder', downloadFolder);
-        // Empty history page
-        historyFlowBox.get_children().forEach(function(child) {
-            child.destroy();
+    downloadButton.label = downloadFolder;
+    downloadButton.connect('clicked', function() {
+        let fileChooser = new Gtk.FileChooserDialog({
+            title: _("Choose download folder"),
+            action: Gtk.FileChooserAction.SELECT_FOLDER,
+            transient_for: window,
+            modal: true
         });
+        fileChooser.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+        fileChooser.add_button(_("Select"), Gtk.ResponseType.ACCEPT);
+        fileChooser.add_shortcut_folder(Gio.File.new_for_path(GLib.get_user_cache_dir() + "/apod"));
+        fileChooser.connect('response', function (dialog, response) {
+            Utils.log('FileChooser response: ' + response);
+            if (response == Gtk.ResponseType.ACCEPT) {
+                downloadFolder = fileChooser.get_file().get_path() + '/';
+                settings.set_string('download-folder', downloadFolder);
+                downloadButton.label = downloadFolder;
+                // Empty history page
+                let child = historyFlowBox.get_first_child();
+                while (child != null) {
+                    let ex_child = child;
+                    child = child.get_next_sibling();
+                    historyFlowBox.remove(ex_child);
+                }
+            }
+            fileChooser.destroy();
+        });
+        fileChooser.show();
     });
-*/
+
     // Network page
     // - Network usage frame
     settings.bind('image-resolution', imageResCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
@@ -142,17 +166,26 @@ function buildPrefsWidget(){
     // - API key frame
     function populateApiKeysListBox() {
         let keys = settings.get_strv('api-keys');
+        Utils.log('keys: ' + keys);
         let child = apiKeysListBox.get_first_child();
         while (child != null) {
-            child.destroy();
+            let ex_child = child;
             child = child.get_next_sibling();
+            Utils.log('Removing row for ' + ex_child.get_child().get_first_child().get_text());
+            apiKeysListBox.remove(ex_child);
         }
         keys.forEach(function(key, index) {
             let [item, button] = buildApiKeyItem(key);
             button.connect('clicked', function () {
-                keys.pop(index);
+                // array.pop has no argument and always pops the last element of the array
+                // since I don't care about order, copy the last element to the index to be deleted
+                //  and then pop the copied last element
+                Utils.log('Remove key ' + keys[index]);
+                keys[index] = keys[keys.length - 1];
+                keys.pop();
                 settings.set_strv('api-keys', keys);
             });
+            Utils.log('Adding row for ' + key + ' at position ' + index);
             apiKeysListBox.insert(item, index);
         });
     }
@@ -185,6 +218,7 @@ function buildPrefsWidget(){
     let pinned = settings.get_string('pinned-background');
 
     function load_files_thumbnails(limit = 6) {
+        Utils.log('load_files_thumbnails');
         let file_name, i = 0;
         while ((file_name = file_names.pop()) != null && i < limit) {
             try {
@@ -193,7 +227,7 @@ function buildPrefsWidget(){
                 let info = Utils.parse_path(path);
                 let child = buildHistoryFlowBoxChild(file, info);
                 child.set_name(info.filename);
-                historyFlowBox.add(child);
+                historyFlowBox.insert(child, -1);
                 if (pinned == info.filename)
                     historyFlowBox.select_child(child);
                 i++;
@@ -230,17 +264,22 @@ function buildPrefsWidget(){
 
     historyScroll.connect('edge-reached', function(window, pos) {
         if (pos == 3) {  // if user reached the bottom of the SrolledWindow
+            Utils.log('Reached bottom of SrolledWindow');
             load_files_thumbnails();
         }
     });
 
-    notebook.connect('switch-page', function(widget, page, page_index) {
-        if (page_index == 1 && historyFlowBox.get_children().length == 0) {
+    prefsWidget.connect('switch-page', function(widget, page, page_index) {
+        Utils.log('Switched to page ' + page_index);
+        if (page_index == 2 && historyFlowBox.get_first_child() == null) {
             file_names = Utils.list_files(downloadFolder);
             load_files_thumbnails();
         }
     });
 
-    return notebook;
-};
+    prefsWidget.connect('realize', () => {
+        window = prefsWidget.get_root();
+    });
 
+    return prefsWidget;
+};
