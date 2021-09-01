@@ -5,7 +5,7 @@ FILES = extension.js notifications.js utils.js prefs.js prefs.ui prefs.css metad
 MSGSRC = $(wildcard po/*.po)
 TOLOCALIZE = extension.js prefs.js
 
-.PHONY: install uninstall zip build clean locale potfile mergepo release
+.PHONY: install uninstall zip build clean locale potfile mergepo release eslint
 
 install: build
 	-mkdir -p $(INSTALL_PATH)/$(INSTALL_NAME)
@@ -58,3 +58,5 @@ po/nasa-apod.pot: $(TOLOCALIZE) prefs.ui.h
 po/%.mo: po/%.po
 	msgfmt -c $< -o $@
 
+eslint:
+	eslint -c eslintrc-gjs.yml extension.js notifications.js utils.js prefs.js

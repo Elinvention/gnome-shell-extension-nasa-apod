@@ -12,14 +12,17 @@ const _ = Gettext.gettext;
 
 
 let settings;
-let window;
+let pref_window;
 
 
+/**
+ *
+ */
 function init() {
     settings = ExtensionUtils.getSettings();
 
     let provider = new Gtk.CssProvider();
-    provider.load_from_path(Me.dir.get_path() + "/prefs.css");
+    provider.load_from_path(`${Me.dir.get_path()}/prefs.css`);
     Gtk.StyleContext.add_provider_for_display(
         Gdk.Display.get_default(),
         provider,
@@ -28,21 +31,24 @@ function init() {
     ExtensionUtils.initTranslations();
 }
 
+/**
+ * @param {Object} file an open wallpaper file
+ * @param {Object} info parsed information from filename
+ */
 function buildHistoryFlowBoxChild(file, info) {
-
     if (['jpg', 'png', 'gif'].indexOf(info.extension) < 0)
-        throw info.path + " is not an image";
+        throw new Error(`${info.path} is not an image`);
 
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ["history_flowboxchild"]);
+    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['history_flowboxchild']);
 
-    let row = buildable.get_object("history_flowboxchild");
-    let title_label = buildable.get_object("title");
-    let date_label = buildable.get_object("date");
-    let image = buildable.get_object("image");
+    let row = buildable.get_object('history_flowboxchild');
+    let title_label = buildable.get_object('title');
+    let date_label = buildable.get_object('date');
+    let image = buildable.get_object('image');
 
     let stream = file.read(null);
-    GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream, 200, 200, true, null, function(source, res) {
+    GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream, 200, 200, true, null, function (source, res) {
         let pix = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
         image.set_from_pixbuf(pix);
     });
@@ -53,9 +59,15 @@ function buildHistoryFlowBoxChild(file, info) {
     return row;
 }
 
+/**
+ * Builds a GTK widgeet containing a label with the API key written on it
+ *
+ * @param {string} apiKey the API key string
+ * @returns {Array} First element is the whole item, the second just the button inside the item
+ */
 function buildApiKeyItem(apiKey) {
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ['api_key_item']);
+    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['api_key_item']);
 
     let item = buildable.get_object('api_key_item');
     let label = buildable.get_object('api_key_label');
@@ -64,9 +76,12 @@ function buildApiKeyItem(apiKey) {
     return [item, button];
 }
 
+/**
+ * @returns {Array} First element is the dialog widget, the second is just the entry text
+ */
 function buildNewApiKeyDialog() {
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ['new_api_key_dialog']);
+    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['new_api_key_dialog']);
 
     let dialog = buildable.get_object('new_api_key_dialog');
     let entry = buildable.get_object('new_api_key_entry');
@@ -74,11 +89,13 @@ function buildNewApiKeyDialog() {
     return [dialog, entry];
 }
 
-function buildPrefsWidget(){
-
+/**
+ * @returns {Object} This extension's preference widget
+ */
+function buildPrefsWidget() {
     // Prepare labels and controls
     let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(Me.dir.get_path() + '/prefs.ui', ['prefs_widget']);
+    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['prefs_widget']);
     let prefsWidget = buildable.get_object('prefs_widget');
 
     buildable.get_object('extension_version').set_text(Me.metadata.version.toString());
@@ -102,7 +119,7 @@ function buildPrefsWidget(){
 
     // Work around: GTK4 seems to require absolute file paths in builder files
     let logo = buildable.get_object('logo');
-    logo.set_from_file(Me.dir.get_path() + '/icons/nasa.svg');
+    logo.set_from_file(`${Me.dir.get_path()}/icons/nasa.svg`);
 
     let downloadFolder = Utils.getDownloadFolder();
 
@@ -114,7 +131,7 @@ function buildPrefsWidget(){
     settings.bind('transient', transientSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
     transientSwitch.set_sensitive(settings.get_boolean('notify'));
-    settings.connect('changed::notify', function() {
+    settings.connect('changed::notify', function () {
         transientSwitch.set_sensitive(settings.get_boolean('notify'));
     });
 
@@ -123,30 +140,34 @@ function buildPrefsWidget(){
     settings.bind('set-lock-screen', lsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('background-options', bgCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('screensaver-options', lsCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
-    settings.connect('changed::background-options', function() { Utils.setBackgroundBasedOnSettings() });
-    settings.connect('changed::screensaver-options', function() { Utils.setBackgroundBasedOnSettings() });
+    settings.connect('changed::background-options', function () {
+        Utils.setBackgroundBasedOnSettings();
+    });
+    settings.connect('changed::screensaver-options', function () {
+        Utils.setBackgroundBasedOnSettings();
+    });
 
     // Download folder
     downloadButton.label = downloadFolder;
-    downloadButton.connect('clicked', function() {
+    downloadButton.connect('clicked', function () {
         let fileChooser = new Gtk.FileChooserDialog({
-            title: _("Choose download folder"),
+            title: _('Choose download folder'),
             action: Gtk.FileChooserAction.SELECT_FOLDER,
-            transient_for: window,
-            modal: true
+            transient_for: pref_window,
+            modal: true,
         });
-        fileChooser.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
-        fileChooser.add_button(_("Select"), Gtk.ResponseType.ACCEPT);
-        fileChooser.add_shortcut_folder(Gio.File.new_for_path(GLib.get_user_cache_dir() + "/apod"));
+        fileChooser.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
+        fileChooser.add_button(_('Select'), Gtk.ResponseType.ACCEPT);
+        fileChooser.add_shortcut_folder(Gio.File.new_for_path(`${GLib.get_user_cache_dir()}/apod`));
         fileChooser.connect('response', function (dialog, response) {
-            Utils.log('FileChooser response: ' + response);
-            if (response == Gtk.ResponseType.ACCEPT) {
-                downloadFolder = fileChooser.get_file().get_path() + '/';
+            Utils.log(`FileChooser response: ${response}`);
+            if (response === Gtk.ResponseType.ACCEPT) {
+                downloadFolder = `${fileChooser.get_file().get_path()}/`;
                 settings.set_string('download-folder', downloadFolder);
                 downloadButton.label = downloadFolder;
                 // Empty history page
                 let child = historyFlowBox.get_first_child();
-                while (child != null) {
+                while (child !== null) {
                     let ex_child = child;
                     child = child.get_next_sibling();
                     historyFlowBox.remove(ex_child);
@@ -164,28 +185,31 @@ function buildPrefsWidget(){
     settings.bind('refresh-metered', refreshSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
     // - API key frame
+    /**
+     *
+     */
     function populateApiKeysListBox() {
         let keys = settings.get_strv('api-keys');
-        Utils.log('keys: ' + keys);
+        Utils.log(`keys: ${keys}`);
         let child = apiKeysListBox.get_first_child();
-        while (child != null) {
+        while (child !== null) {
             let ex_child = child;
             child = child.get_next_sibling();
-            Utils.log('Removing row for ' + ex_child.get_child().get_first_child().get_text());
+            Utils.log(`Removing row for ${ex_child.get_child().get_first_child().get_text()}`);
             apiKeysListBox.remove(ex_child);
         }
-        keys.forEach(function(key, index) {
+        keys.forEach(function (key, index) {
             let [item, button] = buildApiKeyItem(key);
             button.connect('clicked', function () {
                 // array.pop has no argument and always pops the last element of the array
                 // since I don't care about order, copy the last element to the index to be deleted
                 //  and then pop the copied last element
-                Utils.log('Remove key ' + keys[index]);
+                Utils.log(`Remove key ${keys[index]}`);
                 keys[index] = keys[keys.length - 1];
                 keys.pop();
                 settings.set_strv('api-keys', keys);
             });
-            Utils.log('Adding row for ' + key + ' at position ' + index);
+            Utils.log(`Adding row for ${key} at position ${index}`);
             apiKeysListBox.insert(item, index);
         });
     }
@@ -196,10 +220,10 @@ function buildPrefsWidget(){
     apiKeysAdd.connect('clicked', function () {
         let [dialog, entry] = buildNewApiKeyDialog();
         dialog.show();
-        dialog.connect('response', function(_, response) {
-            if (response == Gtk.ResponseType.OK) {
+        dialog.connect('response', function (__, response) {
+            if (response === Gtk.ResponseType.OK) {
                 let key = entry.get_text();
-                if (key.length != 40)
+                if (key.length !== 40)
                     return;
                 let keys = settings.get_strv('api-keys');
                 keys.push(key);
@@ -209,7 +233,7 @@ function buildPrefsWidget(){
         });
     });
 
-    apiKeysReset.connect('clicked', function() {
+    apiKeysReset.connect('clicked', function () {
         settings.reset('api-keys');
     });
 
@@ -217,10 +241,13 @@ function buildPrefsWidget(){
     let file_names = [];
     let pinned = settings.get_string('pinned-background');
 
+    /**
+     * @param {number} [limit=6] the number of thumbnails to load at a time
+     */
     function load_files_thumbnails(limit = 6) {
         Utils.log('load_files_thumbnails');
         let file_name, i = 0;
-        while ((file_name = file_names.pop()) != null && i < limit) {
+        while ((file_name = file_names.pop()) !== undefined && i < limit) {
             try {
                 let path = downloadFolder + file_name;
                 let file = Gio.file_new_for_path(path);
@@ -228,23 +255,24 @@ function buildPrefsWidget(){
                 let child = buildHistoryFlowBoxChild(file, info);
                 child.set_name(info.filename);
                 historyFlowBox.insert(child, -1);
-                if (pinned == info.filename)
+                if (pinned === info.filename)
                     historyFlowBox.select_child(child);
-                i++;
             } catch (err) {
                 Utils.log(err);
+            } finally {
+                i++;
             }
-        };
-    };
+        }
+    }
 
     let previous_selection = null;
     historyFlowBox.connect('selected_children_changed', function () {
         let selected = historyFlowBox.get_selected_children();
         if (selected.length > 0) {
-            if (selected[0] == previous_selection) {
+            if (selected[0] === previous_selection) {
                 historyFlowBox.unselect_child(previous_selection);
             } else {
-                Utils.log('Background ' + selected[0].get_name() + ' pinned');
+                Utils.log(`Background ${selected[0].get_name()} pinned`);
                 settings.set_string('pinned-background', selected[0].get_name());
                 previous_selection = selected[0];
             }
@@ -254,32 +282,32 @@ function buildPrefsWidget(){
             previous_selection = null;
         }
     });
-    settings.connect('changed::pinned-background', function(s, key, value) {
-        if (value === undefined && previous_selection != null) {
+    settings.connect('changed::pinned-background', function (s, key, value) {
+        if (value === undefined && previous_selection !== null) {
             historyFlowBox.unselect_child(previous_selection);
             previous_selection = null;
         }
     });
 
 
-    historyScroll.connect('edge-reached', function(window, pos) {
-        if (pos == 3) {  // if user reached the bottom of the SrolledWindow
+    historyScroll.connect('edge-reached', function (__, pos) {
+        if (pos === 3) {  // if user reached the bottom of the SrolledWindow
             Utils.log('Reached bottom of SrolledWindow');
             load_files_thumbnails();
         }
     });
 
-    prefsWidget.connect('switch-page', function(widget, page, page_index) {
-        Utils.log('Switched to page ' + page_index);
-        if (page_index == 2 && historyFlowBox.get_first_child() == null) {
+    prefsWidget.connect('switch-page', function (widget, page, page_index) {
+        Utils.log(`Switched to page ${page_index}`);
+        if (page_index === 2 && historyFlowBox.get_first_child() === null) {
             file_names = Utils.list_files(downloadFolder);
             load_files_thumbnails();
         }
     });
 
     prefsWidget.connect('realize', () => {
-        window = prefsWidget.get_root();
+        pref_window = prefsWidget.get_root();
     });
 
     return prefsWidget;
-};
+}
