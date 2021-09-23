@@ -34,21 +34,6 @@ Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefau
 
 
 /**
- *
- */
-function openPrefs() {
-    if (typeof ExtensionUtils.openPrefs === 'function') {
-        ExtensionUtils.openPrefs();
-    } else {
-        Util.spawn(['sh', '-c',
-            `command -v gnome-extensions 2>&1 && gnome-extensions prefs ${
-                Me.uuid
-            } || gnome-shell-extension-prefs ${
-                Me.uuid}`]);
-    }
-}
-
-/**
  * @param {string} url An URL to open on the default browser
  */
 function xdg_open(url) {
@@ -107,13 +92,13 @@ const NasaApodIndicator = GObject.registerClass({
 
         this._descriptionActions  = [{'name': _('NASA APOD website'), 'fun': open_website}];
         this._apiKeyErrorActions  = [{'name': _('Get an API key'),    'fun': open_getapi},
-            {'name': _('Settings'),          'fun': openPrefs}];
+            {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()} ];
         this._networkErrorActions = [{
             'name': _('Retry'),             'fun': function () {
                 this._refresh(true);
             }.bind(this),
         },
-        {'name': _('Settings'),          'fun': openPrefs}];
+        {'name': _('Settings'),          'fun': () => ExtensionUtils.openPrefs()}];
 
         this.indicatorIcon = new St.Icon({style_class: 'system-status-icon'});
         this.indicatorIcon.gicon = Gio.icon_new_for_string(`${Me.path}/icons/saturn.svg`);
@@ -165,7 +150,7 @@ const NasaApodIndicator = GObject.registerClass({
         this.refreshItem.connect('activate', this._refreshButton.bind(this));
 
         this.settingsItem = new PopupMenu.PopupMenuItem(_('Settings'));
-        this.settingsItem.connect('activate', openPrefs);
+        this.settingsItem.connect('activate', () => ExtensionUtils.openPrefs());
 
         this.menu.addMenuItem(this.titleItem);
         this.menu.addMenuItem(this.descItem);
