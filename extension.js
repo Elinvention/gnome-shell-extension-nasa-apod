@@ -91,14 +91,10 @@ const NasaApodIndicator = GObject.registerClass({
         super._init(0.0, IndicatorName);
 
         this._descriptionActions  = [{'name': _('NASA APOD website'), 'fun': open_website}];
-        this._apiKeyErrorActions  = [{'name': _('Get an API key'),    'fun': open_getapi},
-            {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()} ];
-        this._networkErrorActions = [{
-            'name': _('Retry'),             'fun': function () {
-                this._refresh(true);
-            }.bind(this),
-        },
-        {'name': _('Settings'),          'fun': () => ExtensionUtils.openPrefs()}];
+        this._apiKeyErrorActions  = [{'name': _('Get an API key'), 'fun': open_getapi},
+            {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()}];
+        this._networkErrorActions = [{'name': _('Retry'), 'fun': () => this._refresh(true)},
+            {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()}];
 
         this.indicatorIcon = new St.Icon({style_class: 'system-status-icon'});
         this.indicatorIcon.gicon = Gio.icon_new_for_string(`${Me.path}/icons/saturn.svg`);
@@ -115,9 +111,9 @@ const NasaApodIndicator = GObject.registerClass({
 
         // Indicator visibility
         this.visible = !this._settings.get_boolean('hide'); // set initial state
-        this._settings.connect('changed::hide', function () {
+        this._settings.connect('changed::hide', () => {
             this.visible = !this._settings.get_boolean('hide');
-        }.bind(this));
+        });
 
         // Build the menu
         this.titleItem = new PopupMenu.PopupMenuItem(_('No title available'));
@@ -165,10 +161,10 @@ const NasaApodIndicator = GObject.registerClass({
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this.settingsItem);
 
-        this.menu.connect('open-state-changed', function (menu, isOpen) {
+        this.menu.connect('open-state-changed', (menu, isOpen) => {
             if (isOpen)
                 this._updateMenuItems();
-        }.bind(this));
+        });
 
         // Try to parse stored JSON
         let json = this._settings.get_string('last-json');
@@ -273,9 +269,7 @@ const NasaApodIndicator = GObject.registerClass({
                 seconds = 10; // ensure the timeout is not fired too many times
                 Utils.log('Less than 10 seconds timeout?');
             }
-            this._timeout = Mainloop.timeout_add_seconds(seconds, function () {
-                this._refresh(false);
-            }.bind(this));
+            this._timeout = Mainloop.timeout_add_seconds(seconds, () => this._refresh(false));
             if (seconds > 60) {
                 let timezone = GLib.TimeZone.new_local();
                 let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
@@ -379,7 +373,7 @@ const NasaApodIndicator = GObject.registerClass({
             let request = Soup.Message.new('GET', url);
 
             // queue the http request
-            httpSession.queue_message(request, function (session, message) {
+            httpSession.queue_message(request, (session, message) => {
                 if (message.status_code === 200) {
                     // Successful request
                     // log remaining requests
@@ -407,7 +401,7 @@ const NasaApodIndicator = GObject.registerClass({
                         this._apiKeyErrorActions
                     );
                 } else if (message.status_code === 429) {
-                    Utils.log(`API key ${this._apiKeys[0]}is rate limited.`);
+                    Utils.log(`API key ${this._apiKeys[0]} is rate limited.`);
                     this._apiKeys.shift();
                     makeRequest();
                 } else {
@@ -418,7 +412,7 @@ const NasaApodIndicator = GObject.registerClass({
                     );
                     this._refreshDone(RETRY_NETWORK_ERROR);
                 }
-            }.bind(this));
+            });
         }.bind(this);
         makeRequest();
     }
@@ -496,13 +490,13 @@ const NasaApodIndicator = GObject.registerClass({
         let request = Soup.Message.new('GET', url);
 
         // got_headers event
-        request.connect('got_headers', function (message) {
+        request.connect('got_headers', message => {
             total_size = message.response_headers.get_content_length();
             Utils.log(`Download size: ${total_size}B`);
         });
 
         // got_chunk event
-        request.connect('got_chunk', function (message, chunk) {
+        request.connect('got_chunk', (message, chunk) => {
             bytes_so_far += chunk.length;
 
             if (total_size) {
@@ -513,10 +507,10 @@ const NasaApodIndicator = GObject.registerClass({
             let written = fstream.write(chunk.get_data(), null);
             if (written !== chunk.length)
                 Utils.log(`Write error: fstream.write returned ${written}, but ${chunk.length} expected`);
-        }.bind(this));
+        });
 
         // queue the http request
-        httpSession.queue_message(request, function (session, message) {
+        httpSession.queue_message(request, (session, message) => {
             // request completed
             fstream.close(null);
 
@@ -536,7 +530,7 @@ const NasaApodIndicator = GObject.registerClass({
                 file.delete(null);
                 this._refreshDone();
             }
-        }.bind(this));
+        });
     }
 
     stop() {
