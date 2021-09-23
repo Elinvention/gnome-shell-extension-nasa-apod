@@ -3,7 +3,6 @@ const St = imports.gi.St;
 const Main = imports.ui.main;
 const Soup = imports.gi.Soup;
 const GObject = imports.gi.GObject;
-const Mainloop = imports.mainloop;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Util = imports.misc.util;
@@ -12,6 +11,7 @@ const PopupMenu = imports.ui.popupMenu;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
+const Timer = Me.imports.timer.Timer;
 const Utils = Me.imports.utils;
 const Notifications = Me.imports.notifications;
 
@@ -84,6 +84,7 @@ function set_text(item, text) {
     item.label.set_text(text);
 }
 
+
 const NasaApodIndicator = GObject.registerClass({
     GTypeName: IndicatorName,
 }, class NasaApodIndicator extends PanelMenu.Button {
@@ -106,7 +107,6 @@ const NasaApodIndicator = GObject.registerClass({
         this._network_monitor = Gio.network_monitor_get_default();
 
         this._updatePending = false;
-        this._timeout = null;
         this._settings = ExtensionUtils.getSettings();
 
         // Indicator visibility
@@ -219,6 +219,7 @@ const NasaApodIndicator = GObject.registerClass({
         } else if (this._secondsFromLastRefresh() < 10) {
             this.refreshItem.setSensitive(false);
             set_text(this.refreshItem, _('Wait 10 seconds...'));
+            new Timer(10, 'refresh label', this._updateMenuItems.bind(this));
         } else {
             this.refreshItem.setSensitive(true);
             let text = '';
@@ -258,18 +259,16 @@ const NasaApodIndicator = GObject.registerClass({
     }
 
     _restartTimeout(seconds = TIMEOUT_SECONDS) {
-        if (this._timeout)
-            Mainloop.source_remove(this._timeout);
+        Timer.remove('update');
         if (seconds < 0) {
             this.refreshStatusItem.label.set_text(_('No refresh scheduled'));
-            this._timeout = undefined;
             Utils.log('Timeout removed');
         } else {
             if (seconds < 10) {
                 seconds = 10; // ensure the timeout is not fired too many times
                 Utils.log('Less than 10 seconds timeout?');
             }
-            this._timeout = Mainloop.timeout_add_seconds(seconds, () => this._refresh(false));
+            new Timer(seconds, 'update', () => this._refresh(false));
             if (seconds > 60) {
                 let timezone = GLib.TimeZone.new_local();
                 let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
@@ -534,9 +533,7 @@ const NasaApodIndicator = GObject.registerClass({
     }
 
     stop() {
-        if (this._timeout)
-            Mainloop.source_remove(this._timeout);
-        this._timeout = undefined;
+        Timer.remove_all();
         this.menu.removeAll();
     }
 });
