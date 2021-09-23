@@ -1,3 +1,6 @@
+/* exported init */
+/* exported enable */
+/* exported disable */
 
 const St = imports.gi.St;
 const Main = imports.ui.main;
@@ -37,7 +40,7 @@ Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefau
  * @param {string} url An URL to open on the default browser
  */
 function xdg_open(url) {
-    Utils.log(`xdg-open ${url}`);
+    Utils.ext_log(`xdg-open ${url}`);
     Util.spawn(['xdg-open', url]);
 }
 
@@ -172,9 +175,9 @@ const NasaApodIndicator = GObject.registerClass({
             this._parseData(json);
         } catch (e) {
             if (e instanceof MediaTypeError) {
-                Utils.log(e.title);
+                Utils.ext_log(e.title);
             } else {
-                Utils.log('Error parsing stored JSON.');
+                Utils.ext_log('Error parsing stored JSON.');
                 Utils.dump(e);
                 this._settings.reset('last-json');
                 this._settings.reset('last-refresh');
@@ -262,21 +265,21 @@ const NasaApodIndicator = GObject.registerClass({
         Timer.remove('update');
         if (seconds < 0) {
             this.refreshStatusItem.label.set_text(_('No refresh scheduled'));
-            Utils.log('Timeout removed');
+            Utils.ext_log('Timeout removed');
         } else {
             if (seconds < 10) {
                 seconds = 10; // ensure the timeout is not fired too many times
-                Utils.log('Less than 10 seconds timeout?');
+                Utils.ext_log('Less than 10 seconds timeout?');
             }
             new Timer(seconds, 'update', () => this._refresh(false));
             if (seconds > 60) {
                 let timezone = GLib.TimeZone.new_local();
                 let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
                 this.refreshStatusItem.label.set_text(_('Next refresh: {0}').replace('{0}', localTime));
-                Utils.log(`Next check @ local time ${localTime}`);
+                Utils.ext_log(`Next check @ local time ${localTime}`);
             } else {
                 this.refreshStatusItem.label.set_text(_('Next refresh in less than a minute'));
-                Utils.log('Next check in less than a minute');
+                Utils.ext_log('Next check in less than a minute');
             }
         }
     }
@@ -324,23 +327,23 @@ const NasaApodIndicator = GObject.registerClass({
 
     _refresh(user_initiated = false) {
         if (this._updatePending) {
-            Utils.log('refresh: a previous refresh is still pending');
+            Utils.ext_log('refresh: a previous refresh is still pending');
             this._refreshDone();
             return;
         }
         if (this._secondsFromLastRefresh() < 10) {
-            Utils.log('refresh: wait at least 10 seconds between each requests');
+            Utils.ext_log('refresh: wait at least 10 seconds between each requests');
             this._refreshDone(10);
             return;
         }
         if (!this._network_monitor.get_network_available()) {
-            Utils.log('refresh: network is not available');
+            Utils.ext_log('refresh: network is not available');
             this._refreshDone(RETRY_NETWORK_UNAVAILABLE);
             return;
         }
         if (!user_initiated && this._network_monitor.get_network_metered() &&
                 !this._settings.get_boolean('refresh-metered')) {
-            Utils.log('refresh: metered connection detected! Aborting refresh.');
+            Utils.ext_log('refresh: metered connection detected! Aborting refresh.');
             this._refreshDone(-1);
             return;
         }
@@ -366,7 +369,7 @@ const NasaApodIndicator = GObject.registerClass({
             let url = `${NasaApodURL}?api_key=${apiKey}`;
             if (pinned.length > 0)
                 url += `&date=${Utils.parse_path(pinned).date}`;
-            Utils.log(url);
+            Utils.ext_log(url);
 
             // create an http message
             let request = Soup.Message.new('GET', url);
@@ -378,7 +381,7 @@ const NasaApodIndicator = GObject.registerClass({
                     // log remaining requests
                     let limit = message.response_headers.get('X-RateLimit-Limit');
                     let remaining = message.response_headers.get('X-RateLimit-Remaining');
-                    Utils.log(`${remaining}/${limit} requests per hour remaining`);
+                    Utils.ext_log(`${remaining}/${limit} requests per hour remaining`);
 
                     let data = message.response_body.data;
                     this._settings.set_string('last-json', data);
@@ -400,7 +403,7 @@ const NasaApodIndicator = GObject.registerClass({
                         this._apiKeyErrorActions
                     );
                 } else if (message.status_code === 429) {
-                    Utils.log(`API key ${this._apiKeys[0]} is rate limited.`);
+                    Utils.ext_log(`API key ${this._apiKeys[0]} is rate limited.`);
                     this._apiKeys.shift();
                     makeRequest();
                 } else {
@@ -420,7 +423,7 @@ const NasaApodIndicator = GObject.registerClass({
         this._updatePending = false;
         this._restartTimeout(seconds);
         this._updateMenuItems();
-        Utils.log('Refresh done.');
+        Utils.ext_log('Refresh done.');
     }
 
     _parseData(json) {
@@ -466,7 +469,7 @@ const NasaApodIndicator = GObject.registerClass({
 
             this._download_image(url, file);
         } else {
-            Utils.log(`${this.data['filename']} already downloaded`);
+            Utils.ext_log(`${this.data['filename']} already downloaded`);
             this._setBackground();
             if (this._settings.get_string('pinned-background') === '')
                 this._refreshDone();
@@ -476,7 +479,7 @@ const NasaApodIndicator = GObject.registerClass({
     }
 
     _download_image(url, file) {
-        Utils.log(`Downloading ${url} to ${file.get_uri()}`);
+        Utils.ext_log(`Downloading ${url} to ${file.get_uri()}`);
 
         // open the Gfile
         let fstream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
@@ -491,7 +494,7 @@ const NasaApodIndicator = GObject.registerClass({
         // got_headers event
         request.connect('got_headers', message => {
             total_size = message.response_headers.get_content_length();
-            Utils.log(`Download size: ${total_size}B`);
+            Utils.ext_log(`Download size: ${total_size}B`);
         });
 
         // got_chunk event
@@ -505,7 +508,7 @@ const NasaApodIndicator = GObject.registerClass({
             }
             let written = fstream.write(chunk.get_data(), null);
             if (written !== chunk.length)
-                Utils.log(`Write error: fstream.write returned ${written}, but ${chunk.length} expected`);
+                Utils.ext_log(`Write error: fstream.write returned ${written}, but ${chunk.length} expected`);
         });
 
         // queue the http request
@@ -514,7 +517,7 @@ const NasaApodIndicator = GObject.registerClass({
             fstream.close(null);
 
             if (message.status_code === 200) {
-                Utils.log('Download successful');
+                Utils.ext_log('Download successful');
                 this._setBackground();
                 this._notifyAPIResults();
                 if (this._settings.get_string('pinned-background') === '')

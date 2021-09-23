@@ -5,6 +5,10 @@ const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 
 
+/* exported notify */
+/* exported notifyError */
+
+
 /**
  * @param {MessageTray.Notification} notification The notification object to attach actions to
  * @param {Object[]} actions Each action is translated to a button under the notification bubble

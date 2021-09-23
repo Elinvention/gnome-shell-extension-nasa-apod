@@ -40,7 +40,7 @@ mergepo: po/nasa-apod.pot
 		msgmerge -U $$l po/nasa-apod.pot; \
 	done;
 
-release: clean zip
+release: eslint clean zip
 
 nasa_apod.zip: schemas/gschemas.compiled locale
 	zip -r nasa_apod.zip $(FILES)

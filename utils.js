@@ -1,3 +1,11 @@
+/* exported ext_log */
+/* exported dump */
+/* exported getDownloadFolder */
+/* exported setBackgroundBasedOnSettings */
+/* exported list_files */
+/* exported parse_uri */
+
+
 const {Gio, GLib} = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
@@ -5,7 +13,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 /**
  * @param {string} msg Message to log
  */
-function log(msg) {
+function ext_log(msg) {
     print(`NASA APOD extension: ${msg}`);
 }
 

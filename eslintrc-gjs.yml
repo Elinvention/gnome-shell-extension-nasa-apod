@@ -173,7 +173,7 @@ rules:
   no-unused-vars:
     - error
     # Vars use a suffix _ instead of a prefix because of file-scope private vars
-    - varsIgnorePattern: (^unused|_$|^init$|^enable$|^disable$|^buildPrefsWidget$)
+    - varsIgnorePattern: (^unused|_$)
       argsIgnorePattern: ^(unused|_)
   no-useless-call: error
   no-useless-computed-key: error

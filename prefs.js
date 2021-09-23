@@ -1,3 +1,7 @@
+/* exported init */
+/* exported buildPrefsWidget */
+
+
 const {Gtk, Gdk, Gio, GLib, GdkPixbuf} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -160,7 +164,7 @@ function buildPrefsWidget() {
         fileChooser.add_button(_('Select'), Gtk.ResponseType.ACCEPT);
         fileChooser.add_shortcut_folder(Gio.File.new_for_path(`${GLib.get_user_cache_dir()}/apod`));
         fileChooser.connect('response', function (dialog, response) {
-            Utils.log(`FileChooser response: ${response}`);
+            Utils.ext_log(`FileChooser response: ${response}`);
             if (response === Gtk.ResponseType.ACCEPT) {
                 downloadFolder = `${fileChooser.get_file().get_path()}/`;
                 settings.set_string('download-folder', downloadFolder);
@@ -190,12 +194,12 @@ function buildPrefsWidget() {
      */
     function populateApiKeysListBox() {
         let keys = settings.get_strv('api-keys');
-        Utils.log(`keys: ${keys}`);
+        Utils.ext_log(`keys: ${keys}`);
         let child = apiKeysListBox.get_first_child();
         while (child !== null) {
             let ex_child = child;
             child = child.get_next_sibling();
-            Utils.log(`Removing row for ${ex_child.get_child().get_first_child().get_text()}`);
+            Utils.ext_log(`Removing row for ${ex_child.get_child().get_first_child().get_text()}`);
             apiKeysListBox.remove(ex_child);
         }
         keys.forEach(function (key, index) {
@@ -204,12 +208,12 @@ function buildPrefsWidget() {
                 // array.pop has no argument and always pops the last element of the array
                 // since I don't care about order, copy the last element to the index to be deleted
                 //  and then pop the copied last element
-                Utils.log(`Remove key ${keys[index]}`);
+                Utils.ext_log(`Remove key ${keys[index]}`);
                 keys[index] = keys[keys.length - 1];
                 keys.pop();
                 settings.set_strv('api-keys', keys);
             });
-            Utils.log(`Adding row for ${key} at position ${index}`);
+            Utils.ext_log(`Adding row for ${key} at position ${index}`);
             apiKeysListBox.insert(item, index);
         });
     }
@@ -245,7 +249,7 @@ function buildPrefsWidget() {
      * @param {number} [limit=6] the number of thumbnails to load at a time
      */
     function load_files_thumbnails(limit = 6) {
-        Utils.log('load_files_thumbnails');
+        Utils.ext_log('load_files_thumbnails');
         let file_name, i = 0;
         while ((file_name = file_names.pop()) !== undefined && i < limit) {
             try {
@@ -258,7 +262,7 @@ function buildPrefsWidget() {
                 if (pinned === info.filename)
                     historyFlowBox.select_child(child);
             } catch (err) {
-                Utils.log(err);
+                Utils.ext_log(err);
             } finally {
                 i++;
             }
@@ -272,12 +276,12 @@ function buildPrefsWidget() {
             if (selected[0] === previous_selection) {
                 historyFlowBox.unselect_child(previous_selection);
             } else {
-                Utils.log(`Background ${selected[0].get_name()} pinned`);
+                Utils.ext_log(`Background ${selected[0].get_name()} pinned`);
                 settings.set_string('pinned-background', selected[0].get_name());
                 previous_selection = selected[0];
             }
         } else {
-            Utils.log('Background unpinned');
+            Utils.ext_log('Background unpinned');
             settings.reset('pinned-background');
             previous_selection = null;
         }
@@ -292,13 +296,13 @@ function buildPrefsWidget() {
 
     historyScroll.connect('edge-reached', function (__, pos) {
         if (pos === 3) {  // if user reached the bottom of the SrolledWindow
-            Utils.log('Reached bottom of SrolledWindow');
+            Utils.ext_log('Reached bottom of SrolledWindow');
             load_files_thumbnails();
         }
     });
 
     prefsWidget.connect('switch-page', function (widget, page, page_index) {
-        Utils.log(`Switched to page ${page_index}`);
+        Utils.ext_log(`Switched to page ${page_index}`);
         if (page_index === 2 && historyFlowBox.get_first_child() === null) {
             file_names = Utils.list_files(downloadFolder);
             load_files_thumbnails();
