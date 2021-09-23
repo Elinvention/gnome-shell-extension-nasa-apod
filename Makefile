@@ -52,7 +52,7 @@ prefs.ui.h:
 	intltool-extract --type=gettext/glade prefs.ui
 
 po/nasa-apod.pot: $(TOLOCALIZE) prefs.ui.h
-	xgettext -L Perl -k_ -kN_ --from-code=UTF-8 --package-name "NASA APOD Wallpaper Changer" -o po/nasa-apod.pot $(TOLOCALIZE)
+	xgettext -L JavaScript -k_ -kN_ --from-code=UTF-8 --package-name "NASA APOD Wallpaper Changer" -o po/nasa-apod.pot $(TOLOCALIZE)
 	xgettext -L C -k_ -kN_ --join-existing --from-code=UTF-8 -o po/nasa-apod.pot prefs.ui.h
 
 po/%.mo: po/%.po

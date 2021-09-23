@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-13 14:58+0200\n"
+"POT-Creation-Date: 2021-09-23 18:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,139 +17,143 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:67
+#: extension.js:85
 msgid "Media type {0} not supported."
 msgstr ""
 
-#: extension.js:68
+#: extension.js:86
 msgid "No picture for today 😞. Please visit NASA APOD website."
 msgstr ""
 
-#: extension.js:84 extension.js:127
+#: extension.js:108 extension.js:152
 msgid "NASA APOD website"
 msgstr ""
 
-#: extension.js:85
+#: extension.js:109
 msgid "Get an API key"
 msgstr ""
 
-#: extension.js:86 extension.js:88 extension.js:142 prefs.ui.h:21
+#: extension.js:110 extension.js:116 extension.js:167 prefs.ui.h:21
 msgid "Settings"
 msgstr ""
 
-#: extension.js:87
+#: extension.js:112
 msgid "Retry"
 msgstr ""
 
-#: extension.js:113
+#: extension.js:138
 msgid "No title available"
 msgstr ""
 
-#: extension.js:117
+#: extension.js:142
 msgid "No description available"
 msgstr ""
 
-#: extension.js:123
+#: extension.js:148
 msgid "No copyright information available"
 msgstr ""
 
-#: extension.js:130
+#: extension.js:155 extension.js:283
 msgid "No refresh scheduled"
 msgstr ""
 
-#: extension.js:133
+#: extension.js:158
 msgid "Open Wallpaper Folder"
 msgstr ""
 
-#: extension.js:136
+#: extension.js:161
 msgid "Set Wallpaper"
 msgstr ""
 
-#: extension.js:139 extension.js:222
+#: extension.js:164 extension.js:247
 msgid "Refresh"
 msgstr ""
 
-#: extension.js:209
+#: extension.js:234
 msgid "Refreshing..."
 msgstr ""
 
-#: extension.js:212
+#: extension.js:237
 msgid "Network unavailable"
 msgstr ""
 
-#: extension.js:215
+#: extension.js:240
 msgid "Wait 10 seconds..."
 msgstr ""
 
-#: extension.js:220
+#: extension.js:245
 msgid "Unpin and Refresh"
 msgstr ""
 
-#: extension.js:224
+#: extension.js:249
 msgid " (metered network)"
 msgstr ""
 
-#: extension.js:238
+#: extension.js:263
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
 msgstr ""
 
-#: extension.js:270
+#: extension.js:297
 msgid "Next refresh: {0}"
 msgstr ""
 
-#: extension.js:273
+#: extension.js:300
 msgid "Next refresh in less than a minute"
 msgstr ""
 
-#: extension.js:344
+#: extension.js:372
 msgid "Pending refresh"
 msgstr ""
 
-#: extension.js:348
+#: extension.js:376
 msgid "Over rate limit (error 429)"
 msgstr ""
 
-#: extension.js:349
+#: extension.js:377
 msgid ""
 "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
 "just for you."
 msgstr ""
 
-#: extension.js:387
+#: extension.js:415
 msgid "Error downloading image"
 msgstr ""
 
-#: extension.js:392
+#: extension.js:420
 msgid "Invalid NASA API key (error 403)"
 msgstr ""
 
-#: extension.js:393
+#: extension.js:421
 msgid "Check that your key is correct or use the default key."
 msgstr ""
 
-#: extension.js:401
+#: extension.js:429
 msgid "Network error"
 msgstr ""
 
-#: extension.js:402 extension.js:523
+#: extension.js:430 extension.js:548
 msgid "HTTP status code {0}."
 msgstr ""
 
-#: extension.js:522
+#: extension.js:526
+msgid "Download {0} done"
+msgstr ""
+
+#: extension.js:547
 msgid "Couldn't fetch image from {0}"
 msgstr ""
 
-#: prefs.js:133
+#: prefs.js:154
 msgid "Choose download folder"
 msgstr ""
 
-#: prefs.js:138
+#: prefs.js:159
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:139
+#: prefs.js:160
 msgid "Select"
 msgstr ""
 
