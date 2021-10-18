@@ -14,16 +14,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Install dependencies
+    - name: Install npm dependencies
       run: npm install
 
     - name: Check code with eslint
       run: |
-        export PATH="$PATH:$GITHUB_WORKSPACE/node_modules/.bin/"
-        echo $PATH
-        which eslint
-        test -x "$GITHUB_WORKSPACE/node_modules/.bin/eslint" || echo eslint not found
+        export PATH="$PATH:$GITHUB_WORKSPACE/node_modules/.bin"
         make eslint
+
+    - name: Install intltool
+      run: sudo apt-get install -y intltool
+
+    - name: Install libglib2.0-dev
+      run: sudo apt-get install -y libglib2.0-dev
 
     - name: Generate extension zip
       run: make zip
