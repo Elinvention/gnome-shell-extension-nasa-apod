@@ -15,23 +15,10 @@ Gettext.bindtextdomain('nasa-apod', Me.dir.get_child('locale').get_path());
 const _ = Gettext.gettext;
 
 
-let settings;
-let pref_window;
-
-
 /**
- *
+ * https://gjs.guide/extensions/review-guidelines/review-guidelines.html#only-use-init-for-initialization
  */
 function init() {
-    settings = ExtensionUtils.getSettings();
-
-    let provider = new Gtk.CssProvider();
-    provider.load_from_path(`${Me.dir.get_path()}/prefs.css`);
-    Gtk.StyleContext.add_provider_for_display(
-        Gdk.Display.get_default(),
-        provider,
-        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-
     ExtensionUtils.initTranslations();
 }
 
@@ -97,6 +84,15 @@ function buildNewApiKeyDialog() {
  * @returns {Object} This extension's preference widget
  */
 function buildPrefsWidget() {
+    let settings = ExtensionUtils.getSettings();
+
+    let provider = new Gtk.CssProvider();
+    provider.load_from_path(`${Me.dir.get_path()}/prefs.css`);
+    Gtk.StyleContext.add_provider_for_display(
+        Gdk.Display.get_default(),
+        provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+
     // Prepare labels and controls
     let buildable = new Gtk.Builder();
     buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['prefs_widget']);
@@ -157,7 +153,7 @@ function buildPrefsWidget() {
         let fileChooser = new Gtk.FileChooserDialog({
             title: _('Choose download folder'),
             action: Gtk.FileChooserAction.SELECT_FOLDER,
-            transient_for: pref_window,
+            transient_for: prefsWidget.get_root(),
             modal: true,
         });
         fileChooser.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
@@ -307,10 +303,6 @@ function buildPrefsWidget() {
             file_names = Utils.list_files(downloadFolder);
             load_files_thumbnails();
         }
-    });
-
-    prefsWidget.connect('realize', () => {
-        pref_window = prefsWidget.get_root();
     });
 
     return prefsWidget;
