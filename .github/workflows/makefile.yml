@@ -19,7 +19,7 @@ jobs:
 
     - name: Check code with eslint
       run: |
-        echo "$GITHUB_WORKSPACE/node_modules/.bin/" >> $GITHUB_PATH
+        export PATH="$PATH:$GITHUB_WORKSPACE/node_modules/.bin/"
         echo $PATH
         which eslint
         test -x "$GITHUB_WORKSPACE/node_modules/.bin/eslint" || echo eslint not found
