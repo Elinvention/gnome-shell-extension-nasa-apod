@@ -1,0 +1,24 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Check code with eslint
+      run: make eslint
+
+    - name: Generate extension zip
+      run: make zip
