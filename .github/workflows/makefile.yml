@@ -2,9 +2,7 @@ name: Makefile CI
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags: [ '*' ]
 
 jobs:
   build:
@@ -30,3 +28,30 @@ jobs:
 
     - name: Generate extension zip
       run: make zip
+
+    - name: Get release informations
+      run: |
+        echo "subject=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
+        echo "body=$(git tag -l --format='%(contents:body)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
+
+    - name: Release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        tag_name: ${{ github.ref }}
+        release_name: ${{ env.release_subject }}
+        body: ${{ env.release_body }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Upload zip to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: nasa_apod.zip
+        asset_name: nasa_apod.zip
+        asset_content_type: application/zip
