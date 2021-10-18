@@ -18,7 +18,9 @@ jobs:
       run: npm install
 
     - name: Check code with eslint
-      run: make eslint
+      run: |
+        echo "$GITHUB_WORKSPACE/node_modules/.bin/" >> $GITHUB_PATH
+        make eslint
 
     - name: Generate extension zip
       run: make zip
