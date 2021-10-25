@@ -1,6 +1,6 @@
 INSTALL_PATH = ~/.local/share/gnome-shell/extensions
 INSTALL_NAME = nasa_apod@elinvention.ovh
-FILES = extension.js notifications.js utils.js prefs.js prefs.ui prefs.css metadata.json icons schemas locale LICENSE README.md
+FILES = extension.js notifications.js utils.js prefs.js timer.js prefs.ui prefs.css metadata.json icons schemas locale LICENSE README.md
 
 MSGSRC = $(wildcard po/*.po)
 TOLOCALIZE = extension.js prefs.js
