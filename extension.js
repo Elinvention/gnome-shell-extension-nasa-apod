@@ -31,9 +31,8 @@ const RETRY_RATE_LIMIT_SECONDS = 60 * 30;
 const RETRY_NETWORK_UNAVAILABLE = 60;
 const RETRY_NETWORK_ERROR = 600;
 
+let httpSession;
 let nasaApodIndicator;
-let httpSession = new Soup.SessionAsync();
-Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
 
 
 /**
@@ -552,6 +551,8 @@ function init() {
  *
  */
 function enable() {
+    httpSession = new Soup.SessionAsync();
+    Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
     nasaApodIndicator = new NasaApodIndicator();
     Main.panel.addToStatusArea(IndicatorName, nasaApodIndicator);
 }
