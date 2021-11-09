@@ -2,7 +2,7 @@
 /* exported buildPrefsWidget */
 
 
-const {Gtk, Gdk, Gio, GLib, GdkPixbuf} = imports.gi;
+const {Gtk, Gdk, Gio, GLib, GdkPixbuf, Soup} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -14,6 +14,8 @@ Gettext.textdomain('nasa-apod');
 Gettext.bindtextdomain('nasa-apod', Me.dir.get_child('locale').get_path());
 const _ = Gettext.gettext;
 
+
+const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 
 /**
  * https://gjs.guide/extensions/review-guidelines/review-guidelines.html#only-use-init-for-initialization
@@ -68,7 +70,7 @@ function buildApiKeyItem(apiKey) {
 }
 
 /**
- * @returns {Array} First element is the dialog widget, the second is just the entry text
+ * @returns {Array} Elements are: dialog widget, entry text, invalid label and checking label
  */
 function buildNewApiKeyDialog() {
     let buildable = new Gtk.Builder();
@@ -76,9 +78,28 @@ function buildNewApiKeyDialog() {
 
     let dialog = buildable.get_object('new_api_key_dialog');
     let entry = buildable.get_object('new_api_key_entry');
+    let invalid_lb = buildable.get_object('new_api_key_invalid_label');
+    let checking_lb = buildable.get_object('new_api_key_checking_label');
 
-    return [dialog, entry];
+    return [dialog, entry, invalid_lb, checking_lb];
 }
+
+/**
+ * @param {string} apiKey the API key string
+ * @returns {Object} a Promise that resolves to true if the api key is valid, false otherwise
+ */
+function testApiKey(apiKey) {
+    let httpSession = new Soup.SessionAsync();
+    Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
+    let request = Soup.Message.new('GET', `${NasaApodURL}?api_key=${apiKey}`);
+    Utils.ext_log(`Checking if ${apiKey} is valid...`);
+    return new Promise(resolve => {
+        httpSession.queue_message(request, (session, message) => {
+            resolve(message.status_code === Soup.KnownStatusCode.OK);
+        });
+    });
+}
+
 
 /**
  * @returns {Object} This extension's preference widget
@@ -217,14 +238,22 @@ function buildPrefsWidget() {
     populateApiKeysListBox();
     settings.connect('changed::api-keys', populateApiKeysListBox);
 
-    apiKeysAdd.connect('clicked', function () {
-        let [dialog, entry] = buildNewApiKeyDialog();
+    apiKeysAdd.connect('clicked', () => {
+        let [dialog, entry, invalid_lb, checking_lb] = buildNewApiKeyDialog();
         dialog.set_transient_for(prefsWidget.get_root());
-        entry.connect('changed', function () {
-            let length = entry.get_text().length;
+        entry.connect('changed', async () => {
+            let apiKey = entry.get_text();
+            let length = apiKey.length;
             entry.set_progress_fraction(length / 40);
+            let valid = false;
+            if (length === 40) {
+                checking_lb.show();
+                valid = await testApiKey(apiKey);
+                checking_lb.hide();
+            }
+            invalid_lb.set_visible(length === 40 && valid !== true);
             let ok_btn = dialog.get_widget_for_response(Gtk.ResponseType.OK);
-            ok_btn.set_sensitive(length === 40);
+            ok_btn.set_sensitive(length === 40 && valid === true);
         });
         dialog.show();
         dialog.connect('response', function (__, response) {

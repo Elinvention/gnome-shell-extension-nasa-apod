@@ -55,7 +55,6 @@
       </object>
     </property>
   </object>
-  <object class="GtkListStore" id="liststore1"/>
   <object class="GtkDialog" id="new_api_key_dialog">
     <property name="width_request">400</property>
     <property name="height_request">150</property>
@@ -84,6 +83,18 @@
           </object>
         </child>
         <child>
+          <object class="GtkLabel" id="new_api_key_invalid_label">
+            <property name="label" translatable="yes">The entered API key is not valid.</property>
+            <property name="visible">false</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="new_api_key_checking_label">
+            <property name="label" translatable="yes">Checking...</property>
+            <property name="visible">false</property>
+          </object>
+        </child>
+        <child>
           <object class="GtkLabel">
             <property name="label" translatable="yes">The API key has to be 40 characters long.</property>
           </object>
@@ -96,8 +107,9 @@
     </action-widgets>
     <child internal-child="action_area">
       <object class="GtkBox">
-        <property name="valign">center</property>
+        <property name="valign">end</property>
         <property name="halign">center</property>
+        <property name="vexpand">true</property>
         <property name="spacing">15</property>
         <property name="margin-bottom">10</property>
         <property name="margin-end">10</property>
