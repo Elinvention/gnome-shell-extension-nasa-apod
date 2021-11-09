@@ -219,6 +219,13 @@ function buildPrefsWidget() {
 
     apiKeysAdd.connect('clicked', function () {
         let [dialog, entry] = buildNewApiKeyDialog();
+        dialog.set_transient_for(prefsWidget.get_root());
+        entry.connect('changed', function () {
+            let length = entry.get_text().length;
+            entry.set_progress_fraction(length / 40);
+            let ok_btn = dialog.get_widget_for_response(Gtk.ResponseType.OK);
+            ok_btn.set_sensitive(length === 40);
+        });
         dialog.show();
         dialog.connect('response', function (__, response) {
             if (response === Gtk.ResponseType.OK) {
