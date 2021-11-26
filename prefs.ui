@@ -631,6 +631,7 @@ A pinned background won&apos;t be replaced by newer ones.</property>
                         <property name="min_children_per_line">2</property>
                         <property name="max_children_per_line">5</property>
                         <property name="activate_on_single_click">0</property>
+                        <property name="can_focus">0</property>
                       </object>
                     </property>
                   </object>
