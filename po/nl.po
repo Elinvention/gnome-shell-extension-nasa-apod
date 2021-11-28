@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-23 19:06+0200\n"
-"PO-Revision-Date: 2021-09-18 17:16+0200\n"
+"PO-Revision-Date: 2021-11-28 14:29+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0\n"
 
 #: extension.js:70
 msgid "Media type {0} not supported."
@@ -144,9 +144,8 @@ msgid "HTTP status code {0}."
 msgstr "HTTP-statuscode {0}."
 
 #: extension.js:511
-#, fuzzy
 msgid "Download {0} done"
-msgstr "Opslaglocatie:"
+msgstr "‘{0}’ is opgeslagen"
 
 #: extension.js:532
 msgid "Couldn't fetch image from {0}"
@@ -270,7 +269,6 @@ msgid "Network usage"
 msgstr "Datagebruik"
 
 #: prefs.ui.h:28
-#, fuzzy
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -291,7 +289,6 @@ msgid "Network"
 msgstr "Netwerk"
 
 #: prefs.ui.h:32
-#, fuzzy
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
@@ -325,7 +322,6 @@ msgid "Changelog"
 msgstr "Wijzigingslog"
 
 #: prefs.ui.h:40
-#, fuzzy
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
