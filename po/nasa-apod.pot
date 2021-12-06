@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-23 19:06+0200\n"
+"POT-Creation-Date: 2021-12-06 19:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,143 +17,143 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:70
+#: extension.js:72
 msgid "Media type {0} not supported."
 msgstr ""
 
-#: extension.js:71
+#: extension.js:73
 msgid "No picture for today 😞. Please visit NASA APOD website."
 msgstr ""
 
-#: extension.js:93 extension.js:137
+#: extension.js:96 extension.js:135
 msgid "NASA APOD website"
 msgstr ""
 
-#: extension.js:94
+#: extension.js:97
 msgid "Get an API key"
 msgstr ""
 
-#: extension.js:95 extension.js:101 extension.js:152 prefs.ui.h:21
+#: extension.js:98 extension.js:100 extension.js:150 prefs.ui.h:23
 msgid "Settings"
 msgstr ""
 
-#: extension.js:97
+#: extension.js:99
 msgid "Retry"
 msgstr ""
 
-#: extension.js:123
+#: extension.js:121
 msgid "No title available"
 msgstr ""
 
-#: extension.js:127
+#: extension.js:125
 msgid "No description available"
 msgstr ""
 
-#: extension.js:133
+#: extension.js:131
 msgid "No copyright information available"
 msgstr ""
 
-#: extension.js:140 extension.js:268
+#: extension.js:138 extension.js:266
 msgid "No refresh scheduled"
 msgstr ""
 
-#: extension.js:143
+#: extension.js:141
 msgid "Open Wallpaper Folder"
 msgstr ""
 
-#: extension.js:146
+#: extension.js:144
 msgid "Set Wallpaper"
 msgstr ""
 
-#: extension.js:149 extension.js:232
+#: extension.js:147 extension.js:231
 msgid "Refresh"
 msgstr ""
 
-#: extension.js:219
+#: extension.js:217
 msgid "Refreshing..."
 msgstr ""
 
-#: extension.js:222
+#: extension.js:220
 msgid "Network unavailable"
 msgstr ""
 
-#: extension.js:225
+#: extension.js:223
 msgid "Wait 10 seconds..."
 msgstr ""
 
-#: extension.js:230
+#: extension.js:229
 msgid "Unpin and Refresh"
 msgstr ""
 
-#: extension.js:234
+#: extension.js:233
 msgid " (metered network)"
 msgstr ""
 
-#: extension.js:248
+#: extension.js:247
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
 msgstr ""
 
-#: extension.js:282
+#: extension.js:277
 msgid "Next refresh: {0}"
 msgstr ""
 
-#: extension.js:285
+#: extension.js:280
 msgid "Next refresh in less than a minute"
 msgstr ""
 
-#: extension.js:357
+#: extension.js:352
 msgid "Pending refresh"
 msgstr ""
 
-#: extension.js:361
+#: extension.js:356
 msgid "Over rate limit (error 429)"
 msgstr ""
 
-#: extension.js:362
+#: extension.js:357
 msgid ""
 "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
 "just for you."
 msgstr ""
 
-#: extension.js:400
+#: extension.js:395
 msgid "Error downloading image"
 msgstr ""
 
-#: extension.js:405
+#: extension.js:400
 msgid "Invalid NASA API key (error 403)"
 msgstr ""
 
-#: extension.js:406
+#: extension.js:401
 msgid "Check that your key is correct or use the default key."
 msgstr ""
 
-#: extension.js:414
+#: extension.js:409
 msgid "Network error"
 msgstr ""
 
-#: extension.js:415 extension.js:533
+#: extension.js:410 extension.js:528
 msgid "HTTP status code {0}."
 msgstr ""
 
-#: extension.js:511
+#: extension.js:506
 msgid "Download {0} done"
 msgstr ""
 
-#: extension.js:532
+#: extension.js:527
 msgid "Couldn't fetch image from {0}"
 msgstr ""
 
-#: prefs.js:154
+#: prefs.js:175
 msgid "Choose download folder"
 msgstr ""
 
-#: prefs.js:159
+#: prefs.js:180
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:160
+#: prefs.js:181
 msgid "Select"
 msgstr ""
 
@@ -166,102 +166,110 @@ msgid "Please paste here your API key."
 msgstr ""
 
 #: prefs.ui.h:3
-msgid "The API key has to be 40 characters long."
+msgid "The entered API key is not valid."
 msgstr ""
 
 #: prefs.ui.h:4
-msgid "Hide the indicator"
+msgid "Checking..."
 msgstr ""
 
 #: prefs.ui.h:5
-msgid "Send a notification with explanation when a new image is downloaded."
+msgid "The API key has to be 40 characters long."
 msgstr ""
 
 #: prefs.ui.h:6
-msgid "Notifications"
+msgid "Hide the indicator"
 msgstr ""
 
 #: prefs.ui.h:7
-msgid "Use transient notifications (auto dismiss)"
+msgid "Send a notification with explanation when a new image is downloaded."
 msgstr ""
 
 #: prefs.ui.h:8
-msgid "Indicator and notifications"
+msgid "Notifications"
 msgstr ""
 
 #: prefs.ui.h:9
-msgid "Set background image:"
+msgid "Use transient notifications (auto dismiss)"
 msgstr ""
 
 #: prefs.ui.h:10
-msgid "None"
+msgid "Indicator and notifications"
 msgstr ""
 
 #: prefs.ui.h:11
-msgid "Centered"
+msgid "Set background image:"
 msgstr ""
 
 #: prefs.ui.h:12
-msgid "Scaled"
+msgid "None"
 msgstr ""
 
 #: prefs.ui.h:13
-msgid "Spanned"
+msgid "Centered"
 msgstr ""
 
 #: prefs.ui.h:14
-msgid "Stretched"
+msgid "Scaled"
 msgstr ""
 
 #: prefs.ui.h:15
-msgid "Wallpaper"
+msgid "Spanned"
 msgstr ""
 
 #: prefs.ui.h:16
-msgid "Zoom"
+msgid "Stretched"
 msgstr ""
 
 #: prefs.ui.h:17
-msgid "Default"
+msgid "Wallpaper"
 msgstr ""
 
 #: prefs.ui.h:18
-msgid "Set lock screen image:"
+msgid "Zoom"
 msgstr ""
 
 #: prefs.ui.h:19
-msgid "Download folder:"
+msgid "Default"
 msgstr ""
 
 #: prefs.ui.h:20
-msgid "Background"
+msgid "Set lock screen image:"
+msgstr ""
+
+#: prefs.ui.h:21
+msgid "Download folder:"
 msgstr ""
 
 #: prefs.ui.h:22
-msgid "Image resolution:"
-msgstr ""
-
-#: prefs.ui.h:23
-msgid "HD version"
+msgid "Background"
 msgstr ""
 
 #: prefs.ui.h:24
-msgid "Low resolution version"
+msgid "Image resolution:"
 msgstr ""
 
 #: prefs.ui.h:25
-msgid "Image resolution on metered networks:"
+msgid "HD version"
 msgstr ""
 
 #: prefs.ui.h:26
-msgid "Automatic refresh on metered networks:"
+msgid "Low resolution version"
 msgstr ""
 
 #: prefs.ui.h:27
-msgid "Network usage"
+msgid "Image resolution on metered networks:"
 msgstr ""
 
 #: prefs.ui.h:28
+msgid "Automatic refresh on metered networks:"
+msgstr ""
+
+#: prefs.ui.h:29
+msgid "Network usage"
+msgstr ""
+
+#: prefs.ui.h:30
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -269,57 +277,57 @@ msgid ""
 "to refresh with the default keys."
 msgstr ""
 
-#: prefs.ui.h:30
+#: prefs.ui.h:32
 msgid "API keys"
 msgstr ""
 
-#: prefs.ui.h:31
+#: prefs.ui.h:33
 msgid "Network"
 msgstr ""
 
-#: prefs.ui.h:32
+#: prefs.ui.h:34
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
 msgstr ""
 
-#: prefs.ui.h:34
+#: prefs.ui.h:36
 msgid "History"
 msgstr ""
 
-#: prefs.ui.h:35
+#: prefs.ui.h:37
 msgid "version: "
 msgstr ""
 
-#: prefs.ui.h:36
+#: prefs.ui.h:38
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr ""
 
-#: prefs.ui.h:37
+#: prefs.ui.h:39
 msgid "Extension's GitHub Webpage"
 msgstr ""
 
-#: prefs.ui.h:38
+#: prefs.ui.h:40
 msgid "Issue Tracker"
 msgstr ""
 
-#: prefs.ui.h:39
+#: prefs.ui.h:41
 msgid "Changelog"
 msgstr ""
 
-#: prefs.ui.h:40
+#: prefs.ui.h:42
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
 msgstr ""
 
-#: prefs.ui.h:42
+#: prefs.ui.h:44
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
-#: prefs.ui.h:44
+#: prefs.ui.h:46
 msgid "About"
 msgstr ""
