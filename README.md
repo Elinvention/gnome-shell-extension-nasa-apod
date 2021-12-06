@@ -4,7 +4,8 @@ Let this simple GNOME shell extension change your wallpaper every day to the
 NASA's Astronomy Picture Of the Day. It will also show a notification
 containing the title and the explanation of the image.
 
-Tested and developed on Manjaro, GNOME 3.36.
+Tested and developed on NixOS, GNOME 41 (please, always refer to `metadata.json`
+to check if the main branch actually works on your older GNOME shell).
 
 *Disclaimer*: this extension is unofficial and not affiliated with NASA in any way.
 Also note that some images might be protected by copyright.
