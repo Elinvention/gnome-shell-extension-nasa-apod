@@ -1,7 +1,7 @@
 const Mainloop = imports.mainloop;
 
 
-class Timer {
+var Timer = class Timer {
     constructor(interval, name, callback) {
         Timer.remove(name);
 
