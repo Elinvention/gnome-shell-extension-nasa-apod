@@ -563,4 +563,6 @@ function enable() {
 function disable() {
     nasaApodIndicator.stop();
     nasaApodIndicator.destroy();
+    httpSession = null;
+    nasaApodIndicator = null;
 }
