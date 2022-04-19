@@ -27,12 +27,6 @@
         <description>Set background to NASA's APOD</description>
     </key>
 
-    <key name="set-lock-screen" type="b">
-      <default>true</default>
-        <summary>Set lock screen</summary>
-        <description>Set lock screen to NASA's APOD</description>
-    </key>
-
     <key name="download-folder" type="s">
       <default>""</default>
       <summary>Where to download pictures.</summary>
@@ -60,12 +54,6 @@
     <key name="background-options" type="s">
       <default>"default"</default>
       <summary>Background image adjustment.</summary>
-      <description></description>
-    </key>
-
-    <key name="screensaver-options" type="s">
-      <default>"default"</default>
-      <summary>Screensaver image adjustment.</summary>
       <description></description>
     </key>
 
