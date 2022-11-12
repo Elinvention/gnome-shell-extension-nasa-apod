@@ -59,4 +59,4 @@ po/%.mo: po/%.po
 	msgfmt -c $< -o $@
 
 eslint:
-	eslint -c eslintrc-gjs.yml extension.js notifications.js utils.js prefs.js
+	npx eslint -c eslintrc-gjs.yml extension.js notifications.js utils.js prefs.js
