@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-23 19:06+0200\n"
+"POT-Creation-Date: 2022-11-12 23:40+0100\n"
 "PO-Revision-Date: 2019-03-21 08:18+0300\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -19,106 +19,128 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: extension.js:70
+#: extension.js:72
 msgid "Media type {0} not supported."
 msgstr "Media türü {0} desteklenmiyor."
 
-#: extension.js:71
+#: extension.js:73
 msgid "No picture for today 😞. Please visit NASA APOD website."
 msgstr "Bugün resim yok 😞. Lütfen NASA APOD web sitesini ziyaret edin."
 
-#: extension.js:93 extension.js:137
+#: extension.js:96 extension.js:135
 msgid "NASA APOD website"
 msgstr "NASA APOD web sitesi"
 
-#: extension.js:94
+#: extension.js:97
 msgid "Get an API key"
 msgstr "Bir API anahtarı al"
 
-#: extension.js:95 extension.js:101 extension.js:152 prefs.ui.h:21
+#: extension.js:98 extension.js:100 extension.js:150 prefs.ui.h:22
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: extension.js:97
+#: extension.js:99
 msgid "Retry"
 msgstr "Yinele"
 
-#: extension.js:123
+#: extension.js:121
 msgid "No title available"
 msgstr ""
 
-#: extension.js:127
+#: extension.js:125
 #, fuzzy
 msgid "No description available"
 msgstr "Açıklamayı göster"
 
-#: extension.js:133
+#: extension.js:131
 msgid "No copyright information available"
 msgstr ""
 
-#: extension.js:140 extension.js:268
+#: extension.js:138 extension.js:266
 msgid "No refresh scheduled"
 msgstr "Yenileme planlanmadı"
 
-#: extension.js:143
+#: extension.js:141
 #, fuzzy
 msgid "Open Wallpaper Folder"
 msgstr "Duvar kağıdı"
 
-#: extension.js:146
+#: extension.js:144
 #, fuzzy
 msgid "Set Wallpaper"
 msgstr "Duvar kağıdı ayarla"
 
-#: extension.js:149 extension.js:232
+#: extension.js:147 extension.js:231
 msgid "Refresh"
 msgstr "Yenile"
 
-#: extension.js:219
+#: extension.js:217
 #, fuzzy
 msgid "Refreshing..."
 msgstr "Yenile"
 
-#: extension.js:222
+#: extension.js:220
 msgid "Network unavailable"
 msgstr ""
 
-#: extension.js:225
+#: extension.js:223
 msgid "Wait 10 seconds..."
 msgstr ""
 
-#: extension.js:230
+#: extension.js:229
 #, fuzzy
 msgid "Unpin and Refresh"
 msgstr "Bekleyen yenileme"
 
-#: extension.js:234
+#: extension.js:233
 msgid " (metered network)"
 msgstr ""
 
-#: extension.js:248
+#: extension.js:247
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
 msgstr ""
 
-#: extension.js:282
+#: extension.js:277
 msgid "Next refresh: {0}"
 msgstr "Sonraki yenileme: {0}"
 
-#: extension.js:285
+#: extension.js:280
 msgid "Next refresh in less than a minute"
 msgstr ""
 
-#: extension.js:357
+#: extension.js:352
 msgid "Pending refresh"
 msgstr "Bekleyen yenileme"
 
-#: extension.js:361
+#: extension.js:384
+msgid "Invalid NASA API key (error 403)"
+msgstr "Geçersiz NASA API anahtarı (hata 403)"
+
+#: extension.js:385
+msgid "Check that your key is correct or use the default key."
+msgstr "Anahtarınızın doğruluğunu kontrol et veya varsayılan anahtarı kullan."
+
+#: extension.js:392
+msgid "Network error"
+msgstr "Ağ hatası"
+
+#: extension.js:393 extension.js:524
+#, fuzzy
+msgid "HTTP status code {0}."
+msgstr "HTTP durum kodu {0}"
+
+#: extension.js:401
+#, fuzzy
+msgid "Generic error"
+msgstr "Ağ hatası"
+
+#: extension.js:413
 msgid "Over rate limit (error 429)"
 msgstr "Limit aşımı (hata 429)"
 
-#: extension.js:362
+#: extension.js:414
 #, fuzzy
 msgid ""
 "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
@@ -127,45 +149,20 @@ msgstr ""
 "API anahtarını https://api.nasa.gov/ adresinden al. Saatte 1000 istek "
 "alınabilir. 5 dakika içinde tekrar denenecek."
 
-#: extension.js:400
-msgid "Error downloading image"
-msgstr "Resim indirilirken hata oluştu"
-
-#: extension.js:405
-msgid "Invalid NASA API key (error 403)"
-msgstr "Geçersiz NASA API anahtarı (hata 403)"
-
-#: extension.js:406
-msgid "Check that your key is correct or use the default key."
-msgstr "Anahtarınızın doğruluğunu kontrol et veya varsayılan anahtarı kullan."
-
-#: extension.js:414
-msgid "Network error"
-msgstr "Ağ hatası"
-
-#: extension.js:415 extension.js:533
-#, fuzzy
-msgid "HTTP status code {0}."
-msgstr "HTTP durum kodu {0}"
-
-#: extension.js:511
-msgid "Download {0} done"
-msgstr "İndirme {0} tamamlandı"
-
-#: extension.js:532
+#: extension.js:523
 msgid "Couldn't fetch image from {0}"
 msgstr "{0} kaynağından resim alınamadı"
 
-#: prefs.js:154
+#: prefs.js:168
 #, fuzzy
 msgid "Choose download folder"
 msgstr "İndirme klasörü:"
 
-#: prefs.js:159
+#: prefs.js:173
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:160
+#: prefs.js:174
 msgid "Select"
 msgstr ""
 
@@ -179,105 +176,109 @@ msgid "Please paste here your API key."
 msgstr ""
 
 #: prefs.ui.h:3
-msgid "The API key has to be 40 characters long."
+msgid "The entered API key is not valid."
 msgstr ""
 
 #: prefs.ui.h:4
+msgid "Checking..."
+msgstr ""
+
+#: prefs.ui.h:5
+msgid "The API key has to be 40 characters long."
+msgstr ""
+
+#: prefs.ui.h:6
 msgid "Hide the indicator"
 msgstr "Göstergeyi gizle"
 
-#: prefs.ui.h:5
+#: prefs.ui.h:7
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr "Yeni bir resim indirilirken açıklama içeren bir bildirim gönder."
 
-#: prefs.ui.h:6
+#: prefs.ui.h:8
 msgid "Notifications"
 msgstr "Bildirimler"
 
-#: prefs.ui.h:7
+#: prefs.ui.h:9
 msgid "Use transient notifications (auto dismiss)"
 msgstr "Geçici bildirimleri kullan (görevi sonlandırma)"
 
-#: prefs.ui.h:8
+#: prefs.ui.h:10
 #, fuzzy
 msgid "Indicator and notifications"
 msgstr "Bildirimler"
 
-#: prefs.ui.h:9
+#: prefs.ui.h:11
 msgid "Set background image:"
 msgstr "Arka plan resmini ayarla:"
 
-#: prefs.ui.h:10
+#: prefs.ui.h:12
 msgid "None"
 msgstr "Yok"
 
-#: prefs.ui.h:11
+#: prefs.ui.h:13
 msgid "Centered"
 msgstr "Ortalanmış"
 
-#: prefs.ui.h:12
+#: prefs.ui.h:14
 msgid "Scaled"
 msgstr "Ölçekli"
 
-#: prefs.ui.h:13
+#: prefs.ui.h:15
 msgid "Spanned"
 msgstr "Yayılmış"
 
-#: prefs.ui.h:14
+#: prefs.ui.h:16
 msgid "Stretched"
 msgstr "Uzatılmış"
 
-#: prefs.ui.h:15
+#: prefs.ui.h:17
 msgid "Wallpaper"
 msgstr "Duvar kağıdı"
 
-#: prefs.ui.h:16
+#: prefs.ui.h:18
 msgid "Zoom"
 msgstr "Yakınlaştır"
 
-#: prefs.ui.h:17
+#: prefs.ui.h:19
 msgid "Default"
 msgstr ""
 
-#: prefs.ui.h:18
-msgid "Set lock screen image:"
-msgstr "Kilit ekranı görüntüsünü ayarla:"
-
-#: prefs.ui.h:19
+#: prefs.ui.h:20
 msgid "Download folder:"
 msgstr "İndirme klasörü:"
 
-#: prefs.ui.h:20
+#: prefs.ui.h:21
 msgid "Background"
 msgstr ""
 
-#: prefs.ui.h:22
+#: prefs.ui.h:23
 msgid "Image resolution:"
 msgstr ""
 
-#: prefs.ui.h:23
+#: prefs.ui.h:24
 #, fuzzy
 msgid "HD version"
 msgstr "sürüm:"
 
-#: prefs.ui.h:24
+#: prefs.ui.h:25
 msgid "Low resolution version"
 msgstr ""
 
-#: prefs.ui.h:25
+#: prefs.ui.h:26
 msgid "Image resolution on metered networks:"
 msgstr ""
 
-#: prefs.ui.h:26
+#: prefs.ui.h:27
 msgid "Automatic refresh on metered networks:"
 msgstr ""
 
-#: prefs.ui.h:27
+#: prefs.ui.h:28
 #, fuzzy
 msgid "Network usage"
 msgstr "Ağ hatası"
 
-#: prefs.ui.h:28
+#: prefs.ui.h:29
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -285,55 +286,55 @@ msgid ""
 "to refresh with the default keys."
 msgstr ""
 
-#: prefs.ui.h:30
+#: prefs.ui.h:31
 #, fuzzy
 msgid "API keys"
 msgstr "Bir API anahtarı al"
 
-#: prefs.ui.h:31
+#: prefs.ui.h:32
 #, fuzzy
 msgid "Network"
 msgstr "Ağ hatası"
 
-#: prefs.ui.h:32
+#: prefs.ui.h:33
 msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
 msgstr ""
 
-#: prefs.ui.h:34
+#: prefs.ui.h:35
 msgid "History"
 msgstr ""
 
-#: prefs.ui.h:35
+#: prefs.ui.h:36
 msgid "version: "
 msgstr "sürüm:"
 
-#: prefs.ui.h:36
+#: prefs.ui.h:37
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr ""
 "Duvar kağıdınızı günlük olarak NASA'nın günün astronomi resmine göre "
 "değiştirin"
 
-#: prefs.ui.h:37
+#: prefs.ui.h:38
 msgid "Extension's GitHub Webpage"
 msgstr "Eklentinin GitHub Web Sayfası"
 
-#: prefs.ui.h:38
+#: prefs.ui.h:39
 msgid "Issue Tracker"
 msgstr ""
 
-#: prefs.ui.h:39
+#: prefs.ui.h:40
 msgid "Changelog"
 msgstr "Değişiklikler"
 
-#: prefs.ui.h:40
+#: prefs.ui.h:41
 msgid ""
 "Brought to you by:\n"
 "Elia Argentieri"
 msgstr ""
 
-#: prefs.ui.h:42
+#: prefs.ui.h:43
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
@@ -343,9 +344,18 @@ msgstr ""
 "Bakın <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU "
 "Genel Kamu Lisansı, sürüm 3 veya üstü</a> ayrıntılar.</span>"
 
-#: prefs.ui.h:44
+#: prefs.ui.h:45
 msgid "About"
 msgstr "Hakkında"
+
+#~ msgid "Error downloading image"
+#~ msgstr "Resim indirilirken hata oluştu"
+
+#~ msgid "Download {0} done"
+#~ msgstr "İndirme {0} tamamlandı"
+
+#~ msgid "Set lock screen image:"
+#~ msgstr "Kilit ekranı görüntüsünü ayarla:"
 
 #~ msgid "NASA APOD pictures folder"
 #~ msgstr "NASA APOD resimler klasörü"
