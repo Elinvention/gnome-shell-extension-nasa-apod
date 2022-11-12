@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-23 19:06+0200\n"
+"POT-Creation-Date: 2022-11-12 23:40+0100\n"
 "PO-Revision-Date: 2021-06-02 15:41-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,79 +18,79 @@ msgstr ""
 "X-Generator: Poedit 2.4.3\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: extension.js:70
+#: extension.js:72
 msgid "Media type {0} not supported."
 msgstr "Tipo de mídia {0} não suportada."
 
-#: extension.js:71
+#: extension.js:73
 msgid "No picture for today 😞. Please visit NASA APOD website."
 msgstr "Sem imagem para hoje 😞. Por favor visite o site da NASA APOD."
 
-#: extension.js:93 extension.js:137
+#: extension.js:96 extension.js:135
 msgid "NASA APOD website"
 msgstr "NASA APOD website"
 
-#: extension.js:94
+#: extension.js:97
 msgid "Get an API key"
 msgstr "Gere uma chave API"
 
-#: extension.js:95 extension.js:101 extension.js:152 prefs.ui.h:21
+#: extension.js:98 extension.js:100 extension.js:150 prefs.ui.h:22
 msgid "Settings"
 msgstr "Configurações"
 
-#: extension.js:97
+#: extension.js:99
 msgid "Retry"
 msgstr "Tentar novamente"
 
-#: extension.js:123
+#: extension.js:121
 msgid "No title available"
 msgstr "Sem titulo disponível"
 
-#: extension.js:127
+#: extension.js:125
 msgid "No description available"
 msgstr "Sem descrição disponível"
 
-#: extension.js:133
+#: extension.js:131
 msgid "No copyright information available"
 msgstr "Sem informação de copyright disponível"
 
-#: extension.js:140 extension.js:268
+#: extension.js:138 extension.js:266
 msgid "No refresh scheduled"
 msgstr "Sem atualização programada"
 
-#: extension.js:143
+#: extension.js:141
 msgid "Open Wallpaper Folder"
 msgstr "Abrir Pasta de Papel de parede"
 
-#: extension.js:146
+#: extension.js:144
 msgid "Set Wallpaper"
 msgstr "Definir Papel de parede"
 
-#: extension.js:149 extension.js:232
+#: extension.js:147 extension.js:231
 msgid "Refresh"
 msgstr "Atualizar"
 
-#: extension.js:219
+#: extension.js:217
 msgid "Refreshing..."
 msgstr "Atualizando..."
 
-#: extension.js:222
+#: extension.js:220
 msgid "Network unavailable"
 msgstr "Rede indisponível"
 
-#: extension.js:225
+#: extension.js:223
 msgid "Wait 10 seconds..."
 msgstr "Espere 10 segundos..."
 
-#: extension.js:230
+#: extension.js:229
 msgid "Unpin and Refresh"
 msgstr "Desafixar e Atualizar"
 
-#: extension.js:234
+#: extension.js:233
 msgid " (metered network)"
 msgstr " (rede limitada)"
 
-#: extension.js:248
+#: extension.js:247
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
@@ -99,23 +99,44 @@ msgstr ""
 "Por favor pressione Atualizar para baixar o novo papel de parede com a "
 "explicação."
 
-#: extension.js:282
+#: extension.js:277
 msgid "Next refresh: {0}"
 msgstr "Próxima atualização: {0}"
 
-#: extension.js:285
+#: extension.js:280
 msgid "Next refresh in less than a minute"
 msgstr "Próxima atualização em menos de um minuto"
 
-#: extension.js:357
+#: extension.js:352
 msgid "Pending refresh"
 msgstr "Atualização pendente"
 
-#: extension.js:361
+#: extension.js:384
+msgid "Invalid NASA API key (error 403)"
+msgstr "Chave da NASA API invalida (erro 403)"
+
+#: extension.js:385
+msgid "Check that your key is correct or use the default key."
+msgstr "Cheque se sua chave é correta ou usa a chave padrão."
+
+#: extension.js:392
+msgid "Network error"
+msgstr "Erro de rede"
+
+#: extension.js:393 extension.js:524
+msgid "HTTP status code {0}."
+msgstr "Código de Status HTTP {0}."
+
+#: extension.js:401
+#, fuzzy
+msgid "Generic error"
+msgstr "Erro de rede"
+
+#: extension.js:413
 msgid "Over rate limit (error 429)"
 msgstr "Taxa acima do limite (erro 429)"
 
-#: extension.js:362
+#: extension.js:414
 msgid ""
 "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
 "just for you."
@@ -123,44 +144,19 @@ msgstr ""
 "Gere sua chave API em https://api.nasa.gov/ para ter 1000 requests por hora "
 "apenas para você."
 
-#: extension.js:400
-msgid "Error downloading image"
-msgstr "Erro ao baixar imagem"
-
-#: extension.js:405
-msgid "Invalid NASA API key (error 403)"
-msgstr "Chave da NASA API invalida (erro 403)"
-
-#: extension.js:406
-msgid "Check that your key is correct or use the default key."
-msgstr "Cheque se sua chave é correta ou usa a chave padrão."
-
-#: extension.js:414
-msgid "Network error"
-msgstr "Erro de rede"
-
-#: extension.js:415 extension.js:533
-msgid "HTTP status code {0}."
-msgstr "Código de Status HTTP {0}."
-
-#: extension.js:511
-#, fuzzy
-msgid "Download {0} done"
-msgstr "Pasta de Download:"
-
-#: extension.js:532
+#: extension.js:523
 msgid "Couldn't fetch image from {0}"
 msgstr "Não foi possível buscar imagem de {0}"
 
-#: prefs.js:154
+#: prefs.js:168
 msgid "Choose download folder"
 msgstr "Escolha a pasta de download"
 
-#: prefs.js:159
+#: prefs.js:173
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: prefs.js:160
+#: prefs.js:174
 msgid "Select"
 msgstr "Selecionar"
 
@@ -173,103 +169,107 @@ msgid "Please paste here your API key."
 msgstr "Por favor cole aqui sua chave API."
 
 #: prefs.ui.h:3
+msgid "The entered API key is not valid."
+msgstr ""
+
+#: prefs.ui.h:4
+msgid "Checking..."
+msgstr ""
+
+#: prefs.ui.h:5
 msgid "The API key has to be 40 characters long."
 msgstr "A chave API tem que ter 40 caracteres."
 
-#: prefs.ui.h:4
+#: prefs.ui.h:6
 msgid "Hide the indicator"
 msgstr "Esconder o indicador"
 
-#: prefs.ui.h:5
+#: prefs.ui.h:7
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr ""
 "Mande uma notificação quando a explicação de uma nova imagem for baixada."
 
-#: prefs.ui.h:6
+#: prefs.ui.h:8
 msgid "Notifications"
 msgstr "Notificações"
 
-#: prefs.ui.h:7
+#: prefs.ui.h:9
 msgid "Use transient notifications (auto dismiss)"
 msgstr "Use notificações temporárias (dispensar automaticamente)"
 
-#: prefs.ui.h:8
+#: prefs.ui.h:10
 msgid "Indicator and notifications"
 msgstr "Indicador e notificações"
 
-#: prefs.ui.h:9
+#: prefs.ui.h:11
 msgid "Set background image:"
 msgstr "Definir imagem de fundo:"
 
-#: prefs.ui.h:10
+#: prefs.ui.h:12
 msgid "None"
 msgstr "Nenhum"
 
-#: prefs.ui.h:11
+#: prefs.ui.h:13
 msgid "Centered"
 msgstr "Centralizado"
 
-#: prefs.ui.h:12
+#: prefs.ui.h:14
 msgid "Scaled"
 msgstr "Em escala"
 
-#: prefs.ui.h:13
+#: prefs.ui.h:15
 msgid "Spanned"
 msgstr "Multiplicada"
 
-#: prefs.ui.h:14
+#: prefs.ui.h:16
 msgid "Stretched"
 msgstr "Esticada"
 
-#: prefs.ui.h:15
+#: prefs.ui.h:17
 msgid "Wallpaper"
 msgstr "Papel de parede"
 
-#: prefs.ui.h:16
+#: prefs.ui.h:18
 msgid "Zoom"
 msgstr "Zoom"
 
-#: prefs.ui.h:17
+#: prefs.ui.h:19
 msgid "Default"
 msgstr "Padrão"
 
-#: prefs.ui.h:18
-msgid "Set lock screen image:"
-msgstr "Definir imagem para tela de bloqueio:"
-
-#: prefs.ui.h:19
+#: prefs.ui.h:20
 msgid "Download folder:"
 msgstr "Pasta de Download:"
 
-#: prefs.ui.h:20
+#: prefs.ui.h:21
 msgid "Background"
 msgstr "Fundo"
 
-#: prefs.ui.h:22
+#: prefs.ui.h:23
 msgid "Image resolution:"
 msgstr "Resolução de imagem:"
 
-#: prefs.ui.h:23
+#: prefs.ui.h:24
 msgid "HD version"
 msgstr "Versão HD"
 
-#: prefs.ui.h:24
+#: prefs.ui.h:25
 msgid "Low resolution version"
 msgstr "Versão de baixa resolução"
 
-#: prefs.ui.h:25
+#: prefs.ui.h:26
 msgid "Image resolution on metered networks:"
 msgstr "Resolução da imagem em rede limitada:"
 
-#: prefs.ui.h:26
+#: prefs.ui.h:27
 msgid "Automatic refresh on metered networks:"
 msgstr "Atualização automática em rede limitada:"
 
-#: prefs.ui.h:27
+#: prefs.ui.h:28
 msgid "Network usage"
 msgstr "Uso de rede"
 
-#: prefs.ui.h:28
+#: prefs.ui.h:29
 #, fuzzy
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
@@ -282,15 +282,15 @@ msgstr ""
 "Cada chave tem um limite de 1000 pedidos por hora, e, portanto você pode não "
 "ser capaz de atualizar com as chaves padrão."
 
-#: prefs.ui.h:30
+#: prefs.ui.h:31
 msgid "API keys"
 msgstr "Chave API"
 
-#: prefs.ui.h:31
+#: prefs.ui.h:32
 msgid "Network"
 msgstr "Rede"
 
-#: prefs.ui.h:32
+#: prefs.ui.h:33
 #, fuzzy
 msgid ""
 "You can pin a background by selecting it.\n"
@@ -299,32 +299,32 @@ msgstr ""
 "Você pode fixar um plano de fundo selecionando-o.\n"
 "Um plano de fundo fixado não será substituído pelos novos."
 
-#: prefs.ui.h:34
+#: prefs.ui.h:35
 msgid "History"
 msgstr "Histórico"
 
-#: prefs.ui.h:35
+#: prefs.ui.h:36
 msgid "version: "
 msgstr "versão: "
 
-#: prefs.ui.h:36
+#: prefs.ui.h:37
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr ""
 "Mude o seu papel de parede diariamente pela Foto astronômica do dia da NASA"
 
-#: prefs.ui.h:37
+#: prefs.ui.h:38
 msgid "Extension's GitHub Webpage"
 msgstr "Pagina da extensão no GitHub"
 
-#: prefs.ui.h:38
+#: prefs.ui.h:39
 msgid "Issue Tracker"
 msgstr "Rastreador de Problemas"
 
-#: prefs.ui.h:39
+#: prefs.ui.h:40
 msgid "Changelog"
 msgstr "Changelog"
 
-#: prefs.ui.h:40
+#: prefs.ui.h:41
 #, fuzzy
 msgid ""
 "Brought to you by:\n"
@@ -333,7 +333,7 @@ msgstr ""
 "Patrocinado por:\n"
 "Elia Argentieri"
 
-#: prefs.ui.h:42
+#: prefs.ui.h:43
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
@@ -343,6 +343,16 @@ msgstr ""
 "Veja a<a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU "
 "General Public License, versão 3 ou mais nova</a> para mais detalhes.</span>"
 
-#: prefs.ui.h:44
+#: prefs.ui.h:45
 msgid "About"
 msgstr "Sobre"
+
+#~ msgid "Error downloading image"
+#~ msgstr "Erro ao baixar imagem"
+
+#, fuzzy
+#~ msgid "Download {0} done"
+#~ msgstr "Pasta de Download:"
+
+#~ msgid "Set lock screen image:"
+#~ msgstr "Definir imagem para tela de bloqueio:"
