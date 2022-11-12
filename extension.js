@@ -324,7 +324,7 @@ const NasaApodIndicator = GObject.registerClass({
         this._refresh(true);
     }
 
-    _refresh(user_initiated = false) {
+    async _refresh(user_initiated = false) {
         if (this._updatePending) {
             Utils.ext_log('refresh: a previous refresh is still pending');
             this._refreshDone();
@@ -351,18 +351,8 @@ const NasaApodIndicator = GObject.registerClass({
         this._populateKeys();
         this.refreshStatusItem.label.set_text(_('Pending refresh'));
 
-        let makeRequest = function () {
-            if (this._apiKeys.length === 0) {
-                Notifications.notifyError(_('Over rate limit (error 429)'),
-                    _('Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you.'),
-                    this._apiKeyErrorActions,
-                    user_initiated
-                );
-                this._populateKeys();
-                this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
-                return;
-            }
-
+        /* eslint-disable no-await-in-loop */
+        while (this._updatePending && this._apiKeys.length > 0) {
             let apiKey = this._apiKeys[0];
             let pinned = this._settings.get_string('pinned-background');
             let url = `${NasaApodURL}?api_key=${apiKey}`;
@@ -371,51 +361,63 @@ const NasaApodIndicator = GObject.registerClass({
             Utils.ext_log(url);
 
             // create an http message
-            let request = Soup.Message.new('GET', url);
+            let message = Soup.Message.new('GET', url);
 
-            // queue the http request
-            httpSession.queue_message(request, (session, message) => {
-                if (message.status_code === 200) {
-                    // Successful request
-                    // log remaining requests
-                    let limit = message.response_headers.get('X-RateLimit-Limit');
-                    let remaining = message.response_headers.get('X-RateLimit-Remaining');
-                    Utils.ext_log(`${remaining}/${limit} requests per hour remaining`);
+            try {
+                // download response
+                const response = await Utils.make_request(httpSession, message);
 
-                    let data = message.response_body.data;
-                    this._settings.set_string('last-json', data);
-                    this._settings.set_uint64('last-refresh', Date.now());
-                    try {
-                        this._parseData(data);
-                        this._prepareDownload(this.data['url']);
-                    } catch (e) {
-                        if (e instanceof MediaTypeError)
-                            this._notifyAPIResults();
-                        else
-                            Notifications.notifyError(_('Error downloading image'), e);
-                        this._refreshDone();
+                this._settings.set_string('last-json', response);
+                this._settings.set_uint64('last-refresh', Date.now());
+
+                this._parseData(response);
+                await this._downloadImage();
+                this._updatePending = false; // make sure not to repeat while
+            } catch (e) {
+                Utils.ext_log(e);
+                if (e instanceof MediaTypeError) {
+                    this._notifyAPIResults();
+                    this._refreshDone();
+                } else if (Number.isInteger(e)) {
+                    if (e === 403) {
+                        this._refreshDone(-1);
+                        Notifications.notifyError(_('Invalid NASA API key (error 403)'),
+                            _('Check that your key is correct or use the default key.'),
+                            this._apiKeyErrorActions
+                        );
+                    } else if (message.status_code === 429) {
+                        Utils.ext_log(`API key ${this._apiKeys[0]} is rate limited.`);
+                        this._apiKeys.shift();
+                    } else {
+                        Notifications.notifyError(_('Network error'),
+                            _('HTTP status code {0}.').replace('{0}', message.status_code),
+                            this._networkErrorActions,
+                            user_initiated
+                        );
+                        this._refreshDone(RETRY_NETWORK_ERROR);
                     }
-                } else if (message.status_code === 403) {
-                    this._refreshDone(-1);
-                    Notifications.notifyError(_('Invalid NASA API key (error 403)'),
-                        _('Check that your key is correct or use the default key.'),
-                        this._apiKeyErrorActions
-                    );
-                } else if (message.status_code === 429) {
-                    Utils.ext_log(`API key ${this._apiKeys[0]} is rate limited.`);
-                    this._apiKeys.shift();
-                    makeRequest();
                 } else {
-                    Notifications.notifyError(_('Network error'),
-                        _('HTTP status code {0}.').replace('{0}', message.status_code),
+                    Notifications.notifyError(
+                        _('Generic error'),
+                        e.toString(),
                         this._networkErrorActions,
                         user_initiated
                     );
-                    this._refreshDone(RETRY_NETWORK_ERROR);
+                    this._refreshDone(-1);
                 }
-            });
-        }.bind(this);
-        makeRequest();
+            }
+        }
+        /* eslint-enable no-await-in-loop */
+
+        if (this._apiKeys.length === 0) {
+            Notifications.notifyError(_('Over rate limit (error 429)'),
+                _('Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you.'),
+                this._apiKeyErrorActions,
+                user_initiated
+            );
+            this._populateKeys();
+            this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
+        }
     }
 
     _refreshDone(seconds = TIMEOUT_SECONDS) {
@@ -457,46 +459,40 @@ const NasaApodIndicator = GObject.registerClass({
         }
     }
 
-    _prepareDownload() {
-        let url = this.data['url'];
-        let file = Gio.file_new_for_path(this.data['filename']);
-        let NasaApodDir = Utils.getDownloadFolder();
-        if (!file.query_exists(null)) {
-            let dir = Gio.file_new_for_path(NasaApodDir);
-            if (!dir.query_exists(null))
-                dir.make_directory_with_parents(null);
+    async _downloadImage() {
+        const url = this.data['url'];
+        const file = Gio.file_new_for_path(this.data['filename']);
 
-            this._download_image(url, file);
-        } else {
-            Utils.ext_log(`${this.data['filename']} already downloaded`);
-            this._setBackground();
-            if (this._settings.get_string('pinned-background') === '')
-                this._refreshDone();
-            else
-                this._refreshDone(-1);
+        if (file.query_exists(null)) {
+            const file_size = file.query_info(Gio.FILE_ATTRIBUTE_STANDARD_SIZE, Gio.FileQueryInfoFlags.NONE, null).get_size();
+            Utils.ext_log(`${this.data['filename']} file size is ${file_size}B`);
+            if (file_size > 0) {
+                Utils.ext_log(`${this.data['filename']} already downloaded`);
+                this._setBackground();
+                if (this._settings.get_string('pinned-background') === '')
+                    this._refreshDone();
+                else
+                    this._refreshDone(-1);
+                return;
+            }
         }
-    }
 
-    _download_image(url, file) {
+        const NasaApodDir = Utils.getDownloadFolder();
+        const dir = Gio.file_new_for_path(NasaApodDir);
+        if (!dir.query_exists(null))
+            dir.make_directory_with_parents(null);
+
         Utils.ext_log(`Downloading ${url} to ${file.get_uri()}`);
 
-        // open the Gfile
-        let fstream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
-
         // variables for the progress bar
-        let total_size;
-        let bytes_so_far = 0;
+        // let total_size;
+        // let bytes_so_far = 0;
 
         // create an http message
-        let request = Soup.Message.new('GET', url);
-
-        // got_headers event
-        request.connect('got_headers', message => {
-            total_size = message.response_headers.get_content_length();
-            Utils.ext_log(`Download size: ${total_size}B`);
-        });
+        const message = Soup.Message.new('GET', url);
 
         // got_chunk event
+        /*
         request.connect('got_chunk', (message, chunk) => {
             bytes_so_far += chunk.length;
 
@@ -509,29 +505,27 @@ const NasaApodIndicator = GObject.registerClass({
             if (written !== chunk.length)
                 Utils.ext_log(`Write error: fstream.write returned ${written}, but ${chunk.length} expected`);
         });
+        */
 
-        // queue the http request
-        httpSession.queue_message(request, (session, message) => {
-            // request completed
-            fstream.close(null);
+        try {
+            const downloaded_bytes = await Utils.download_bytes(httpSession, message);
+            await Utils.replace_contents(file, downloaded_bytes);
 
-            if (message.status_code === 200) {
-                Utils.ext_log('Download successful');
-                this._setBackground();
-                this._notifyAPIResults();
-                if (this._settings.get_string('pinned-background') === '')
-                    this._refreshDone();
-                else
-                    this._refreshDone(-1);
-            } else {
-                Notifications.notifyError(_("Couldn't fetch image from {0}").replace('{0}', url),
-                    _('HTTP status code {0}.').replace('{0}', message.status_code),
-                    this._networkErrorActions
-                );
-                file.delete(null);
+            Utils.ext_log('Download successful');
+            this._setBackground();
+            this._notifyAPIResults();
+            if (this._settings.get_string('pinned-background') === '')
                 this._refreshDone();
-            }
-        });
+            else
+                this._refreshDone(-1);
+        } catch (e) {
+            Utils.ext_log(`Error: ${e}`);
+            Notifications.notifyError(_("Couldn't fetch image from {0}").replace('{0}', url),
+                _('HTTP status code {0}.').replace('{0}', message.status_code),
+                this._networkErrorActions);
+            file.delete(null);
+            this._refreshDone();
+        }
     }
 
     stop() {
@@ -551,8 +545,7 @@ function init() {
  *
  */
 function enable() {
-    httpSession = new Soup.SessionAsync();
-    Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
+    httpSession = new Soup.Session();
     nasaApodIndicator = new NasaApodIndicator();
     Main.panel.addToStatusArea(IndicatorName, nasaApodIndicator);
 }

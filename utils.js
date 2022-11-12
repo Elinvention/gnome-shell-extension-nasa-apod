@@ -4,9 +4,12 @@
 /* exported setBackgroundBasedOnSettings */
 /* exported list_files */
 /* exported parse_uri */
+/* exported make_request */
+/* exported download_bytes */
+/* exported replace_contents */
 
 
-const {Gio, GLib} = imports.gi;
+const {Gio, GLib, Soup} = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 
@@ -23,7 +26,7 @@ function ext_log(msg) {
 function dump(object) {
     let output = '';
     for (let property in object)
-        output += `${property}: ${object[property]}; `;
+        output += `${property}: ${object[property]};\n`;
 
     log(output);
 }
@@ -53,6 +56,9 @@ function setBackgroundBasedOnSettings(filename = null) {
 
     if (settings.get_boolean('set-background')) {
         if (filename !== null) {
+            // force gnome to reload the background
+            backgroundSettings.reset('picture-uri');
+            backgroundSettings.reset('picture-uri-dark');
             backgroundSettings.set_string('picture-uri', filename);
             backgroundSettings.set_string('picture-uri-dark', filename);
         }
@@ -120,3 +126,81 @@ function getBackgroundSettings() {
     getBackgroundSettings._instance = new Gio.Settings({schema: 'org.gnome.desktop.background'});
     return getBackgroundSettings._instance;
 }
+
+/**
+ * @param {Object} httpSession Soup.Session
+ * @param {Object} message Soup.message
+ * @returns a Promise that resolves with the response body
+ */
+function make_request(httpSession, message) {
+    return new Promise((resolve, reject) => {
+        httpSession.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (session, result) => {
+            if (message.get_status() === Soup.Status.OK) {
+                // Successful request
+                // log remaining requests
+                let limit = message.get_response_headers().get_one('X-RateLimit-Limit');
+                let remaining = message.get_response_headers().get_one('X-RateLimit-Remaining');
+                ext_log(`${remaining}/${limit} requests per hour remaining`);
+
+                let bytes = httpSession.send_and_read_finish(result);
+                let decoder = new TextDecoder('utf-8');
+                let response = decoder.decode(bytes.get_data());
+
+                resolve(response);
+            } else {
+                reject(message.get_status());
+            }
+        });
+    });
+}
+
+/**
+ * @param {Object} httpSession Soup.Session
+ * @param {Object} message Soup.message
+ * @returns a Promise that resolves with the downloaded bytes
+ */
+function download_bytes(httpSession, message) {
+    return new Promise((resolve, reject) => {
+        httpSession.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (session, response_task) => {
+            if (message.get_status() === Soup.Status.OK) {
+                const total_size = message.get_response_headers().get_content_length();
+                ext_log(`Download size: ${total_size}B`);
+
+                const input_bytes = session.send_and_read_finish(response_task);
+                ext_log(`Downloaded ${input_bytes.get_size()}B`);
+
+                resolve(input_bytes);
+            } else {
+                reject(message.get_status());
+            }
+        });
+    });
+}
+
+/**
+ * @param {Object} file a GFile
+ * @param {Object} input_bytes GBytes to replace the file contents with
+ * @returns a Promise that resolves with etag string
+ */
+function replace_contents(file, input_bytes) {
+    return new Promise((resolve, reject) => {
+        file.replace_contents_async(
+            input_bytes,
+            null,
+            false,
+            Gio.FileCreateFlags.REPLACE_DESTINATION,
+            null,
+            (_file, task) => {
+                try {
+                    const [, etag] = _file.replace_contents_finish(task);
+                    ext_log(`etag ${etag}`);
+                    resolve(etag);
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        );
+    });
+}
+
+
