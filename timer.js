@@ -12,8 +12,10 @@ var Timer = class Timer {
     }
 
     static remove(name) {
-        if (Timer.timeouts[name] !== undefined)
+        if (Timer.timeouts[name] !== undefined) {
             Mainloop.source_remove(Timer.timeouts[name]);
+            Timer.timeouts[name] = undefined;
+        }
     }
 
     static remove_all() {
