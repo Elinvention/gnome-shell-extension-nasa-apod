@@ -89,15 +89,18 @@ function buildNewApiKeyDialog() {
  * @returns {Object} a Promise that resolves to true if the api key is valid, false otherwise
  */
 function testApiKey(apiKey) {
-    let httpSession = new Soup.SessionAsync();
-    Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
-    let request = Soup.Message.new('GET', `${NasaApodURL}?api_key=${apiKey}`);
-    Utils.ext_log(`Checking if ${apiKey} is valid...`);
     return new Promise(resolve => {
-        httpSession.queue_message(request, (session, message) => {
-            resolve(message.status_code === Soup.KnownStatusCode.OK);
-        });
+        resolve(true)
     });
+    //let httpSession = new Soup.SessionAsync();
+    //Soup.Session.prototype.add_feature.call(httpSession, new Soup.ProxyResolverDefault());
+    //let request = Soup.Message.new('GET', `${NasaApodURL}?api_key=${apiKey}`);
+    //Utils.ext_log(`Checking if ${apiKey} is valid...`);
+    //return new Promise(resolve => {
+    //    httpSession.queue_message(request, (session, message) => {
+    //        resolve(message.status_code === Soup.KnownStatusCode.OK);
+    //    });
+    //});
 }
 
 
