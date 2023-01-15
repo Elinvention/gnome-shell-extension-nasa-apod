@@ -93,7 +93,7 @@ function testApiKey(apiKey) {
     let httpSession = new Soup.Session();
     let message = Soup.Message.new('GET', `${NasaApodURL}?api_key=${apiKey}`);
     return new Promise(resolve => {
-        httpSession.send_async(message, GLib.PRIORITY_DEFAULT, null, (session, result) => {
+        httpSession.send_async(message, GLib.PRIORITY_DEFAULT, null, (__, ___) => {
             resolve(message.get_status() === Soup.Status.OK);
         });
     });
