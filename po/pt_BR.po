@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-12 23:40+0100\n"
+"POT-Creation-Date: 2023-01-15 19:28+0100\n"
 "PO-Revision-Date: 2021-06-02 15:41-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -148,15 +148,15 @@ msgstr ""
 msgid "Couldn't fetch image from {0}"
 msgstr "Não foi possível buscar imagem de {0}"
 
-#: prefs.js:168
+#: prefs.js:167
 msgid "Choose download folder"
 msgstr "Escolha a pasta de download"
 
-#: prefs.js:173
+#: prefs.js:172
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: prefs.js:174
+#: prefs.js:173
 msgid "Select"
 msgstr "Selecionar"
 

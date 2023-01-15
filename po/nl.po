@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-12 23:40+0100\n"
+"POT-Creation-Date: 2023-01-15 19:28+0100\n"
 "PO-Revision-Date: 2021-11-28 14:29+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
@@ -148,15 +148,15 @@ msgstr ""
 msgid "Couldn't fetch image from {0}"
 msgstr "De afbeelding kan niet worden opgehaald van {0}"
 
-#: prefs.js:168
+#: prefs.js:167
 msgid "Choose download folder"
 msgstr "Kies een opslaglocatie"
 
-#: prefs.js:173
+#: prefs.js:172
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: prefs.js:174
+#: prefs.js:173
 msgid "Select"
 msgstr "Kiezen"
 

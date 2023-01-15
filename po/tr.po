@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-12 23:40+0100\n"
+"POT-Creation-Date: 2023-01-15 19:28+0100\n"
 "PO-Revision-Date: 2019-03-21 08:18+0300\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -153,16 +153,16 @@ msgstr ""
 msgid "Couldn't fetch image from {0}"
 msgstr "{0} kaynağından resim alınamadı"
 
-#: prefs.js:168
+#: prefs.js:167
 #, fuzzy
 msgid "Choose download folder"
 msgstr "İndirme klasörü:"
 
-#: prefs.js:173
+#: prefs.js:172
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:174
+#: prefs.js:173
 msgid "Select"
 msgstr ""
 

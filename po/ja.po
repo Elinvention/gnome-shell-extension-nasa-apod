@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-12 23:40+0100\n"
+"POT-Creation-Date: 2023-01-15 19:28+0100\n"
 "PO-Revision-Date: 2021-04-13 15:14+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -147,15 +147,15 @@ msgstr ""
 msgid "Couldn't fetch image from {0}"
 msgstr "{0}から画像を取得できませんでした"
 
-#: prefs.js:168
+#: prefs.js:167
 msgid "Choose download folder"
 msgstr "ダウンロードフォルダを選ぶ"
 
-#: prefs.js:173
+#: prefs.js:172
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: prefs.js:174
+#: prefs.js:173
 msgid "Select"
 msgstr "選ぶ"
 
