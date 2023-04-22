@@ -16,14 +16,21 @@ You can install the latest release from [extensions.gnome.org][].
 
 ## Testing
 
-You can help with development by testing and reporting issues.  
-The command below downloads and install the current development version:
+You can help with development by contributing code, testing and reporting issues.
+
+To proceed you need to install dependencies. The method to install them depends
+depends on the distribution you are using. The dependencies are:
+
+1. glib
+2. intltool
+3. npm
+
+The commands below download and install the current development version:
 
 ```
 git clone https://github.com/Elinvention/gnome-shell-extension-nasa-apod.git
 cd gnome-shell-extension-nasa-apod
-make install
-gnome-extensions enable nasa_apod@elinvention.ovh
+make enable
 ```
 
 You can uninstall by running `make uninstall`.

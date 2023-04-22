@@ -5,15 +5,21 @@ FILES = extension.js notifications.js utils.js prefs.js timer.js prefs.ui prefs.
 MSGSRC = $(wildcard po/*.po)
 TOLOCALIZE = extension.js prefs.js
 
-.PHONY: install uninstall zip build clean locale potfile mergepo release eslint
+.PHONY: install uninstall enable disable zip build clean locale potfile mergepo release eslint
 
 install: build
 	-mkdir -p $(INSTALL_PATH)/$(INSTALL_NAME)
 	cp -r $(FILES) $(INSTALL_PATH)/$(INSTALL_NAME)
 	@echo "Installed to $(INSTALL_PATH)/$(INSTALL_NAME)"
 
-uninstall:
+uninstall: disable
 	rm -rI $(INSTALL_PATH)/$(INSTALL_NAME)
+
+enable: install
+	gnome-extensions enable nasa_apod@elinvention.ovh
+
+disable:
+	gnome-extensions disable nasa_apod@elinvention.ovh	
 
 zip: nasa_apod.zip
 
