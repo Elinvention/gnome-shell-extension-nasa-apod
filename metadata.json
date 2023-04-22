@@ -2,7 +2,7 @@
   "uuid": "nasa_apod@elinvention.ovh",
   "name": "NASA APOD Wallpaper Changer",
   "shell-version": [
-    "43"
+    "43", "44"
   ],
   "gettext-domain": "nasa-apod",
   "settings-schema": "org.gnome.shell.extensions.nasa-apod",
