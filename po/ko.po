@@ -1,20 +1,20 @@
-# Korean Translation of the gnome-shell-extension-nasa-apod.
-# Copyright (C) 2023 Elia Argentieri et al.
-# This file is distributed under the same license as the gnome-shell-extensions-nasa-apod package.
-# Seong-ho Cho <shcho@gnome.org>, 2023.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-shell-extension-nasa-apod\n"
-"Report-Msgid-Bugs-To: GNOME Korea <gnome-kr@googlegroups.com>\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-15 19:36+0100\n"
-"PO-Revision-Date: 2023-04-22 19:02+0900\n"
-"Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
+"PO-Revision-Date: 2023-04-22 19:18+0900\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3.1\n"
-"Last-Translator: Seong-ho Cho <shcho@gnome.org>\n"
+"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Language: ko\n"
 
@@ -60,11 +60,11 @@ msgstr "새로 고침 일정이 없습니다"
 
 #: extension.js:141
 msgid "Open Wallpaper Folder"
-msgstr "배경 폴더 열기"
+msgstr "배경 화면 폴더 열기"
 
 #: extension.js:144
 msgid "Set Wallpaper"
-msgstr "배경 설정"
+msgstr "배경 화면 설정"
 
 #: extension.js:147 extension.js:231
 msgid "Refresh"
@@ -95,8 +95,8 @@ msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
 msgstr ""
-"현재 NASA APOD 배경의 설명이 여기에 나타납니다. 새 배경과 설명을 다운로드하려"
-"면 새로 고침을 누르십시오."
+"현재 NASA APOD 배경 화면의 설명이 여기에 나타납니다. 새 배경 화면과 설명을 다"
+"운로드하려면 새로 고침을 누르십시오."
 
 #: extension.js:277
 msgid "Next refresh: {0}"
@@ -199,7 +199,7 @@ msgstr "표시자 및 알림"
 
 #: prefs.ui.h:11
 msgid "Set background image:"
-msgstr "바탕화면 사진 설정:"
+msgstr "배경 사진 설정:"
 
 #: prefs.ui.h:12
 msgid "None"
@@ -223,7 +223,7 @@ msgstr "화면에 맞게 확대"
 
 #: prefs.ui.h:17
 msgid "Wallpaper"
-msgstr "배경"
+msgstr "배경 화면"
 
 #: prefs.ui.h:18
 msgid "Zoom"
@@ -239,7 +239,7 @@ msgstr "다운로드 폴더:"
 
 #: prefs.ui.h:21
 msgid "Background"
-msgstr "바탕 화면"
+msgstr "배경"
 
 #: prefs.ui.h:23
 msgid "Image resolution:"
@@ -290,8 +290,8 @@ msgid ""
 "You can pin a background by selecting it.\n"
 "A pinned background won't be replaced by newer ones."
 msgstr ""
-"항목을 선택하여 바탕화면을 고정할 수 있습니다.\n"
-"고정한 바탕화면은 새 사진으로 바뀌지 않습니다."
+"항목을 선택하여 배경을 고정할 수 있습니다.\n"
+"고정한 배경 사진은 새 사진으로 바뀌지 않습니다."
 
 #: prefs.ui.h:35
 msgid "History"
@@ -303,7 +303,7 @@ msgstr "버전: "
 
 #: prefs.ui.h:37
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
-msgstr "매일 오늘의 NASA 천체 사진으로 배경을 바꿉니다"
+msgstr "매일 오늘의 NASA 천체 사진으로 배경 화면을 바꿉니다"
 
 #: prefs.ui.h:38
 msgid "Extension's GitHub Webpage"
