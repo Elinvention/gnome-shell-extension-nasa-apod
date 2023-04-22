@@ -1,0 +1,340 @@
+# Korean Translation of the gnome-shell-extension-nasa-apod.
+# Copyright (C) 2023 Elia Argentieri et al.
+# This file is distributed under the same license as the gnome-shell-extensions-nasa-apod package.
+# Seong-ho Cho <shcho@gnome.org>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-shell-extension-nasa-apod\n"
+"Report-Msgid-Bugs-To: GNOME Korea <gnome-kr@googlegroups.com>\n"
+"POT-Creation-Date: 2023-01-15 19:36+0100\n"
+"PO-Revision-Date: 2023-04-22 19:02+0900\n"
+"Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3.1\n"
+"Last-Translator: Seong-ho Cho <shcho@gnome.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: ko\n"
+
+#: extension.js:72
+msgid "Media type {0} not supported."
+msgstr "{0} 미디어 형식을 지원하지 않습니다."
+
+#: extension.js:73
+msgid "No picture for today 😞. Please visit NASA APOD website."
+msgstr "오늘의 사진이 없습니다 😞. NASA APOD 웹사이트를 방문해보세요."
+
+#: extension.js:96 extension.js:135
+msgid "NASA APOD website"
+msgstr "NASA APOD 웹사이트"
+
+#: extension.js:97
+msgid "Get an API key"
+msgstr "API 키 가져오기"
+
+#: extension.js:98 extension.js:100 extension.js:150 prefs.ui.h:22
+msgid "Settings"
+msgstr "설정"
+
+#: extension.js:99
+msgid "Retry"
+msgstr "다시 시도"
+
+#: extension.js:121
+msgid "No title available"
+msgstr "제목이 없습니다"
+
+#: extension.js:125
+msgid "No description available"
+msgstr "설명이 없습니다"
+
+#: extension.js:131
+msgid "No copyright information available"
+msgstr "저작권 정보가 없습니다"
+
+#: extension.js:138 extension.js:266
+msgid "No refresh scheduled"
+msgstr "새로 고침 일정이 없습니다"
+
+#: extension.js:141
+msgid "Open Wallpaper Folder"
+msgstr "배경 폴더 열기"
+
+#: extension.js:144
+msgid "Set Wallpaper"
+msgstr "배경 설정"
+
+#: extension.js:147 extension.js:231
+msgid "Refresh"
+msgstr "새로 고침"
+
+#: extension.js:217
+msgid "Refreshing..."
+msgstr "새로 고치는 중..."
+
+#: extension.js:220
+msgid "Network unavailable"
+msgstr "네트워크 연결이 없습니다"
+
+#: extension.js:223
+msgid "Wait 10 seconds..."
+msgstr "10초 대기..."
+
+#: extension.js:229
+msgid "Unpin and Refresh"
+msgstr "고정 해제 및 새로 고침"
+
+#: extension.js:233
+msgid " (metered network)"
+msgstr " (종량제 네트워크)"
+
+#: extension.js:247
+msgid ""
+"Here will be displayed an explanation of the current NASA's APOD wallpaper. "
+"Please press refresh to download a new wallpaper along with the explanation."
+msgstr ""
+"현재 NASA APOD 배경의 설명이 여기에 나타납니다. 새 배경과 설명을 다운로드하려"
+"면 새로 고침을 누르십시오."
+
+#: extension.js:277
+msgid "Next refresh: {0}"
+msgstr "다음 새로 고침: {0}"
+
+#: extension.js:280
+msgid "Next refresh in less than a minute"
+msgstr "다음 새로 고침이 1분 미만 남았습니다"
+
+#: extension.js:352
+msgid "Pending refresh"
+msgstr "새로 고침 대기중"
+
+#: extension.js:384
+msgid "Invalid NASA API key (error 403)"
+msgstr "부적절한 NASA API 키입니다 (403번 오류)"
+
+#: extension.js:385
+msgid "Check that your key is correct or use the default key."
+msgstr "키가 올바른지 기본 키를 사용중인지 확인하십시오."
+
+#: extension.js:392
+msgid "Network error"
+msgstr "네트워크 오류"
+
+#: extension.js:393 extension.js:524
+msgid "HTTP status code {0}."
+msgstr "HTTP 상태 코드 {0}."
+
+#: extension.js:401
+msgid "Generic error"
+msgstr "일반 오류"
+
+#: extension.js:413
+msgid "Over rate limit (error 429)"
+msgstr "요청 제한 초과 (429번 오류)"
+
+#: extension.js:414
+msgid ""
+"Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
+"just for you."
+msgstr ""
+"시간당 1000번 요청을 할 https://api.nasa.gov/의 개인용 API 키를 가져옵니다."
+
+#: extension.js:523
+msgid "Couldn't fetch image from {0}"
+msgstr "{0}에서 사진을 가져올 수 없습니다"
+
+#: prefs.js:167
+msgid "Choose download folder"
+msgstr "다운로드 폴더 선택"
+
+#: prefs.js:172
+msgid "Cancel"
+msgstr "취소"
+
+#: prefs.js:173
+msgid "Select"
+msgstr "선택"
+
+#: prefs.ui.h:1
+msgid "Add NASA APOD API key"
+msgstr "NASA APOD API 키 추가"
+
+#: prefs.ui.h:2
+msgid "Please paste here your API key."
+msgstr "여기에 API 키를 붙여넣으십시오."
+
+#: prefs.ui.h:3
+msgid "The entered API key is not valid."
+msgstr "입력한 API 키가 올바르지 않습니다."
+
+#: prefs.ui.h:4
+msgid "Checking..."
+msgstr "검사중..."
+
+#: prefs.ui.h:5
+msgid "The API key has to be 40 characters long."
+msgstr "API 키 길이는 문자 40개여야 합니다."
+
+#: prefs.ui.h:6
+msgid "Hide the indicator"
+msgstr "표시자 숨기기"
+
+#: prefs.ui.h:7
+msgid "Send a notification with explanation when a new image is downloaded."
+msgstr "새 사진을 다운로드하면 설명으로 알림을 내보냅니다."
+
+#: prefs.ui.h:8
+msgid "Notifications"
+msgstr "알림"
+
+#: prefs.ui.h:9
+msgid "Use transient notifications (auto dismiss)"
+msgstr "임시 알림 사용 (자동 사라짐)"
+
+#: prefs.ui.h:10
+msgid "Indicator and notifications"
+msgstr "표시자 및 알림"
+
+#: prefs.ui.h:11
+msgid "Set background image:"
+msgstr "바탕화면 사진 설정:"
+
+#: prefs.ui.h:12
+msgid "None"
+msgstr "(안함)"
+
+#: prefs.ui.h:13
+msgid "Centered"
+msgstr "가운데 고정"
+
+#: prefs.ui.h:14
+msgid "Scaled"
+msgstr "고정 비율 확대"
+
+#: prefs.ui.h:15
+msgid "Spanned"
+msgstr "양쪽 늘임"
+
+#: prefs.ui.h:16
+msgid "Stretched"
+msgstr "화면에 맞게 확대"
+
+#: prefs.ui.h:17
+msgid "Wallpaper"
+msgstr "배경"
+
+#: prefs.ui.h:18
+msgid "Zoom"
+msgstr "확대"
+
+#: prefs.ui.h:19
+msgid "Default"
+msgstr "기본"
+
+#: prefs.ui.h:20
+msgid "Download folder:"
+msgstr "다운로드 폴더:"
+
+#: prefs.ui.h:21
+msgid "Background"
+msgstr "바탕 화면"
+
+#: prefs.ui.h:23
+msgid "Image resolution:"
+msgstr "사진 해성도:"
+
+#: prefs.ui.h:24
+msgid "HD version"
+msgstr "HD 버전"
+
+#: prefs.ui.h:25
+msgid "Low resolution version"
+msgstr "저해상도 버전"
+
+#: prefs.ui.h:26
+msgid "Image resolution on metered networks:"
+msgstr "종량제 네트워크의 사진 해상도:"
+
+#: prefs.ui.h:27
+msgid "Automatic refresh on metered networks:"
+msgstr "종량제 네트워크에서 새로 고침:"
+
+#: prefs.ui.h:28
+msgid "Network usage"
+msgstr "네트워크 사용량"
+
+#: prefs.ui.h:29
+msgid ""
+"API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
+"html#apply-for-an-api-key\">NASA APOD website</a>.\n"
+"Each key is limited to 1000 requests per hour, and hence you may not be able "
+"to refresh with the default keys."
+msgstr ""
+"API 키는 <a href=\"https://api.nasa.gov/index.html#apply-for-an-api-"
+"key\">NASA APOD 웹사이트</a>에서 가져올 수 있습니다.\n"
+"각 키는 시간당 최대 1000번 요청으로 제한하며, 기본 키로는 새로 고침할 수 없습"
+"니다."
+
+#: prefs.ui.h:31
+msgid "API keys"
+msgstr "API 키"
+
+#: prefs.ui.h:32
+msgid "Network"
+msgstr "네트워크"
+
+#: prefs.ui.h:33
+msgid ""
+"You can pin a background by selecting it.\n"
+"A pinned background won't be replaced by newer ones."
+msgstr ""
+"항목을 선택하여 바탕화면을 고정할 수 있습니다.\n"
+"고정한 바탕화면은 새 사진으로 바뀌지 않습니다."
+
+#: prefs.ui.h:35
+msgid "History"
+msgstr "기록"
+
+#: prefs.ui.h:36
+msgid "version: "
+msgstr "버전: "
+
+#: prefs.ui.h:37
+msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
+msgstr "매일 오늘의 NASA 천체 사진으로 배경을 바꿉니다"
+
+#: prefs.ui.h:38
+msgid "Extension's GitHub Webpage"
+msgstr "확장 기능의 깃허브 웹페이지"
+
+#: prefs.ui.h:39
+msgid "Issue Tracker"
+msgstr "문제 추적 사이트"
+
+#: prefs.ui.h:40
+msgid "Changelog"
+msgstr "바뀐 기록"
+
+#: prefs.ui.h:41
+msgid ""
+"Brought to you by:\n"
+"Elia Argentieri"
+msgstr ""
+"제공자:\n"
+"Elia Argentieri"
+
+#: prefs.ui.h:43
+msgid ""
+"<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
+"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0."
+"html\">GNU General Public License, version 3 or later</a> for details.</span>"
+msgstr ""
+"<span size=\"small\">이 프로그램은 어떠한 보증도 하지 않습니다.\n"
+"자세한 내용은 <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0."
+"html\">버전 3 이상의 GNU 일반 공중 사용 허가서</a>를 살펴보십시오.</span>"
+
+#: prefs.ui.h:45
+msgid "About"
+msgstr "정보"
