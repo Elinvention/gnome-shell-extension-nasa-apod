@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-15 19:36+0100\n"
-"PO-Revision-Date: 2023-04-22 19:18+0900\n"
+"PO-Revision-Date: 2023-04-23 12:14+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -179,7 +179,7 @@ msgstr "API 키 길이는 문자 40개여야 합니다."
 
 #: prefs.ui.h:6
 msgid "Hide the indicator"
-msgstr "표시자 숨기기"
+msgstr "상태 아이콘 숨기기"
 
 #: prefs.ui.h:7
 msgid "Send a notification with explanation when a new image is downloaded."
@@ -195,7 +195,7 @@ msgstr "임시 알림 사용 (자동 사라짐)"
 
 #: prefs.ui.h:10
 msgid "Indicator and notifications"
-msgstr "표시자 및 알림"
+msgstr "상태 아이콘 및 알림"
 
 #: prefs.ui.h:11
 msgid "Set background image:"
