@@ -1,29 +1,19 @@
-/* exported ext_log */
-/* exported dump */
-/* exported getDownloadFolder */
-/* exported setBackgroundBasedOnSettings */
-/* exported list_files */
-/* exported parse_uri */
-/* exported make_request */
-/* exported download_bytes */
-/* exported replace_contents */
-
-
-const {Gio, GLib, Soup} = imports.gi;
-const ExtensionUtils = imports.misc.extensionUtils;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Soup from 'gi://Soup?version=3.0';
 
 
 /**
  * @param {string} msg Message to log
  */
-function ext_log(msg) {
+export function ext_log(msg) {
     print(`NASA APOD extension: ${msg}`);
 }
 
 /**
  * @param {Object} object Object to dump in the log
  */
-function dump(object) {
+export function dump(object) {
     let output = '';
     for (let property in object)
         output += `${property}: ${object[property]};\n`;
@@ -34,8 +24,7 @@ function dump(object) {
 /**
  * @returns {string} Path to the download folder taken from settings
  */
-function getDownloadFolder() {
-    let settings = ExtensionUtils.getSettings();
+export function getDownloadFolder(settings) {
     let NasaApodDir = settings.get_string('download-folder');
     if (NasaApodDir === '')
         NasaApodDir = `${GLib.get_home_dir()}/.cache/apod/`;
@@ -47,8 +36,7 @@ function getDownloadFolder() {
 /**
  * @param {string} [filename=null] Full path to the background (either uri or absolute path)
  */
-function setBackgroundBasedOnSettings(filename = null) {
-    let settings = ExtensionUtils.getSettings();
+export function setBackgroundBasedOnSettings(settings, filename = null) {
     let backgroundSettings = getBackgroundSettings();
 
     if ((typeof filename === 'string' || filename instanceof String) && !filename.startsWith('file://'))
@@ -74,7 +62,7 @@ function setBackgroundBasedOnSettings(filename = null) {
 /**
  * @param {string} path The path to list
  */
-function list_files(path) {
+export function list_files(path) {
     let dir = Gio.file_new_for_path(path);
     let files_iter = dir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
     let file_names = [];
@@ -90,7 +78,7 @@ function list_files(path) {
  * @param {string} path Path to an image created by this extension.
  * @returns {Object} Contains information parsed from the file name of the image.
  */
-function parse_path(path) {
+export function parse_path(path) {
     if (typeof path !== 'string')
         throw new TypeError('Expected a string path.');
     let info = {path};
@@ -109,7 +97,7 @@ function parse_path(path) {
  * @param {string} uri Uri to an image created by this extension.
  * @returns {Object} Contains information parsed from the file name of the image.
  */
-function parse_uri(uri) {
+export function parse_uri(uri) {
     let splitSlash = uri.split('/');
     let schema = `${splitSlash.splice(0, 2).join('/')}/`;
     let info = parse_path(splitSlash.join('/'));
@@ -120,7 +108,7 @@ function parse_uri(uri) {
 /**
  * @returns {Object} gsettings singleton with schema 'org.gnome.desktop.background'
  */
-function getBackgroundSettings() {
+export function getBackgroundSettings() {
     if (getBackgroundSettings._instance)
         return getBackgroundSettings._instance;
     getBackgroundSettings._instance = new Gio.Settings({schema: 'org.gnome.desktop.background'});
@@ -132,7 +120,7 @@ function getBackgroundSettings() {
  * @param {Object} message Soup.message
  * @returns a Promise that resolves with the response body
  */
-function make_request(httpSession, message) {
+export function make_request(httpSession, message) {
     return new Promise((resolve, reject) => {
         httpSession.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (session, result) => {
             if (message.get_status() === Soup.Status.OK) {
@@ -159,7 +147,7 @@ function make_request(httpSession, message) {
  * @param {Object} message Soup.message
  * @returns a Promise that resolves with the downloaded bytes
  */
-function download_bytes(httpSession, message) {
+export function download_bytes(httpSession, message) {
     return new Promise((resolve, reject) => {
         httpSession.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (session, response_task) => {
             if (message.get_status() === Soup.Status.OK) {
@@ -182,7 +170,7 @@ function download_bytes(httpSession, message) {
  * @param {Object} input_bytes GBytes to replace the file contents with
  * @returns a Promise that resolves with etag string
  */
-function replace_contents(file, input_bytes) {
+export function replace_contents(file, input_bytes) {
     return new Promise((resolve, reject) => {
         file.replace_contents_async(
             input_bytes,

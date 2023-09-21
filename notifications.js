@@ -1,12 +1,6 @@
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const Gio = imports.gi.Gio;
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
-
-
-/* exported notify */
-/* exported notifyError */
+import Gio from 'gi://Gio';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 
 
 /**
@@ -29,7 +23,7 @@ function addActionsToNotification(notification, actions) {
  * @param {string} actions[].name The name of the action shown on the button
  * @param {Function} actions[].fun The function to call when the user clicks on the button
  */
-function notify(msg, details, transient, actions = []) {
+export function notify(msg, details, transient, actions = []) {
     // this should also set notifications icon,
     // but it doesn't anymore on GNOME 40
     let source = new MessageTray.Source('NASA APOD', 'saturn');
@@ -45,9 +39,9 @@ function notify(msg, details, transient, actions = []) {
     //                                  });
 
     // Manually get and set notification icon
-    let my_gicon = Gio.icon_new_for_string(`${Me.path}/icons/saturn.svg`);
+    let my_gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
     Main.messageTray.add(source);
-    let notification = new MessageTray.Notification(source, msg, details, {gicon: my_gicon});
+    let notification = new MessageTray.Notification(source, msg, details, {gicon: null});
     notification.setTransient(transient);
     addActionsToNotification(notification, actions);
     source.showNotification(notification);
@@ -61,7 +55,7 @@ function notify(msg, details, transient, actions = []) {
  * @param {Function} actions[].fun The function to call when the user clicks on the button
  * @param {bool} [user_initiated=true] Whether the user initiated the action or not (to avoid spamming notifications from background activity)
  */
-function notifyError(msg, details, actions = [], user_initiated = true) {
+export function notifyError(msg, details, actions = [], user_initiated = true) {
     let prefix = 'NASA APOD extension error';
     // Always log the errors
     if (details)
@@ -72,15 +66,16 @@ function notifyError(msg, details, actions = [], user_initiated = true) {
     // Actually show the notification if user_initiated
     if (user_initiated) {
         // Manually get and set notification icon
-        let my_gicon = Gio.icon_new_for_string(`${Me.path}/icons/saturn.svg`);
+        let my_gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
 
         let source = new MessageTray.Source('NASA APOD', 'saturn');
         Main.messageTray.add(source);
         let notification = details
             ? new MessageTray.Notification(source, `${prefix}: ${msg}`, details, {gicon: my_gicon})
-            : new MessageTray.Notification(source, prefix, msg, {gicon: my_gicon});
+            : new MessageTray.Notification(source, prefix, msg, {gicon: null});
         notification.setTransient(false);
         addActionsToNotification(notification, actions);
         source.showNotification(notification);
     }
 }
+

@@ -1,25 +1,18 @@
-/* exported init */
-/* exported enable */
-/* exported disable */
+import St from 'gi://St';
+import Soup from 'gi://Soup?version=3.0';
+import GObject from 'gi://GObject';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const St = imports.gi.St;
-const Main = imports.ui.main;
-const Soup = imports.gi.Soup;
-const GObject = imports.gi.GObject;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Util = imports.misc.util;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const Timer = Me.imports.timer.Timer;
-const Utils = Me.imports.utils;
-const Notifications = Me.imports.notifications;
+import * as Notifications from './notifications.js';
+import * as Timer from './timer.js';
+import * as Utils from './utils.js';
 
-const Gettext = imports.gettext.domain('nasa-apod');
-const _ = Gettext.gettext;
 
 const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 const NasaApodWebsiteURL = 'https://apod.nasa.gov/apod/';
@@ -40,7 +33,7 @@ let nasaApodIndicator;
  */
 function xdg_open(url) {
     Utils.ext_log(`xdg-open ${url}`);
-    Util.spawn(['xdg-open', url]);
+    Utils.spawn(['xdg-open', url]);
 }
 
 /**
@@ -60,8 +53,8 @@ function open_getapi() {
 /**
  *
  */
-function open_wallpapers_folder() {
-    xdg_open(Utils.getDownloadFolder());
+function open_wallpapers_folder(settings) {
+    xdg_open(Utils.getDownloadFolder(settings));
 }
 
 /**
@@ -90,17 +83,22 @@ function set_text(item, text) {
 const NasaApodIndicator = GObject.registerClass({
     GTypeName: IndicatorName,
 }, class NasaApodIndicator extends PanelMenu.Button {
+    constructor(settings) {
+        super();
+        this._settings = settings;
+    }
+    
     _init() {
         super._init(0.0, IndicatorName);
 
         this._descriptionActions  = [{'name': _('NASA APOD website'), 'fun': open_website}];
         this._apiKeyErrorActions  = [{'name': _('Get an API key'), 'fun': open_getapi},
-            {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()}];
+            {'name': _('Settings'), 'fun': () => this.openPreferences()}];
         this._networkErrorActions = [{'name': _('Retry'), 'fun': () => this._refresh(true)},
-            {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()}];
+            {'name': _('Settings'), 'fun': () => this.openPreferences()}];
 
         this.indicatorIcon = new St.Icon({style_class: 'system-status-icon'});
-        this.indicatorIcon.gicon = Gio.icon_new_for_string(`${Me.path}/icons/saturn.svg`);
+        //this.indicatorIcon.gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
         this.add_child(this.indicatorIcon);
 
         // This object holds title, explanation, copyright and filename
@@ -109,7 +107,6 @@ const NasaApodIndicator = GObject.registerClass({
         this._network_monitor = Gio.network_monitor_get_default();
 
         this._updatePending = false;
-        this._settings = ExtensionUtils.getSettings();
 
         // Indicator visibility
         this.visible = !this._settings.get_boolean('hide'); // set initial state
@@ -139,7 +136,7 @@ const NasaApodIndicator = GObject.registerClass({
         this.refreshStatusItem.setSensitive(false);
 
         this.openWallpaperFolderItem = new PopupMenu.PopupMenuItem(_('Open Wallpaper Folder'));
-        this.openWallpaperFolderItem.connect('activate', open_wallpapers_folder);
+        this.openWallpaperFolderItem.connect('activate', () => open_wallpapers_folder(this._settings));
 
         this.wallpaperItem = new PopupMenu.PopupMenuItem(_('Set Wallpaper'));
         this.wallpaperItem.connect('activate', this._setBackground.bind(this));
@@ -148,7 +145,7 @@ const NasaApodIndicator = GObject.registerClass({
         this.refreshItem.connect('activate', this._refreshButton.bind(this));
 
         this.settingsItem = new PopupMenu.PopupMenuItem(_('Settings'));
-        this.settingsItem.connect('activate', () => ExtensionUtils.openPrefs());
+        this.settingsItem.connect('activate', () => this.openPreferences());
 
         this.menu.addMenuItem(this.titleItem);
         this.menu.addMenuItem(this.descItem);
@@ -305,7 +302,7 @@ const NasaApodIndicator = GObject.registerClass({
     _pinnedBackground(settings, key) {
         let pin = settings.get_string(key);
         if (pin !== '') {
-            this.data = {filename: Utils.getDownloadFolder() + pin};
+            this.data = {filename: Utils.getDownloadFolder(this._settings) + pin};
             this._setBackground();
         }
         this._restartTimeout(10);
@@ -433,7 +430,7 @@ const NasaApodIndicator = GObject.registerClass({
         if (parsed['media_type'] === 'image') {
             let url_split = parsed['url'].split('.');
             let extension = url_split[url_split.length - 1];
-            let NasaApodDir = Utils.getDownloadFolder();
+            let NasaApodDir = Utils.getDownloadFolder(this._settings);
             let filename = `${NasaApodDir + parsed['date']}-${parsed['title']}.${extension}`;
 
             let url = parsed['url'];
@@ -477,7 +474,7 @@ const NasaApodIndicator = GObject.registerClass({
             }
         }
 
-        const NasaApodDir = Utils.getDownloadFolder();
+        const NasaApodDir = Utils.getDownloadFolder(this._settings);
         const dir = Gio.file_new_for_path(NasaApodDir);
         if (!dir.query_exists(null))
             dir.make_directory_with_parents(null);
@@ -534,28 +531,18 @@ const NasaApodIndicator = GObject.registerClass({
     }
 });
 
-/**
- *
- */
-function init() {
-    ExtensionUtils.initTranslations('nasa-apod');
-}
 
-/**
- *
- */
-function enable() {
-    httpSession = new Soup.Session();
-    nasaApodIndicator = new NasaApodIndicator();
-    Main.panel.addToStatusArea(IndicatorName, nasaApodIndicator);
-}
+export default class NasaApodExtension extends Extension {
+    enable() {
+        this._httpSession = new Soup.Session();
+        this._indicator = new NasaApodIndicator(this.getSettings());
+        Main.panel.addToStatusArea(this.uuid, this._indicator);
+    }
 
-/**
- *
- */
-function disable() {
-    nasaApodIndicator.stop();
-    nasaApodIndicator.destroy();
-    httpSession = null;
-    nasaApodIndicator = null;
+    disable() {
+        this._indicator?.stop();
+        this._indicator?.destroy();
+        this._httpSession = null;
+        this._indicator = null;
+    }
 }
