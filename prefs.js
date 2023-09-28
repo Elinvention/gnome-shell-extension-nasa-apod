@@ -15,20 +15,26 @@ const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 
 export default class NasaApodExtensionPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
-        window._settings = this.getSettings();
+        window.search_enabled = true;
 
-        const page = new Adw.PreferencesPage();
+        let settings = this.getSettings();
+        
+        let provider = new Gtk.CssProvider();
+        provider.load_from_path(`${this.path}/prefs.css`);
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-        const group = new Adw.PreferencesGroup({
-            title: _('Group Title'),
-        });
-        page.add(group);
-        const group2 = Adw.PreferencesGroup({
-            title: _('Test2'),
-        });
-        page.add(group2);
+        let builder = Gtk.Builder.new();
+        builder.add_from_file(`${this.path}/prefs.ui`);
+        let settings_page = builder.get_object('settings_page');
+        let history_page = builder.get_object('history_page');
+        let about_page = builder.get_object('about_page');
 
-        window.add(page);
+        window.add(settings_page);
+        window.add(history_page);
+        window.add(about_page);
     }
     
     /**
@@ -49,7 +55,8 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
         buildable.add_objects_from_file(`${this.path}/prefs.ui`, ['prefs_widget']);
         let prefsWidget = buildable.get_object('prefs_widget');
 
-        buildable.get_object('extension_version').set_text(this.version);
+        Utils.ext_log(this.metadata);
+        buildable.get_object('extension_version').set_text(this.metadata.version.toString());
 
         let hideSwitch = buildable.get_object('hide');
         let notifySwitch = buildable.get_object('notifications');
@@ -132,7 +139,7 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
         /**
          *
          */
-        function populateApiKeysListBox() {
+        let populateApiKeysListBox = () => {
             let keys = settings.get_strv('api-keys');
             Utils.ext_log(`keys: ${keys}`);
             let child = apiKeysListBox.get_first_child();
@@ -142,8 +149,8 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
                 Utils.ext_log(`Removing row for ${ex_child.get_child().get_first_child().get_text()}`);
                 apiKeysListBox.remove(ex_child);
             }
-            keys.forEach(function (key, index) {
-                let [item, button] = buildApiKeyItem(key);
+            keys.forEach((key, index) => {
+                let [item, button] = this.buildApiKeyItem(key);
                 button.connect('clicked', function () {
                     // array.pop has no argument and always pops the last element of the array
                     // since I don't care about order, copy the last element to the index to be deleted
@@ -162,7 +169,7 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
         settings.connect('changed::api-keys', populateApiKeysListBox);
 
         apiKeysAdd.connect('clicked', () => {
-            let [dialog, entry, invalid_lb, checking_lb] = buildNewApiKeyDialog();
+            let [dialog, entry, invalid_lb, checking_lb] = this.buildNewApiKeyDialog();
             dialog.set_transient_for(prefsWidget.get_root());
             entry.connect('changed', async () => {
                 let apiKey = entry.get_text();
@@ -211,7 +218,7 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
                     let path = downloadFolder + file_name;
                     let file = Gio.file_new_for_path(path);
                     let info = Utils.parse_path(path);
-                    let child = buildHistoryFlowBoxChild(file, info);
+                    let child = this.buildHistoryFlowBoxChild(file, info);
                     child.set_name(info.filename);
                     historyFlowBox.insert(child, -1);
                     if (pinned === info.filename)
@@ -266,68 +273,69 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
 
         return prefsWidget;
     }
+    
+    /**
+     * @param {Object} file an open wallpaper file
+     * @param {Object} info parsed information from filename
+     */
+    buildHistoryFlowBoxChild(file, info) {
+        if (['jpg', 'png', 'gif'].indexOf(info.extension) < 0)
+            throw new Error(`${info.path} is not an image`);
+
+        let buildable = new Gtk.Builder();
+        buildable.add_objects_from_file(`${this.path}/prefs.ui`, ['history_flowboxchild']);
+
+        let row = buildable.get_object('history_flowboxchild');
+        let title_label = buildable.get_object('title');
+        let date_label = buildable.get_object('date');
+        let image = buildable.get_object('image');
+
+        let stream = file.read(null);
+        GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream, 200, 200, true, null, function (source, res) {
+            let pix = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
+            image.set_from_pixbuf(pix);
+        });
+
+        title_label.set_text(info.title);
+        date_label.set_text(info.date);
+
+        return row;
+    }
+
+    /**
+     * Builds a GTK widgeet containing a label with the API key written on it
+     *
+     * @param {string} apiKey the API key string
+     * @returns {Array} First element is the whole item, the second just the button inside the item
+     */
+    buildApiKeyItem(apiKey) {
+        let buildable = new Gtk.Builder();
+        buildable.add_objects_from_file(`${this.path}/prefs.ui`, ['api_key_item']);
+
+        let item = buildable.get_object('api_key_item');
+        let label = buildable.get_object('api_key_label');
+        let button = buildable.get_object('api_key_remove');
+        label.set_text(apiKey);
+        return [item, button];
+    }
+
+    /**
+     * @returns {Array} Elements are: dialog widget, entry text, invalid label and checking label
+     */
+    buildNewApiKeyDialog() {
+        let buildable = new Gtk.Builder();
+        buildable.add_objects_from_file(`${this.path}/prefs.ui`, ['new_api_key_dialog']);
+
+        let dialog = buildable.get_object('new_api_key_dialog');
+        let entry = buildable.get_object('new_api_key_entry');
+        let invalid_lb = buildable.get_object('new_api_key_invalid_label');
+        let checking_lb = buildable.get_object('new_api_key_checking_label');
+
+        return [dialog, entry, invalid_lb, checking_lb];
+    }
+
 }
 
-
-/**
- * @param {Object} file an open wallpaper file
- * @param {Object} info parsed information from filename
- */
-function buildHistoryFlowBoxChild(file, info) {
-    if (['jpg', 'png', 'gif'].indexOf(info.extension) < 0)
-        throw new Error(`${info.path} is not an image`);
-
-    let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['history_flowboxchild']);
-
-    let row = buildable.get_object('history_flowboxchild');
-    let title_label = buildable.get_object('title');
-    let date_label = buildable.get_object('date');
-    let image = buildable.get_object('image');
-
-    let stream = file.read(null);
-    GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream, 200, 200, true, null, function (source, res) {
-        let pix = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
-        image.set_from_pixbuf(pix);
-    });
-
-    title_label.set_text(info.title);
-    date_label.set_text(info.date);
-
-    return row;
-}
-
-/**
- * Builds a GTK widgeet containing a label with the API key written on it
- *
- * @param {string} apiKey the API key string
- * @returns {Array} First element is the whole item, the second just the button inside the item
- */
-function buildApiKeyItem(apiKey) {
-    let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['api_key_item']);
-
-    let item = buildable.get_object('api_key_item');
-    let label = buildable.get_object('api_key_label');
-    let button = buildable.get_object('api_key_remove');
-    label.set_text(apiKey);
-    return [item, button];
-}
-
-/**
- * @returns {Array} Elements are: dialog widget, entry text, invalid label and checking label
- */
-function buildNewApiKeyDialog() {
-    let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['new_api_key_dialog']);
-
-    let dialog = buildable.get_object('new_api_key_dialog');
-    let entry = buildable.get_object('new_api_key_entry');
-    let invalid_lb = buildable.get_object('new_api_key_invalid_label');
-    let checking_lb = buildable.get_object('new_api_key_checking_label');
-
-    return [dialog, entry, invalid_lb, checking_lb];
-}
 
 /**
  * @param {string} apiKey the API key string

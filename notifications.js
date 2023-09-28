@@ -39,9 +39,8 @@ export function notify(msg, details, transient, actions = []) {
     //                                  });
 
     // Manually get and set notification icon
-    let my_gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
     Main.messageTray.add(source);
-    let notification = new MessageTray.Notification(source, msg, details, {gicon: null});
+    let notification = new MessageTray.Notification(source, msg, details, {});
     notification.setTransient(transient);
     addActionsToNotification(notification, actions);
     source.showNotification(notification);
@@ -66,12 +65,13 @@ export function notifyError(msg, details, actions = [], user_initiated = true) {
     // Actually show the notification if user_initiated
     if (user_initiated) {
         // Manually get and set notification icon
-        let my_gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
+        // FIXME: GNOME 45 made this more difficult
+        //let my_gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
 
         let source = new MessageTray.Source('NASA APOD', 'saturn');
         Main.messageTray.add(source);
         let notification = details
-            ? new MessageTray.Notification(source, `${prefix}: ${msg}`, details, {gicon: my_gicon})
+            ? new MessageTray.Notification(source, `${prefix}: ${msg}`, details, {}) //, {gicon: my_gicon})
             : new MessageTray.Notification(source, prefix, msg, {gicon: null});
         notification.setTransient(false);
         addActionsToNotification(notification, actions);
