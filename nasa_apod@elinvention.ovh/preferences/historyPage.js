@@ -1,18 +1,17 @@
-/* exported GeneralPage */
+/* exported HistoryPage */
 'use strict';
 
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import GObject from 'gi://GObject';
-import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
-import { gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 import * as Utils from '../utils/utils.js';
 
-const PREVIEW_SIZE = 150
+const PREVIEW_SIZE = 150;
 
 
 /**
@@ -25,22 +24,22 @@ function buildHistoryFlowBoxChild(file, info) {
 
     const row = new Gtk.FlowBoxChild();
     const box = new Gtk.Box({
-        orientation: Gtk.Orientation.VERTICAL
-    }); 
+        orientation: Gtk.Orientation.VERTICAL,
+    });
     const title_label = new Gtk.Label({
         label: info.title,
-        wrap: true
+        wrap: true,
     });
     const date_label = new Gtk.Label({
         label: info.date,
-        wrap: true
+        wrap: true,
     });
     const image = new Gtk.Image({
-        valign: "start",
+        valign: 'start',
         width_request: PREVIEW_SIZE,
-        height_request: PREVIEW_SIZE
+        height_request: PREVIEW_SIZE,
     });
-    
+
     box.append(title_label);
     box.append(image);
     box.append(date_label);
@@ -51,7 +50,7 @@ function buildHistoryFlowBoxChild(file, info) {
         let pix = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
         image.set_from_pixbuf(pix);
     });
-    
+
     return row;
 }
 
@@ -62,25 +61,24 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
         super._init({
             title: _('History'),
             icon_name: 'document-open-recent-symbolic',
-            name: 'HistoryPage'
+            name: 'HistoryPage',
         });
         this._settings = settings;
-        
-        
+
         // Description label
         const descriptionLabel = new Gtk.Label({
             label: _("You can pin a background by selecting it.\nA pinned background won't be replaced by newer ones."),
             justify: Gtk.Justification.CENTER,
-            wrap: true
+            wrap: true,
         });
 
         // History page
         let file_names = [];
         const pinned = settings.get_string('pinned-background');
         const downloadFolder = Utils.getDownloadFolder(settings);
-        
+
         const historyScroll = new Gtk.ScrolledWindow({
-            vexpand: true
+            vexpand: true,
         });
         const viewport = new Gtk.Viewport();
         const historyFlowBox = new Gtk.FlowBox({
@@ -90,9 +88,9 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
             min_children_per_line: 2,
             max_children_per_line: 5,
             activate_on_single_click: false,
-            can_focus: false
+            can_focus: false,
         });
-        
+
         historyScroll.set_child(viewport);
         viewport.set_child(historyFlowBox);
 
@@ -151,23 +149,22 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
                 load_files_thumbnails();
             }
         });
-        
-        
+
         // FIXME: load images only when opening the page for the first time
-        //this.connect('shown', function () {
-            if (historyFlowBox.get_first_child() === null) {
-                file_names = Utils.list_files(downloadFolder);
-                load_files_thumbnails();
-            }
-        //});
-        
+        // this.connect('shown', function () {
+        if (historyFlowBox.get_first_child() === null) {
+            file_names = Utils.list_files(downloadFolder);
+            load_files_thumbnails();
+        }
+        // });
+
         const historyGroup = new Adw.PreferencesGroup({
-            title: _('History')
+            title: _('History'),
         });
-        
+
         historyGroup.add(descriptionLabel);
         historyGroup.add(historyScroll);
-        
+
         this.add(historyGroup);
     }
 });

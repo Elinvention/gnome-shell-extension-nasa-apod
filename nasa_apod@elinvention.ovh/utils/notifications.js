@@ -1,4 +1,6 @@
-import Gio from 'gi://Gio';
+'use strict';
+
+// import Gio from 'gi://Gio';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 
@@ -66,12 +68,12 @@ export function notifyError(msg, details, actions = [], user_initiated = true) {
     if (user_initiated) {
         // Manually get and set notification icon
         // FIXME: GNOME 45 made this more difficult
-        //let my_gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
+        // let my_gicon = Gio.icon_new_for_string(`./icons/saturn.svg`);
 
         let source = new MessageTray.Source('NASA APOD', 'saturn');
         Main.messageTray.add(source);
         let notification = details
-            ? new MessageTray.Notification(source, `${prefix}: ${msg}`, details, {}) //, {gicon: my_gicon})
+            ? new MessageTray.Notification(source, `${prefix}: ${msg}`, details, {}) // , {gicon: my_gicon})
             : new MessageTray.Notification(source, prefix, msg, {gicon: null});
         notification.setTransient(false);
         addActionsToNotification(notification, actions);

@@ -49,7 +49,7 @@ function open_getapi() {
 }
 
 /**
- *
+ * @param {Object} settings Gio.Settings object
  */
 function open_wallpapers_folder(settings) {
     xdg_open(Utils.getDownloadFolder(settings));
@@ -80,7 +80,6 @@ function set_text(item, text) {
 const NasaApodIndicator = GObject.registerClass({
     GTypeName: IndicatorName,
 }, class NasaApodIndicator extends PanelMenu.Button {
-
     _init(extension) {
         super._init(0.0, IndicatorName);
         this.extension = extension;
@@ -314,7 +313,7 @@ const NasaApodIndicator = GObject.registerClass({
     _refreshButton() {
         if (this._settings.get_string('pinned-background') !== '')
             this._settings.reset('pinned-background');
-        this._refresh(true).catch((error) => {
+        this._refresh(true).catch(error => {
             Utils.ext_log(error);
         });
     }
@@ -543,6 +542,5 @@ export default class NasaApodExtension extends Extension {
         this._httpSession = null;
         this._indicator = null;
     }
-    
-    
 }
+

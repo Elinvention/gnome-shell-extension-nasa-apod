@@ -22,6 +22,7 @@ export function dump(object) {
 }
 
 /**
+ * @param {Object} settings Gio.Settings object
  * @returns {string} Path to the download folder taken from settings
  */
 export function getDownloadFolder(settings) {
@@ -34,6 +35,7 @@ export function getDownloadFolder(settings) {
 }
 
 /**
+ * @param {Object} settings Gio.Settings object
  * @param {string} [filename=null] Full path to the background (either uri or absolute path)
  */
 export function setBackgroundBasedOnSettings(settings, filename = null) {

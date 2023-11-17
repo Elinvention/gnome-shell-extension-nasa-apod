@@ -1,16 +1,19 @@
-/* exported GeneralPage */
+/* exported NetworkPage */
 'use strict';
 
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import GObject from 'gi://GObject';
-import Gdk from 'gi://Gdk';
 import Soup from 'gi://Soup?version=3.0';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-import { gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 import * as Utils from '../utils/utils.js';
+
+
+const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 
 
 /**
@@ -22,21 +25,21 @@ import * as Utils from '../utils/utils.js';
 function buildApiKeyItem(apiKey) {
     const item = new Gtk.ListBoxRow();
     const box = new Gtk.Box({
-        
+
     });
     const label = new Gtk.Label({
         label: apiKey,
-        hexpand: true
+        hexpand: true,
     });
     const button = new Gtk.Button({
-        label: _("Remove")
+        label: _('Remove'),
     });
 
     box.append(label);
     box.append(button);
-    
+
     item.set_child(box);
-    
+
     return [item, button];
 }
 
@@ -47,34 +50,34 @@ function buildNewApiKeyDialog() {
     const dialog = new Gtk.Dialog({
         width_request: 400,
         height_request: 150,
-        title: _("Add NASA APOD API key"),
+        title: _('Add NASA APOD API key'),
         modal: true,
         destroy_with_parent: true,
-        icon_name: "list-add"
+        icon_name: 'list-add',
     });
     const entry = new Gtk.Entry({
         max_length: 40,
         truncate_multiline: true,
-        input-hints: Gtk.InputHints.NO_EMOJI | Gtk.InputHints.NO_SPELLCHECK
+        input_hints: Gtk.InputHints.NO_EMOJI | Gtk.InputHints.NO_SPELLCHECK,
     });
     const invalid_lb = new Gtk.Label({
         visible: false,
-        label: _("The entered API key is not valid.")
+        label: _('The entered API key is not valid.'),
     });
     const checking_lb = new Gtk.Label({
         visible: false,
-        label: "Checking..."
+        label: 'Checking...',
     });
     const descriptionLabel = new Gtk.Label({
-        label: _("The API key has to be 40 characters long.")
+        label: _('The API key has to be 40 characters long.'),
     });
-    
+
     const content_area = dialog.get_content_area();
     content_area.append(descriptionLabel);
     content_area.append(entry);
     content_area.append(invalid_lb);
     content_area.append(checking_lb);
-    
+
     return [dialog, entry, invalid_lb, checking_lb];
 }
 
@@ -100,26 +103,26 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
         super._init({
             title: _('Network'),
             icon_name: 'network-wireless-symbolic',
-            name: 'NetworkPage'
+            name: 'NetworkPage',
         });
         this._settings = settings;
 
         // Usage group
         // ---------------
         const usageGroup = new Adw.PreferencesGroup({
-            title: _('Network Usage')
+            title: _('Network Usage'),
         });
 
         // Resolution
         const resolutionModel = new Gtk.StringList();
-        resolutionModel.append(_("HD version"));
-        resolutionModel.append(_("Low resolution version"));
-        
+        resolutionModel.append(_('HD version'));
+        resolutionModel.append(_('Low resolution version'));
+
         const resolutionRow = new Adw.ComboRow({
             title: _('Image resolution:'),
             subtitle: _('Image resolution for non metered connections'),
             model: resolutionModel,
-            selected: _(this._settings.get_string("image-resolution"))
+            selected: _(this._settings.get_string('image-resolution')),
         });
 
         // Resolution metered
@@ -127,18 +130,18 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
             title: _('Image resolution on metered networks:'),
             subtitle: _('Image resolution for metered connections'),
             model: resolutionModel,
-            selected: this._settings.get_string("image-resolution-metered")
+            selected: this._settings.get_string('image-resolution-metered'),
         });
-        
+
         // Automatic update on metered connections
         const autoRefreshMeteredSwitch = new Gtk.Switch({
             valign: Gtk.Align.CENTER,
-            active: this._settings.get_boolean("refresh-metered")
+            active: this._settings.get_boolean('refresh-metered'),
         });
         const autoRefreshMeteredRow = new Adw.ActionRow({
             title: _('Automatic refresh on metered networks:'),
             subtitle: '',
-            activatable_widget: autoRefreshMeteredSwitch
+            activatable_widget: autoRefreshMeteredSwitch,
         });
         autoRefreshMeteredRow.add_suffix(autoRefreshMeteredSwitch);
 
@@ -148,37 +151,38 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
         this.add(usageGroup);
 
         // API keys group
-        //---------------
+        // --------------
         const apiKeysGroup = new Adw.PreferencesGroup({
-            title: _('API keys')
+            title: _('API keys'),
         });
-        
+
         // label
         const apiKeysLabel = new Gtk.Label({
-            label: _("API keys can be obtained from the <a href=\"https://api.nasa.gov/index.html#apply-for-an-api-key\">NASA APOD website</a>.\n" +
-                     "Each key is limited to 1000 requests per hour, and hence you may not be able " +
-                     "to refresh with the default keys."),
+            label: _('API keys can be obtained from the <a href="https://api.nasa.gov/index.html#apply-for-an-api-key">NASA APOD website</a>.\n' +
+                     'Each key is limited to 1000 requests per hour, and hence you may not be able ' +
+                     'to refresh with the default keys.'),
             use_markup: true,
             justify: Gtk.Justification.CENTER,
-            wrap: true
+            wrap: true,
         });
 
         // list box
         const apiKeysListBox = new Gtk.ListBox();
 
         const addRemoveBox = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL
+            orientation: Gtk.Orientation.HORIZONTAL,
+            halign: Gtk.Align.CENTER,
         });
-        addRemoveBox.add_css_class("linked");
+        addRemoveBox.add_css_class('linked');
 
         const apiKeysAdd = new Gtk.Button({
-            label: _("Add")
+            label: _('Add'),
         });
-        
+
         const apiKeysReset = new Gtk.Button({
-            label: _("Default")
+            label: _('Default'),
         });
-        
+
         const populateApiKeysListBox = () => {
             let keys = settings.get_strv('api-keys');
             Utils.ext_log(`keys: ${keys}`);
@@ -203,11 +207,11 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
                 Utils.ext_log(`Adding row for ${key} at position ${index}`);
                 apiKeysListBox.insert(item, index);
             });
-        }
+        };
 
         populateApiKeysListBox();
         settings.connect('changed::api-keys', populateApiKeysListBox);
-        
+
         apiKeysAdd.connect('clicked', () => {
             let [dialog, entry, invalid_lb, checking_lb] = buildNewApiKeyDialog();
             dialog.set_transient_for(this.get_root());
@@ -238,21 +242,21 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
                 dialog.destroy();
             });
         });
-        
+
         apiKeysReset.connect('clicked', function () {
             settings.reset('api-keys');
         });
-        
+
         addRemoveBox.append(apiKeysAdd);
         addRemoveBox.append(apiKeysReset);
-        
+
         apiKeysGroup.add(apiKeysLabel);
         apiKeysGroup.add(apiKeysListBox);
         apiKeysGroup.add(addRemoveBox);
         this.add(apiKeysGroup);
-        
+
         // Bind signals
-        //-------------
+        // -------------
         settings.bind('image-resolution', resolutionRow, 'selected', Gio.SettingsBindFlags.DEFAULT);
         settings.bind('image-resolution-metered', resolutionMeteredRow, 'selected', Gio.SettingsBindFlags.DEFAULT);
         settings.bind('refresh-metered', autoRefreshMeteredSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
