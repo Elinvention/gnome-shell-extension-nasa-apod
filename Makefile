@@ -1,68 +1,49 @@
-INSTALL_PATH = ~/.local/share/gnome-shell/extensions
-INSTALL_NAME = nasa_apod@elinvention.ovh
-FILES = extension.js notifications.js utils.js prefs.js timer.js prefs.ui prefs.css metadata.json icons schemas locale LICENSE README.md
+UUID = nasa_apod@elinvention.ovh
+BUNDLE_PATH = $(UUID).zip
+POT_PATH = $(UUID).pot
 
-MSGSRC = $(wildcard po/*.po)
-TOLOCALIZE = extension.js prefs.js
-
-.PHONY: install uninstall enable disable zip build clean locale potfile mergepo release eslint
+.PHONY: install uninstall enable disable build clean potfile mergepo release eslint
 
 install: build
-	-mkdir -p $(INSTALL_PATH)/$(INSTALL_NAME)
-	cp -r $(FILES) $(INSTALL_PATH)/$(INSTALL_NAME)
-	@echo "Installed to $(INSTALL_PATH)/$(INSTALL_NAME)"
+	gnome-extensions install $(BUNDLE_PATH) --force
 
 uninstall: disable
-	rm -rI $(INSTALL_PATH)/$(INSTALL_NAME)
+	gnome-extensions uninstall $(UUID)
 
 enable: install
-	gnome-extensions enable nasa_apod@elinvention.ovh
+	gnome-extensions enable $(UUID)
 
 disable:
-	gnome-extensions disable nasa_apod@elinvention.ovh	
+	gnome-extensions disable $(UUID)
 
-zip: nasa_apod.zip
-
-build: schemas/gschemas.compiled locale
+build:
+	rm -f $(BUNDLE_PATH)
+	cd $(UUID); \
+	gnome-extensions pack --force --podir=locale \
+	                      --extra-source=preferences/ \
+	                      --extra-source=icons/ \
+	                      --extra-source=utils/; \
+	mv $(UUID).shell-extension.zip ../$(BUNDLE_PATH)
 
 clean:
-	-rm nasa_apod.zip
-	-rm schemas/gschemas.compiled
-	-rm locale -r
-	-rm po/nasa-apod.pot
-	-rm prefs.ui.h
+	-rm $(BUNDLE_PATH)
+	-rm $(UUID)/schemas/gschemas.compiled
+	-rm $(UUID)/locale/nasa-apod.pot
 
-locale: mergepo $(MSGSRC:.po=.mo)
-	for l in $(MSGSRC:.po=.mo) ; do \
-		lf=locale/`basename $$l .mo`; \
-		mkdir -p $$lf/LC_MESSAGES; \
-		mv $$l $$lf/LC_MESSAGES/nasa-apod.mo; \
-	done;
+potfile: $(POT_PATH)
 
-potfile: po/nasa-apod.pot
-
-mergepo: po/nasa-apod.pot
+mergepo: $(POT_PATH)
 	for l in $(MSGSRC); do \
-		msgmerge -U $$l po/nasa-apod.pot; \
+		msgmerge -U $$l $(POT_PATH); \
 	done;
 
-release: eslint clean zip
+release: eslint clean build
 
-nasa_apod.zip: schemas/gschemas.compiled locale
-	zip -r nasa_apod.zip $(FILES)
-
-schemas/gschemas.compiled: schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml
-	glib-compile-schemas schemas
-
-prefs.ui.h:
-	intltool-extract --type=gettext/glade prefs.ui
-
-po/nasa-apod.pot: $(TOLOCALIZE) prefs.ui.h
-	xgettext -L JavaScript -k_ -kN_ --from-code=UTF-8 --package-name "NASA APOD Wallpaper Changer" -o po/nasa-apod.pot $(TOLOCALIZE)
-	xgettext -L C -k_ -kN_ --join-existing --from-code=UTF-8 -o po/nasa-apod.pot prefs.ui.h
-
-po/%.mo: po/%.po
-	msgfmt -c $< -o $@
+$(POT_PATH):
+	xgettext -L JavaScript -k_ -kN_ --package-name "NASA APOD Wallpaper Changer" --from-code UTF-8 --no-wrap -o $(POT_PATH) $(UUID)/*.js
+	xgettext -L JavaScript -j -o $(POT_PATH) --from-code UTF-8 --no-wrap $(UUID)/preferences/*.js 
+	xgettext -j -o $(POT_PATH) --from-code UTF-8 --no-wrap $(UUID)/schemas/*.xml
 
 eslint:
-	npx eslint -c eslintrc-gjs.yml extension.js notifications.js utils.js prefs.js
+	npx eslint -c eslintrc-gjs.yml $(UUID)
+

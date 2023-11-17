@@ -8,7 +8,11 @@ import GLib from 'gi://GLib';
 import Soup from 'gi://Soup?version=3.0';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
-import * as Utils from './utils.js';
+import * as Utils from './utils/utils.js';
+import * as GeneralPrefs from './preferences/generalPage.js';
+import * as NetworkPrefs from './preferences/networkPage.js';
+import * as HistoryPrefs from './preferences/historyPage.js';
+import * as AboutPrefs from './preferences/aboutPage.js';
 
 const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 
@@ -20,19 +24,19 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
         let settings = this.getSettings();
         
         let provider = new Gtk.CssProvider();
-        provider.load_from_path(`${this.path}/prefs.css`);
+        provider.load_from_path(`${this.path}/preferences/prefs.css`);
         Gtk.StyleContext.add_provider_for_display(
             Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-        let builder = Gtk.Builder.new();
-        builder.add_from_file(`${this.path}/prefs.ui`);
-        let settings_page = builder.get_object('settings_page');
-        let history_page = builder.get_object('history_page');
-        let about_page = builder.get_object('about_page');
+        let settings_page = new GeneralPrefs.GeneralPage(settings);
+        let network_page = new NetworkPrefs.NetworkPage(settings);
+        let history_page = new HistoryPrefs.HistoryPage(settings);
+        let about_page = new AboutPrefs.AboutPage(settings, `${this.path}/icons/nasa.svg`, this.metadata.version.toString());
 
         window.add(settings_page);
+        window.add(network_page);
         window.add(history_page);
         window.add(about_page);
     }

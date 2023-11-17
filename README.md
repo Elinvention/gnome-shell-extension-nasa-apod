@@ -39,7 +39,7 @@ You can uninstall by running `make uninstall`.
 
 You can contribute translations if you can use [Poedit].
 
-1. Open the template file [po/nasa-apod.pot] with Poedit.
+1. Open the template file [nasa_apod@elinvention.ovh.pot] with Poedit.
 2. Choose the language you want to translate to.
 3. Translate each string.
 4. Save the translation .po file.
@@ -57,4 +57,5 @@ send it to me by email (see my profile).
 [screenshot3]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/6.png
 [extensions.gnome.org]: https://extensions.gnome.org/extension/1202/nasa-apod/
 [Poedit]: https://poedit.net/
-[po/nasa-apod.pot]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/tree/main/po/nasa-apod.pot
+[nasa_apod@elinvention.ovh.pot]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/tree/main/nasa_apod@elinvention.ovh.pot
+
