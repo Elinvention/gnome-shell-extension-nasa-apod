@@ -2,7 +2,7 @@ UUID = nasa_apod@elinvention.ovh
 BUNDLE_PATH = $(UUID).zip
 POT_PATH = $(UUID).pot
 
-.PHONY: install uninstall enable disable build clean potfile mergepo release eslint
+.PHONY: install uninstall enable disable build clean potfile mergepo release eslint nested-shell
 
 install: build
 	gnome-extensions install $(BUNDLE_PATH) --force
@@ -46,4 +46,7 @@ $(POT_PATH):
 
 eslint:
 	npx eslint -c eslintrc-gjs.yml $(UUID)
+
+nested-shell:
+	dbus-run-session -- gnome-shell --nested --wayland
 

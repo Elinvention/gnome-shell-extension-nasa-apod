@@ -112,20 +112,20 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
 
         // Set background
         const backgroundModel = new Gtk.StringList();
-        backgroundModel.append(_('None'));
-        backgroundModel.append(_('Centered'));
-        backgroundModel.append(_('Scaled'));
-        backgroundModel.append(_('Spanned'));
-        backgroundModel.append(_('Stretched'));
-        backgroundModel.append(_('Wallpaper'));
-        backgroundModel.append(_('Zoom'));
-        backgroundModel.append(_('Default'));
+        backgroundModel.append('none');
+        backgroundModel.append('centered');
+        backgroundModel.append('scaled');
+        backgroundModel.append('spanned');
+        backgroundModel.append('stretched');
+        backgroundModel.append('wallpaper');
+        backgroundModel.append('zoom');
+        backgroundModel.append('default');
 
-        const backgroundCombo = new Adw.ComboRow({
+        const backgroundComboRow = new Adw.ComboRow({
             title: _('Set background image:'),
             subtitle: _('Set how the image is adapted to the monitor resolution'),
             model: backgroundModel,
-            selected: _(this._settings.get_string('background-options')),
+            selected: this._settings.get_string('background-options') === 'hd' ? 0 : 1,
         });
 
         // Download folder
@@ -140,7 +140,7 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         downloadFolderRow.set_activatable_widget(downloadFolderButton);
 
         backgroundGroup.add(downloadFolderRow);
-        backgroundGroup.add(backgroundCombo);
+        backgroundGroup.add(backgroundComboRow);
         this.add(backgroundGroup);
 
         // Bind signals
@@ -154,9 +154,12 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         transientCheckButton.connect('notify::active', widget => {
             this._settings.set_enum('transient', widget.selected);
         });
-        settings.bind('background-options', backgroundCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
-        settings.connect('changed::background-options', function () {
-            Utils.setBackgroundBasedOnSettings(settings);
+
+        backgroundComboRow.connect('notify::selected', widget => {
+            this._settings.set_string('background-options', widget.selected_item.get_string());
+        });
+        settings.connect('changed::background-options', (_settings, _key) => {
+            Utils.setBackgroundBasedOnSettings(_settings);
         });
     }
 });

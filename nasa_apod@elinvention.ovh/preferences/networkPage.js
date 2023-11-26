@@ -16,6 +16,12 @@ import * as Utils from '../utils/utils.js';
 const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 
 
+const Resolutions = [
+    'hd',
+    'low-res',
+];
+
+
 /**
  * Builds a GTK widget containing a label with the API key written on it
  *
@@ -78,6 +84,9 @@ function buildNewApiKeyDialog() {
     content_area.append(invalid_lb);
     content_area.append(checking_lb);
 
+    dialog.add_button(_('Add'), Gtk.ResponseType.OK);
+    dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
+
     return [dialog, entry, invalid_lb, checking_lb];
 }
 
@@ -122,7 +131,7 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
             title: _('Image resolution:'),
             subtitle: _('Image resolution for non metered connections'),
             model: resolutionModel,
-            selected: _(this._settings.get_string('image-resolution')),
+            selected: Resolutions.indexOf(this._settings.get_string('image-resolution')),
         });
 
         // Resolution metered
@@ -130,7 +139,7 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
             title: _('Image resolution on metered networks:'),
             subtitle: _('Image resolution for metered connections'),
             model: resolutionModel,
-            selected: this._settings.get_string('image-resolution-metered'),
+            selected: Resolutions.indexOf(this._settings.get_string('image-resolution-metered')),
         });
 
         // Automatic update on metered connections
@@ -257,8 +266,19 @@ class NasaApodNetworkPage extends Adw.PreferencesPage {
 
         // Bind signals
         // -------------
-        settings.bind('image-resolution', resolutionRow, 'selected', Gio.SettingsBindFlags.DEFAULT);
-        settings.bind('image-resolution-metered', resolutionMeteredRow, 'selected', Gio.SettingsBindFlags.DEFAULT);
+        settings.connect('changed::image-resolution', (_settings, key) => {
+            resolutionRow.set_selected(Resolutions.indexOf(_settings.get_string(key)));
+        });
+        settings.connect('changed::image-resolution-metered', (_settings, key) => {
+            resolutionMeteredRow.set_selected(Resolutions.indexOf(_settings.get_string(key)));
+        });
+        resolutionRow.connect('notify::selected', (widget, _spec) => {
+            settings.set_string('image-resolution', Resolutions[widget.selected]);
+        });
+        resolutionMeteredRow.connect('notify::selected', (widget, _spec) => {
+            settings.set_string('image-resolution-metered', Resolutions[widget.selected]);
+        });
+
         settings.bind('refresh-metered', autoRefreshMeteredSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
     }
 });

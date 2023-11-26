@@ -27,7 +27,7 @@ jobs:
       run: sudo apt-get install -y libglib2.0-dev
 
     - name: Generate extension zip
-      run: make zip
+      run: make build
 
     - name: Get release informations
       run: |
@@ -52,6 +52,7 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: nasa_apod.zip
-        asset_name: nasa_apod.zip
+        asset_path: nasa_apod@elinvention.ovh.zip
+        asset_name: nasa_apod@elinvention.ovh.zip
         asset_content_type: application/zip
+

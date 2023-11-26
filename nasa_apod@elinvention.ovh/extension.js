@@ -428,7 +428,9 @@ const NasaApodIndicator = GObject.registerClass({
             let url_split = parsed['url'].split('.');
             let extension = url_split[url_split.length - 1];
             let NasaApodDir = Utils.getDownloadFolder(this._settings);
-            let filename = `${NasaApodDir + parsed['date']}-${parsed['title']}.${extension}`;
+            let date = parsed['date'];
+            let title = parsed['title'].replace(/[/\\]/, '_');
+            let filename = GLib.build_filenamev([NasaApodDir, `${date}-${title}.${extension}`]);
 
             let url = parsed['url'];
             if ('hdurl' in parsed) {

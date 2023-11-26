@@ -81,6 +81,9 @@ class NasaApodAboutPage extends Adw.PreferencesPage {
         const creditsLabel = new Gtk.Label({
             label: `${_('Brought to you by:')}\nElia Argentieri`,
             halign: Gtk.Align.CENTER,
+            justify: Gtk.Justify.CENTER,
+            vexpand: true,
+            valign: Gtk.Align.END,
         });
 
         const licenseLabel = new Gtk.Label({
