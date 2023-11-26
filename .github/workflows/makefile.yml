@@ -26,8 +26,11 @@ jobs:
     - name: Install libglib2.0-dev
       run: sudo apt-get install -y libglib2.0-dev
 
+    - name: Install gnome-shell
+      run: sudo apt-get install -y gnome-shell
+
     - name: Generate extension zip
-      run: cd nasa_apod@elinvention.ovh/ && zip -r ../nasa_apod@elinvention.ovh.zip .
+      run: make build
 
     - name: Get release informations
       run: |
