@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - name: Install npm dependencies
       run: npm install
@@ -35,16 +35,13 @@ jobs:
         echo "body=$(git tag -l --format='%(contents:body)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
 
     - name: Release
-      uses: actions/create-release@v1
+      uses: ncipollo/release-action@v1
       id: create_release
       with:
         draft: false
         prerelease: false
-        tag_name: ${{ github.ref }}
-        release_name: ${{ env.release_subject }}
+        name: ${{ env.release_subject }}
         body: ${{ env.release_body }}
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
 
     - name: Upload zip to release
       uses: actions/upload-release-asset@v1
