@@ -20,6 +20,9 @@ jobs:
         export PATH="$PATH:$GITHUB_WORKSPACE/node_modules/.bin"
         make eslint
 
+    - name: APT update
+      run: sudo apt-get update
+
     - name: Install intltool
       run: sudo apt-get install -y intltool
 
