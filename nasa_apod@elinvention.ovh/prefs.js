@@ -1,6 +1,8 @@
+'use strict';
+
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import Gtk from 'gi://Gtk?version=4.0';
+import Gtk from 'gi://Gtk';
 import Gdk from 'gi://Gdk';
 
 import * as GeneralPrefs from './preferences/generalPage.js';

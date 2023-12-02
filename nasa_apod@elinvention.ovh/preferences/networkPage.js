@@ -4,7 +4,7 @@
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import GObject from 'gi://GObject';
-import Soup from 'gi://Soup?version=3.0';
+import Soup from 'gi://Soup';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 
