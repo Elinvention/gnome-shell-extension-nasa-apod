@@ -95,7 +95,7 @@ const NasaApodIndicator = GObject.registerClass({
             {'name': _('Settings'), 'fun': () => extension.openPreferences()}];
 
         this.indicatorIcon = new St.Icon({style_class: 'system-status-icon'});
-        this.indicatorIcon.gicon = Gio.icon_new_for_string(`${extension.path}/icons/saturn.svg`);
+        this.indicatorIcon.gicon = Gio.icon_new_for_string(`${extension.path}/icons/saturn-symbolic.svg`);
         this.add_child(this.indicatorIcon);
 
         // This object holds title, explanation, copyright and filename
