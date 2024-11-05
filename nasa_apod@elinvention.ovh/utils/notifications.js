@@ -96,9 +96,9 @@ function getNotificationSource() {
             // The source name (e.g. application name)
             title: 'NASA APOD',
             // An icon for the source, used a fallback by notifications
-            icon: new Gio.ThemedIcon({name: 'saturn'}),
+            icon: new Gio.ThemedIcon({name: 'saturn-symbolic'}),
             // Same as `icon`, but takes a themed icon name
-            iconName: 'saturn',
+            iconName: 'saturn-symbolic',
             // The notification policy
             policy: notificationPolicy,
         });
