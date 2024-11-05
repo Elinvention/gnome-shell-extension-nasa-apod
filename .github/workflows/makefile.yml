@@ -30,7 +30,7 @@ jobs:
       run: sudo apt-get install -y libglib2.0-dev
 
     - name: Install gnome-shell
-      run: sudo apt-get install -y gnome-shell
+      run: sudo apt-get install -y gnome-shell --no-install-recommends
 
     - name: Generate extension zip
       run: make build
@@ -38,7 +38,11 @@ jobs:
     - name: Get release informations
       run: |
         echo "subject=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
-        echo "body=$(git tag -l --format='%(contents:body)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
+        {
+          echo 'body<<EOF'
+          git tag -l --format='%(contents:body)' ${GITHUB_REF/refs\/tags\//}
+          echo EOF
+        } >> $GITHUB_ENV
 
     - name: Release
       uses: ncipollo/release-action@v1
