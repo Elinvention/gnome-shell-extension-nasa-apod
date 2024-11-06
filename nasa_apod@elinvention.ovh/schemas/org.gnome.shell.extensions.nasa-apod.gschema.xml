@@ -86,5 +86,11 @@
         <description>If false disables automatic image download when the network is metered.</description>
     </key>
 
+    <key name="indicator-position" type="i">
+      <default>0</default>
+        <summary>Indicator position.</summary>
+        <description>Useful to statically position the indicator in the status area.</description>
+    </key>
+
   </schema>
 </schemalist>

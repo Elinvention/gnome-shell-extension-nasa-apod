@@ -70,6 +70,31 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         hideIndicatorRow.add_suffix(hideIndicatorSwitch);
 
         indicatorGroup.add(hideIndicatorRow);
+
+        // Indicator position
+        let indicatorPositionAdjustment = new Gtk.Adjustment({
+            step_increment: 1,
+            page_increment: 5,
+            page_size: 0,
+            lower: -100,
+            upper: 100,
+            value: this._settings.get_int('indicator-position'),
+        });
+        let indicatorPositionSpinButton = new Gtk.SpinButton({
+            valign: Gtk.Align.CENTER,
+            adjustment: indicatorPositionAdjustment,
+            climb_rate: 1,
+            digits: 0,
+        });
+        let indicatorPositionRow = new Adw.ActionRow({
+            title: _('Indicator position'),
+            subtitle: _('Moves the indicator in the status area'),
+            activatable_widget: indicatorPositionSpinButton,
+        });
+        indicatorPositionRow.add_suffix(indicatorPositionSpinButton);
+
+        indicatorGroup.add(indicatorPositionRow);
+
         this.add(indicatorGroup);
 
         // Notifications group
@@ -84,7 +109,7 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         });
         let notificationsRow = new Adw.ActionRow({
             title: _('Notify when a new image is downloaded'),
-            subtitle: _('A notification will appear with the explanantion of the day'),
+            subtitle: _('A notification will appear with the explanation of the day'),
             activatable_widget: notificationsSwitch,
         });
         notificationsRow.add_suffix(notificationsSwitch);
@@ -147,6 +172,9 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         // --------------
         hideIndicatorSwitch.connect('notify::active', widget => {
             this._settings.set_boolean('hide', widget.get_active());
+        });
+        indicatorPositionSpinButton.connect('notify::value', widget => {
+            this._settings.set_int('indicator-position', widget.get_value_as_int());
         });
         notificationsSwitch.connect('notify::active', widget => {
             this._settings.set_boolean('notify', widget.get_active());
