@@ -4,7 +4,7 @@ Let this simple GNOME shell extension change your wallpaper every day to the
 NASA's Astronomy Picture Of the Day. It will also show a notification
 containing the title and the explanation of the image.
 
-Tested and developed on NixOS, GNOME 42 (please, always refer to `metadata.json`
+Tested and developed on NixOS, GNOME 47 (please, always refer to `metadata.json`
 to check if the main branch actually works on your older GNOME shell).
 
 *Disclaimer*: this extension is unofficial and not affiliated with NASA in any way.
@@ -24,6 +24,9 @@ depends on the distribution you are using. The dependencies are:
 1. glib
 2. intltool
 3. npm
+
+In case you are using *nix*, just run `nix-shell` to bring all required
+dependencies in your environment.
 
 The commands below download and install the current development version:
 
@@ -52,10 +55,13 @@ send it to me by email (see my profile).
 ![Settings][screenshot2]  
 ![Settings About][screenshot3]  
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/Elinvention/gnome-shell-extension-nasa-apod.svg?variant=adaptive)](https://starchart.cc/Elinvention/gnome-shell-extension-nasa-apod)
+
 [screenshot1]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/4.png
 [screenshot2]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/5.png
 [screenshot3]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/6.png
 [extensions.gnome.org]: https://extensions.gnome.org/extension/1202/nasa-apod/
 [Poedit]: https://poedit.net/
 [nasa_apod@elinvention.ovh.pot]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/tree/main/nasa_apod@elinvention.ovh.pot
-
