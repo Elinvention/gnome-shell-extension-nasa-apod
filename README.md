@@ -12,7 +12,8 @@ Also note that some images might be protected by copyright.
 
 ## Install
 
-You can install the latest release from [extensions.gnome.org][].
+You can install the latest release from [extensions.gnome.org] or download it
+from [Github releases][releases].
 
 ## Testing
 
@@ -40,12 +41,13 @@ You can uninstall by running `make uninstall`.
 
 ## Translations
 
-You can contribute translations if you can use [Poedit].
+You can contribute translations using a software like [Poedit].
 
-1. Open the template file [nasa_apod@elinvention.ovh.pot] with Poedit.
+1. Download the latest template file (.pot) from [releases].
+2. Open the .pot file with Poedit.
 2. Choose the language you want to translate to.
 3. Translate each string.
-4. Save the translation .po file.
+4. Save the translation .po file in `nasa_apod@elinvention.ovh/locale/`.
 5. You can either make a pull request or make an issue and attach the file or even
 send it to me by email (see my profile).
 
@@ -64,4 +66,4 @@ send it to me by email (see my profile).
 [screenshot3]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/6.png
 [extensions.gnome.org]: https://extensions.gnome.org/extension/1202/nasa-apod/
 [Poedit]: https://poedit.net/
-[nasa_apod@elinvention.ovh.pot]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/tree/main/nasa_apod@elinvention.ovh.pot
+[releases]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/releases
