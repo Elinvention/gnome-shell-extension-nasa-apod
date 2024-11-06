@@ -23,8 +23,8 @@ jobs:
     - name: APT update
       run: sudo apt-get update
 
-    - name: Install intltool
-      run: sudo apt-get install -y intltool
+    - name: Install intltool and gettext
+      run: sudo apt-get install -y intltool gettext
 
     - name: Install libglib2.0-dev
       run: sudo apt-get install -y libglib2.0-dev
@@ -34,6 +34,9 @@ jobs:
 
     - name: Generate extension zip
       run: make build
+
+    - name: Generate extension pot
+      run: make potfile
 
     - name: Get release informations
       run: |
@@ -62,4 +65,14 @@ jobs:
         asset_path: nasa_apod@elinvention.ovh.zip
         asset_name: nasa_apod@elinvention.ovh.zip
         asset_content_type: application/zip
+
+    - name: Upload pot to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: nasa_apod@elinvention.ovh.pot
+        asset_name: nasa_apod@elinvention.ovh.pot
+        asset_content_type: text/plain
 
