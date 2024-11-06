@@ -7,90 +7,95 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-15 19:28+0100\n"
-"PO-Revision-Date: 2021-04-13 15:05+0200\n"
+"POT-Creation-Date: 2024-11-06 23:16+0100\n"
+"PO-Revision-Date: 2024-11-06 23:38+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#: extension.js:72
+#: nasa_apod@elinvention.ovh/extension.js:65
 msgid "Media type {0} not supported."
 msgstr "Tipo multimediale {0} non supportato."
 
-#: extension.js:73
+#: nasa_apod@elinvention.ovh/extension.js:66
 msgid "No picture for today 😞. Please visit NASA APOD website."
 msgstr "Oggi niente immagine 😞. Visita il sito web di NASA APOD."
 
-#: extension.js:96 extension.js:135
+#: nasa_apod@elinvention.ovh/extension.js:91
+#: nasa_apod@elinvention.ovh/extension.js:129
 msgid "NASA APOD website"
 msgstr "Sito web NASA APOD"
 
-#: extension.js:97
+#: nasa_apod@elinvention.ovh/extension.js:92
 msgid "Get an API key"
 msgstr "Ottieni una chiave API"
 
-#: extension.js:98 extension.js:100 extension.js:150 prefs.ui.h:22
+#: nasa_apod@elinvention.ovh/extension.js:93
+#: nasa_apod@elinvention.ovh/extension.js:95
+#: nasa_apod@elinvention.ovh/extension.js:144
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: extension.js:99
+#: nasa_apod@elinvention.ovh/extension.js:94
 msgid "Retry"
 msgstr "Riprova"
 
-#: extension.js:121
+#: nasa_apod@elinvention.ovh/extension.js:115
 msgid "No title available"
 msgstr "Titolo non disponibile"
 
-#: extension.js:125
+#: nasa_apod@elinvention.ovh/extension.js:119
 msgid "No description available"
 msgstr "Descrizione non disponibile"
 
-#: extension.js:131
+#: nasa_apod@elinvention.ovh/extension.js:125
 msgid "No copyright information available"
 msgstr "Informazioni sul diritto d'autore assenti"
 
-#: extension.js:138 extension.js:266
+#: nasa_apod@elinvention.ovh/extension.js:132
+#: nasa_apod@elinvention.ovh/extension.js:260
 msgid "No refresh scheduled"
 msgstr "Aggiornamento non stabilito"
 
-#: extension.js:141
+#: nasa_apod@elinvention.ovh/extension.js:135
 msgid "Open Wallpaper Folder"
 msgstr "Apri cartella degli sfondi"
 
-#: extension.js:144
+#: nasa_apod@elinvention.ovh/extension.js:138
 msgid "Set Wallpaper"
 msgstr "Imposta sfondo"
 
-#: extension.js:147 extension.js:231
+#: nasa_apod@elinvention.ovh/extension.js:141
+#: nasa_apod@elinvention.ovh/extension.js:225
 msgid "Refresh"
 msgstr "Aggiorna"
 
-#: extension.js:217
+#: nasa_apod@elinvention.ovh/extension.js:211
 msgid "Refreshing..."
 msgstr "Aggiornamento...."
 
-#: extension.js:220
+#: nasa_apod@elinvention.ovh/extension.js:214
 msgid "Network unavailable"
 msgstr "Rete non disponibile"
 
-#: extension.js:223
+#: nasa_apod@elinvention.ovh/extension.js:217
 msgid "Wait 10 seconds..."
 msgstr "Attendi 10 secondi...."
 
-#: extension.js:229
+#: nasa_apod@elinvention.ovh/extension.js:223
 msgid "Unpin and Refresh"
 msgstr "Aggiorna allo sfondo corrente"
 
-#: extension.js:233
+#: nasa_apod@elinvention.ovh/extension.js:227
 msgid " (metered network)"
 msgstr " (rete a consumo)"
 
-#: extension.js:247
+#: nasa_apod@elinvention.ovh/extension.js:241
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
@@ -98,44 +103,44 @@ msgstr ""
 "Qui verranno mostrata una spiegazione dello sfondo corrente di NASA APOD. "
 "Premi aggiorna per scaricare un nuovo sfondo con la sua descrizione."
 
-#: extension.js:277
+#: nasa_apod@elinvention.ovh/extension.js:271
 msgid "Next refresh: {0}"
 msgstr "Prossimo aggiornamento: {0}"
 
-#: extension.js:280
+#: nasa_apod@elinvention.ovh/extension.js:274
 msgid "Next refresh in less than a minute"
 msgstr "Prossimo aggiornamento in meno di un minuto"
 
-#: extension.js:352
+#: nasa_apod@elinvention.ovh/extension.js:348
 msgid "Pending refresh"
 msgstr "Aggiornamento in corso"
 
-#: extension.js:384
+#: nasa_apod@elinvention.ovh/extension.js:380
 msgid "Invalid NASA API key (error 403)"
 msgstr "Chiave API NASA non valida (errore 403)"
 
-#: extension.js:385
+#: nasa_apod@elinvention.ovh/extension.js:381
 msgid "Check that your key is correct or use the default key."
 msgstr "Controlla che la tua chiave sia corretta oppure usa quella di default."
 
-#: extension.js:392
+#: nasa_apod@elinvention.ovh/extension.js:388
 msgid "Network error"
 msgstr "Errore di rete"
 
-#: extension.js:393 extension.js:524
+#: nasa_apod@elinvention.ovh/extension.js:389
+#: nasa_apod@elinvention.ovh/extension.js:522
 msgid "HTTP status code {0}."
 msgstr "Codice status HTTP {0}."
 
-#: extension.js:401
-#, fuzzy
+#: nasa_apod@elinvention.ovh/extension.js:397
 msgid "Generic error"
-msgstr "Errore di rete"
+msgstr "Errore generico"
 
-#: extension.js:413
+#: nasa_apod@elinvention.ovh/extension.js:409
 msgid "Over rate limit (error 429)"
 msgstr "Superato il limite di richieste (errore 429)"
 
-#: extension.js:414
+#: nasa_apod@elinvention.ovh/extension.js:410
 msgid ""
 "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
 "just for you."
@@ -143,134 +148,200 @@ msgstr ""
 "Ottieni la tua chiave API dal sito https://api.nasa.gov/ per avere 1000 "
 "richieste per ora solo per te."
 
-#: extension.js:523
+#: nasa_apod@elinvention.ovh/extension.js:521
 msgid "Couldn't fetch image from {0}"
 msgstr "Impossibile scaricare immagine da {0}"
 
-#: prefs.js:167
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:15
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:24
+msgid "About"
+msgstr "Informazioni"
+
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:44
+msgid "version:"
+msgstr "versione:"
+
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:52
+msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
+msgstr ""
+"Cambia il tuo sfondo quotidianamente all'immagine astronomica del giorno "
+"della NASA"
+
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:60
+msgid "Extension's GitHub Webpage"
+msgstr "Pagina GitHub dell'estensione"
+
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:67
+msgid "Issue Tracker"
+msgstr "Gestore delle segnalazioni"
+
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:74
+msgid "Changelog"
+msgstr "Registro dei Cambiamenti"
+
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:82
+msgid "Brought to you by:"
+msgstr "Realizzato da:"
+
+#: nasa_apod@elinvention.ovh/preferences/aboutPage.js:90
+msgid ""
+"<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
+"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0."
+"html\">GNU General Public License, version 3 or later</a> for details</span>"
+msgstr ""
+"<span size=\"small\">Questo programma viene fornita SENZA ALCUNA GARANZIA.\n"
+"Vedi la <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0."
+"html\">GNU General Public License, versione 3 o successiva</a> per i "
+"dettagli</span>"
+
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:22
 msgid "Choose download folder"
 msgstr "Scegli la cartella di download"
 
-#: prefs.js:172
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:27
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:88
 msgid "Cancel"
 msgstr "Annulla"
 
-#: prefs.js:173
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:28
 msgid "Select"
 msgstr "Seleziona"
 
-#: prefs.ui.h:1
-msgid "Add NASA APOD API key"
-msgstr "Aggiunta di una chiave API di NASA APOD"
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:48
+msgid "General"
+msgstr "Generale"
 
-#: prefs.ui.h:2
-msgid "Please paste here your API key."
-msgstr "Per favore incolla qui la tua chiave API."
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:57
+msgid "Indicator"
+msgstr "Indicatore"
 
-#: prefs.ui.h:3
-msgid "The entered API key is not valid."
-msgstr ""
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:66
+msgid "Hide extension indicator"
+msgstr "Nascondi l'indicatore dell'estensione"
 
-#: prefs.ui.h:4
-msgid "Checking..."
-msgstr ""
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:67
+msgid "Simply hides that Saturn thing"
+msgstr "Semplicemente nasconde quell'icona di Saturno"
 
-#: prefs.ui.h:5
-msgid "The API key has to be 40 characters long."
-msgstr "La chiave API deve essere lunga 40 caratteri."
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:90
+msgid "Indicator position"
+msgstr "Posizione indicatore"
 
-#: prefs.ui.h:6
-msgid "Hide the indicator"
-msgstr "Nascondi l'indicatore"
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:91
+msgid "Moves the indicator in the status area"
+msgstr "Sposta l'indicatore nella area di status"
 
-#: prefs.ui.h:7
-msgid "Send a notification with explanation when a new image is downloaded."
-msgstr ""
-"Invia una notifica con la spiegazione quando viene scaricata una nuova "
-"immagine."
-
-#: prefs.ui.h:8
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:103
 msgid "Notifications"
 msgstr "Notifiche"
 
-#: prefs.ui.h:9
-msgid "Use transient notifications (auto dismiss)"
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:111
+msgid "Notify when a new image is downloaded"
+msgstr "Notifica quando viene scaricata una nuova immagine"
+
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:112
+msgid "A notification will appear with the explanation of the day"
+msgstr "Una notifica comparirà con la spiegazione del giorno"
+
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:122
+msgid "Use transient notifications"
 msgstr "Usa notifiche transitorie (auto cancellazione)"
 
-#: prefs.ui.h:10
-msgid "Indicator and notifications"
-msgstr "Indicatore e Notifiche"
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:123
+msgid "Just hover with your mouse to dismiss it"
+msgstr "Semplicemente passaci sopra col mouse per cancellarle"
 
-#: prefs.ui.h:11
-msgid "Set background image:"
-msgstr "Imposta l'immagine di sfondo:"
-
-#: prefs.ui.h:12
-msgid "None"
-msgstr "Nessuna"
-
-#: prefs.ui.h:13
-msgid "Centered"
-msgstr "Centrata"
-
-#: prefs.ui.h:14
-msgid "Scaled"
-msgstr "Scalata"
-
-#: prefs.ui.h:15
-msgid "Spanned"
-msgstr ""
-
-#: prefs.ui.h:16
-msgid "Stretched"
-msgstr ""
-
-#: prefs.ui.h:17
-msgid "Wallpaper"
-msgstr ""
-
-#: prefs.ui.h:18
-msgid "Zoom"
-msgstr "Ingrandita"
-
-#: prefs.ui.h:19
-msgid "Default"
-msgstr "Default"
-
-#: prefs.ui.h:20
-msgid "Download folder:"
-msgstr "Cartella di download:"
-
-#: prefs.ui.h:21
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:135
 msgid "Background"
 msgstr "Sfondo"
 
-#: prefs.ui.h:23
-msgid "Image resolution:"
-msgstr "Risoluzione delle immagini:"
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:150
+msgid "Set background image:"
+msgstr "Imposta l'immagine di sfondo:"
 
-#: prefs.ui.h:24
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:151
+msgid "Set how the image is adapted to the monitor resolution"
+msgstr "Imposta come l'immagine viene adattata alla risoluzione del monitor"
+
+#: nasa_apod@elinvention.ovh/preferences/generalPage.js:158
+msgid "Download folder"
+msgstr "Cartella di download"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:62
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:162
+msgid "History"
+msgstr "Storico"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:70
+msgid ""
+"You can pin a background by selecting it.\n"
+"A pinned background won't be replaced by newer ones."
+msgstr ""
+"Puoi fissare uno sfondo selezionandolo.\n"
+"Uno sfondo fissato non verrà sostituito da quelli nuovi."
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:41
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:59
+msgid "Add NASA APOD API key"
+msgstr "Aggiunta di una chiave API di NASA APOD"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:71
+msgid "The entered API key is not valid."
+msgstr "La chiave API inserita non è valida."
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:78
+msgid "The API key has to be 40 characters long."
+msgstr "La chiave API deve essere lunga 40 caratteri."
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:87
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:188
+msgid "Add"
+msgstr "Aggiungi"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:113
+msgid "Network"
+msgstr "Rete"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:122
+msgid "Network Usage"
+msgstr "Utilizzo della rete"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:127
 msgid "HD version"
 msgstr "Versione HD"
 
-#: prefs.ui.h:25
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:128
 msgid "Low resolution version"
 msgstr "Versione a bassa risoluzione"
 
-#: prefs.ui.h:26
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:131
+msgid "Image resolution:"
+msgstr "Risoluzione delle immagini:"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:132
+msgid "Image resolution for non metered connections"
+msgstr "Risoluzione delle immagini su reti non a consumo"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:139
 msgid "Image resolution on metered networks:"
 msgstr "Risoluzione delle immagini su reti a consumo:"
 
-#: prefs.ui.h:27
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:140
+msgid "Image resolution for metered connections"
+msgstr "Risoluzione delle immagini su reti a consumo"
+
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:151
 msgid "Automatic refresh on metered networks:"
 msgstr "Aggiornamento automatico su reti a consumo:"
 
-#: prefs.ui.h:28
-msgid "Network usage"
-msgstr "Utilizzo della rete"
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:165
+msgid "API keys"
+msgstr "Chiavi API"
 
-#: prefs.ui.h:29
-#, fuzzy
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:170
 msgid ""
 "API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
 "html#apply-for-an-api-key\">NASA APOD website</a>.\n"
@@ -282,68 +353,135 @@ msgstr ""
 "Ogni chiave è limitata a 1000 richieste orarie e quindi potresti non essere "
 "in grado di aggiornare usando le chiavi predefinite."
 
-#: prefs.ui.h:31
-msgid "API keys"
-msgstr "Chiavi API"
+#: nasa_apod@elinvention.ovh/preferences/networkPage.js:192
+msgid "Default"
+msgstr "Default"
 
-#: prefs.ui.h:32
-msgid "Network"
-msgstr "Rete"
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:11
+msgid "Hide indicator"
+msgstr "Nascondi l'indicatore"
 
-#: prefs.ui.h:33
-#, fuzzy
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:12
+msgid "Hide indicator icon from status area"
+msgstr "Nascondi l'indicatore dall'area di status"
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:17
+msgid "Send a notifications"
+msgstr "Invia notifiche"
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:18
 msgid ""
-"You can pin a background by selecting it.\n"
-"A pinned background won't be replaced by newer ones."
+"Send a notification with explanation when the picture of the day is "
+"downloaded"
 msgstr ""
-"Puoi fissare uno sfondo selezionandolo.\n"
-"Uno sfondo fissato non verrà sostituito da quelli nuovi."
+"Invia una notifica con la spiegazione quando viene scaricata l'immagine del "
+"giorno"
 
-#: prefs.ui.h:35
-msgid "History"
-msgstr "Storico"
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:23
+msgid "Use transient notifications (auto dismiss)"
+msgstr "Usa notifiche transitorie (auto cancellazione)"
 
-#: prefs.ui.h:36
-msgid "version: "
-msgstr "versione: "
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:29
+msgid "Set background"
+msgstr "Imposta l'immagine di sfondo"
 
-#: prefs.ui.h:37
-msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:30
+msgid "Set background to NASA's APOD"
+msgstr "Imposta l'immagine di sfondo NASA APOD"
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:35
+msgid "Where to download pictures."
+msgstr "Dove scaricare le immagini."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:36
+msgid "An empty string means that the default folder is used: ~/.cache/apod/"
 msgstr ""
-"Cambia il tuo sfondo quotidianamente all'immagine astronomica del giorno "
-"della NASA"
+"Una stringa vuota significa che la cartella di default verrà usata: ~/.cache/"
+"apod/"
 
-#: prefs.ui.h:38
-msgid "Extension's GitHub Webpage"
-msgstr "Pagina GitHub dell'estensione"
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:41
+msgid "NASA APOD api key."
+msgstr "Chiave API di NASA APOD."
 
-#: prefs.ui.h:39
-msgid "Issue Tracker"
-msgstr ""
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:42
+msgid "Get your API key from https://api.nasa.gov/"
+msgstr "Ottieni la tua chiave API da https://api.nasa.gov/"
 
-#: prefs.ui.h:40
-msgid "Changelog"
-msgstr "Registro dei Cambiamenti"
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:47
+msgid "Last performed refresh."
+msgstr "Ultimo aggiornamento effettuato."
 
-#: prefs.ui.h:41
-#, fuzzy
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:53
+msgid "Last json downloaded from API."
+msgstr "Ultimo JSON scaricato dalla API."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:59
+msgid "Background image adjustment."
+msgstr "Imposta l'immagine di sfondo."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:65
+msgid "Pinned Background"
+msgstr "Sfondo fissato"
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:66
 msgid ""
-"Brought to you by:\n"
-"Elia Argentieri"
+"Pinned Background allows you to pin an old background and prevent the "
+"extension from replacing it with a new one."
 msgstr ""
-"Realizzato da:\n"
-"Elia Argentieri"
+"Gli sfondi fissati permettono di fissare un vecchio sfondo ed evitare che "
+"l'estensione li sostituisca con uno nuovo."
 
-#: prefs.ui.h:43
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:71
+msgid "Image resolution."
+msgstr "Risoluzione immagini."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:72
 msgid ""
-"<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
-"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-"\">GNU General Public License, version 3 or later</a> for details.</span>"
+"Can be \"hd\" or \"lowres\". \"hd\" downloads from hdurl as found in the "
+"JSON API. \"lowres\" downloads from url as found in the JSON API."
 msgstr ""
+"Può essere \"hd\" o \"lowres\". \"hd\" scarica da \"hdurl\" come trovato "
+"nella API JSON. \"lowres\" scarica da \"url\" come trovata nella API JSON."
 
-#: prefs.ui.h:45
-msgid "About"
-msgstr "Informazioni"
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:79
+msgid "Image resolution on metered networks."
+msgstr "Risoluzione delle immagini su reti a consumo."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:80
+msgid "Same as image-resolution, but only applies to metered networks."
+msgstr ""
+"Lo stesso di risoluzione immagini, ma si applica solo su reti a consumo."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:85
+msgid "Automatic refresh with metered network."
+msgstr "Aggiornamento automatico su reti a consumo."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:86
+msgid "If false disables automatic image download when the network is metered."
+msgstr "Se falso disabilita il download automatico quando al rete è a consumo."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:91
+msgid "Indicator position."
+msgstr "Posizione indicatore."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:92
+msgid "Useful to statically position the indicator in the status area."
+msgstr "Utile per posizionare staticamente l'indicatore nell'area di status."
+
+#~ msgid "Please paste here your API key."
+#~ msgstr "Per favore incolla qui la tua chiave API."
+
+#~ msgid "None"
+#~ msgstr "Nessuna"
+
+#~ msgid "Centered"
+#~ msgstr "Centrata"
+
+#~ msgid "Scaled"
+#~ msgstr "Scalata"
+
+#~ msgid "Zoom"
+#~ msgstr "Ingrandita"
 
 #~ msgid "Error downloading image"
 #~ msgstr "Errore scaricamento immagine"
