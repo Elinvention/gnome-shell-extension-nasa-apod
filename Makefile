@@ -27,17 +27,11 @@ build:
 
 clean:
 	-rm $(BUNDLE_PATH)
-	-rm $(UUID)/schemas/gschemas.compiled
-	-rm $(UUID)/locale/nasa-apod.pot
+	-rm $(POT_PATH)
 
 potfile: $(POT_PATH)
 
-mergepo: $(POT_PATH)
-	for l in $(MSGSRC); do \
-		msgmerge -U $$l $(POT_PATH); \
-	done;
-
-release: eslint clean build
+release: eslint clean build potfile
 
 $(POT_PATH):
 	xgettext -L JavaScript -k_ -kN_ --package-name "NASA APOD Wallpaper Changer" --from-code UTF-8 --no-wrap -o $(POT_PATH) $(UUID)/*.js
