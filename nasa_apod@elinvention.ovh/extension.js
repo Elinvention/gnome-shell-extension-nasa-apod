@@ -79,6 +79,19 @@ function set_text(item, text) {
     item.label.set_text(text);
 }
 
+function getImageUrlFromApi(settings, network_monitor, parsed) {
+    if ('hdurl' in parsed) {
+        const isNetworkMetered = network_monitor.get_network_metered();
+        if (isNetworkMetered) {
+            if (settings.get_string('image-resolution-metered') === 'hd')
+                return parsed['hdurl'];
+        } else if (settings.get_string('image-resolution') === 'hd') {
+            return parsed['hdurl'];
+        }
+    }
+    return parsed['url'];
+}
+
 const NasaApodIndicator = GObject.registerClass({
     GTypeName: IndicatorName,
 }, class NasaApodIndicator extends PanelMenu.Button {
@@ -432,23 +445,13 @@ const NasaApodIndicator = GObject.registerClass({
             let NasaApodDir = Utils.getDownloadFolder(this._settings);
             let date = parsed['date'];
             let title = parsed['title'].replace(/[/\\:]/, '_');
-            let filename = GLib.build_filenamev([NasaApodDir, `${date}-${title}.${extension}`]);
 
-            let url = parsed['url'];
-            if ('hdurl' in parsed) {
-                if (this._network_monitor.get_network_metered()) {
-                    if (this._settings.get_string('image-resolution-metered') === 'hd')
-                        url = parsed['hdurl'];
-                } else if (this._settings.get_string('image-resolution') === 'hd') {
-                    url = parsed['hdurl'];
-                }
-            }
             this.data = {
                 'title': parsed['title'],
                 'explanation': parsed['explanation'],
                 'copyright': 'copyright' in parsed ? parsed['copyright'].replace('\n', ' ') : undefined,
-                url,
-                filename,
+                'url': getImageUrlFromApi(this._settings, this._network_monitor, parsed),
+                'filename': GLib.build_filenamev([NasaApodDir, `${date}-${title}.${extension}`]),
                 'date': parsed['date'],
             };
         } else {
