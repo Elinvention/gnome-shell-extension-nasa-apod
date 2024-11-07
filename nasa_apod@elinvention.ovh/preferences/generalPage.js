@@ -180,7 +180,7 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
             this._settings.set_boolean('notify', widget.get_active());
         });
         transientCheckButton.connect('notify::active', widget => {
-            this._settings.set_enum('transient', widget.selected);
+            this._settings.set_boolean('transient', widget.selected);
         });
 
         backgroundComboRow.connect('notify::selected', widget => {
