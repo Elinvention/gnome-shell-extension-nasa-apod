@@ -79,6 +79,15 @@ function set_text(item, text) {
     item.label.set_text(text);
 }
 
+/**
+ * Retrieves the image URL from the API based on the provided settings and network conditions.
+ *
+ * @param {Gio.Settings} settings - An object containing application settings.
+ * @param {Object} network_monitor - An object responsible for monitoring network conditions.
+ * @param {Object} parsed - The parsed response from the API, expected to contain 'url' and 'hdurl' properties.
+ *
+ * @returns {string} The image URL based on the provided settings and network conditions.
+ */
 function getImageUrlFromApi(settings, network_monitor, parsed) {
     if ('hdurl' in parsed) {
         const isNetworkMetered = network_monitor.get_network_metered();
@@ -492,12 +501,12 @@ const NasaApodIndicator = GObject.registerClass({
         let total_size = 0;
         let bytes_so_far = 0;
 
-        message.connect('got-headers', (message, headers) => {
+        message.connect('got-headers', () => {
             total_size = message.get_response_headers().get_content_length();
             Utils.ext_log(`got-headers, total size: ${total_size}B`);
         });
 
-        message.connect('got-body-data', (message, size, chunk) => {
+        message.connect('got-body-data', (__, size) => {
             bytes_so_far += size;
 
             if (total_size) {
@@ -547,11 +556,11 @@ export default class NasaApodExtension extends Extension {
 
         this._settings.connect('changed::indicator-position', (s, key) => {
             if (this._indicator) {
-                let position = s.get_int(key);
+                let new_position = s.get_int(key);
                 this._indicator.stop();
                 this._indicator.destroy();
                 this._indicator = new NasaApodIndicator(this);
-                Main.panel.addToStatusArea(this.uuid, this._indicator, position, 'right');
+                Main.panel.addToStatusArea(this.uuid, this._indicator, new_position, 'right');
             }
         });
     }
