@@ -485,28 +485,28 @@ const NasaApodIndicator = GObject.registerClass({
 
         Utils.ext_log(`Downloading ${url} to ${file.get_uri()}`);
 
-        // variables for the progress bar
-        // let total_size;
-        // let bytes_so_far = 0;
-
         // create an http message
         const message = Soup.Message.new('GET', url);
 
-        // got_chunk event
-        /*
-        request.connect('got_chunk', (message, chunk) => {
-            bytes_so_far += chunk.length;
+        // variables for the progress bar
+        let total_size = 0;
+        let bytes_so_far = 0;
+
+        message.connect('got-headers', (message, headers) => {
+            total_size = message.get_response_headers().get_content_length();
+            Utils.ext_log(`got-headers, total size: ${total_size}B`);
+        });
+
+        message.connect('got-body-data', (message, size, chunk) => {
+            bytes_so_far += size;
 
             if (total_size) {
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
                 this.refreshStatusItem.label.set_text(_('Download {0} done').replace('{0}', `${percent}%`));
+                Utils.ext_log(`downloading ${bytes_so_far}/${total_size}`);
             }
-            let written = fstream.write(chunk.get_data(), null);
-            if (written !== chunk.length)
-                Utils.ext_log(`Write error: fstream.write returned ${written}, but ${chunk.length} expected`);
         });
-        */
 
         try {
             const downloaded_bytes = await Utils.download_bytes(this._httpSession, message);
