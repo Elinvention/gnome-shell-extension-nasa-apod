@@ -150,13 +150,14 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
             }
         });
 
-        // FIXME: load images only when opening the page for the first time
-        // this.connect('shown', function () {
-        if (historyFlowBox.get_first_child() === null) {
-            file_names = Utils.list_files(downloadFolder);
-            load_files_thumbnails();
-        }
-        // });
+        // load images only when opening the page for the first time
+        this.connect('map', () => {
+            if (historyFlowBox.get_first_child() === null) {
+                Utils.ext_log('History page will be drawn foor the first time. Loading images...');
+                file_names = Utils.list_files(downloadFolder);
+                load_files_thumbnails();
+            }
+        });
 
         const historyGroup = new Adw.PreferencesGroup({
             title: _('History'),
