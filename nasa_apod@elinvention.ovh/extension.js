@@ -540,8 +540,20 @@ export default class NasaApodExtension extends Extension {
     enable() {
         this._httpSession = new Soup.Session();
         this._indicator = new NasaApodIndicator(this);
-        let position = this.getSettings().get_int('indicator-position');
+        this._settings = this.getSettings();
+
+        let position = this._settings.get_int('indicator-position');
         Main.panel.addToStatusArea(this.uuid, this._indicator, position, 'right');
+
+        this._settings.connect('changed::indicator-position', (s, key) => {
+            if (this._indicator) {
+                let position = s.get_int(key);
+                this._indicator.stop();
+                this._indicator.destroy();
+                this._indicator = new NasaApodIndicator(this);
+                Main.panel.addToStatusArea(this.uuid, this._indicator, position, 'right');
+            }
+        });
     }
 
     disable() {

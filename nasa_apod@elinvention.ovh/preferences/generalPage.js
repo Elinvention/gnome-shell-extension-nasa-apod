@@ -174,6 +174,7 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
             this._settings.set_boolean('hide', widget.get_active());
         });
         indicatorPositionSpinButton.connect('notify::value', widget => {
+            Utils.ext_log(`set indicator-position: ${widget.get_value_as_int()}`);
             this._settings.set_int('indicator-position', widget.get_value_as_int());
         });
         notificationsSwitch.connect('notify::active', widget => {
