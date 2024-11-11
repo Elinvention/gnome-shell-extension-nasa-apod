@@ -40,39 +40,15 @@ jobs:
 
     - name: Get release informations
       run: |
-        echo "subject=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
-        {
-          echo 'body<<EOF'
-          git tag -l --format='%(contents:body)' ${GITHUB_REF/refs\/tags\//}
-          echo EOF
-        } >> $GITHUB_ENV
+        echo "release_subject=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
+        git tag -l --format='%(contents:body)' ${GITHUB_REF/refs\/tags\//} > releaseBody.md
 
     - name: Release
       uses: ncipollo/release-action@v1
       id: create_release
       with:
+        artifacts: "nasa_apod@elinvention.ovh.zip,nasa_apod@elinvention.ovh.pot"
         draft: false
         prerelease: false
         name: ${{ env.release_subject }}
-        body: ${{ env.release_body }}
-
-    - name: Upload zip to release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: nasa_apod@elinvention.ovh.zip
-        asset_name: nasa_apod@elinvention.ovh.zip
-        asset_content_type: application/zip
-
-    - name: Upload pot to release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: nasa_apod@elinvention.ovh.pot
-        asset_name: nasa_apod@elinvention.ovh.pot
-        asset_content_type: text/plain
-
+        bodyFile: releaseBody.md
