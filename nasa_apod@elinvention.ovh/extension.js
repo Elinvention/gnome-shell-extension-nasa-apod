@@ -267,7 +267,7 @@ const NasaApodIndicator = GObject.registerClass({
             set_text(this.descItem, this.data['explanation']);
             set_text(this.copyItem, this.data['copyright'] !== undefined ? `Copyright © ${this.data['copyright']}` : '');
         }
-        this.wallpaperItem.setSensitive(!this._updatePending && 'filename' in this.data);
+        this.wallpaperItem.setSensitive(!this._updatePending && 'filename' in this.data && `file://${this.data['filename']}` !== Utils.getCurrentBackgroundUri());
     }
 
     _setBackground() {

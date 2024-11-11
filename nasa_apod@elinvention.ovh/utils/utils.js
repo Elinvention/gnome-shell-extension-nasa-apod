@@ -120,6 +120,15 @@ export function getBackgroundSettings() {
 }
 
 /**
+ * Returns the current background URI.
+ *
+ * @returns {string} The path to the image used as the current background.
+ */
+export function getCurrentBackgroundUri() {
+    return getBackgroundSettings().get_string('picture-uri');
+}
+
+/**
  * @param {Object} httpSession Soup.Session
  * @param {Object} message Soup.message
  * @returns a Promise that resolves with the response body
