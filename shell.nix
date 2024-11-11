@@ -8,6 +8,7 @@ pkgs.mkShell {
     glib
     gnome.gnome-shell
     nodejs
+    poedit
   ];
 }
 
