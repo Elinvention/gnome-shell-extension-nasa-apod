@@ -68,7 +68,7 @@ msgstr "Ouvrir le dossier de fond d'écran"
 
 #: nasa_apod@elinvention.ovh/extension.js:137
 msgid "Set Wallpaper"
-msgstr "Définir le font d'écran"
+msgstr "Définir le fond d'écran"
 
 #: nasa_apod@elinvention.ovh/extension.js:140
 #: nasa_apod@elinvention.ovh/extension.js:224
@@ -93,7 +93,7 @@ msgstr "Détacher et actualiser"
 
 #: nasa_apod@elinvention.ovh/extension.js:226
 msgid " (metered network)"
-msgstr " (réseau mesuré)"
+msgstr " (réseau limité)"
 
 #: nasa_apod@elinvention.ovh/extension.js:240
 msgid ""
