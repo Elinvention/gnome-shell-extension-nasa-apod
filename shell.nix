@@ -6,7 +6,7 @@ pkgs.mkShell {
     intltool
     zip
     glib
-    gnome.gnome-shell
+    gnome-shell
     nodejs
     poedit
   ];
