@@ -428,6 +428,23 @@ const NasaApodIndicator = GObject.registerClass({
     _parseData(json) {
         let parsed = JSON.parse(json);
 
+        const resolution_setting = this._network_monitor.get_network_metered()
+            ? 'image-resolution-metered'
+            : 'image-resolution'
+        ;
+        const use_hd = this._settings.get_string(resolution_setting) === 'hd';
+
+        if (parsed['media_type'] === 'video' && this._settings.get_boolean('use-thumbnail') ) {
+            const match = parsed['url'].match(/\/embed\/([a-zA-Z0-9_-]+)/);
+            if (match) {
+                const video_id = match[1];
+                const thumbnail_resolution = use_hd ? 'maxres' : 'hq';
+                parsed['url'] = `https://i.ytimg.com/vi/${video_id}/${thumbnail_resolution}default.jpg`;
+                parsed['media_type'] = 'image';
+                Utils.ext_log(`Replaced video (id=${video_id}) with thumbnail: ${parsed['url']}`);
+            }
+        }
+
         if (parsed['media_type'] === 'image') {
             let url_split = parsed['url'].split('.');
             let extension = url_split[url_split.length - 1];
@@ -438,13 +455,8 @@ const NasaApodIndicator = GObject.registerClass({
             let filename = GLib.build_filenamev([NasaApodDir, `${date}-${title}.${extension}`]);
 
             let url = parsed['url'];
-            if ('hdurl' in parsed) {
-                if (this._network_monitor.get_network_metered()) {
-                    if (this._settings.get_string('image-resolution-metered') === 'hd')
-                        url = parsed['hdurl'];
-                } else if (this._settings.get_string('image-resolution') === 'hd') {
-                    url = parsed['hdurl'];
-                }
+            if (use_hd && 'hdurl' in parsed) {
+                url = parsed['hdurl'];
             }
             this.data = {
                 'title': parsed['title'],
