@@ -448,6 +448,17 @@ const NasaApodIndicator = GObject.registerClass({
     _parseData(json) {
         let parsed = JSON.parse(json);
 
+        if (parsed['media_type'] === 'video' && this._settings.get_boolean('use-thumbnail') ) {
+            const match = parsed['url'].match(/\/embed\/([a-zA-Z0-9_-]+)/);
+            if (match) {
+                const video_id = match[1];
+                parsed['hdurl'] = `https://i.ytimg.com/vi/${video_id}/maxresdefault.jpg`;
+                parsed['url'] = `https://i.ytimg.com/vi/${video_id}/hqdefault.jpg`;
+                parsed['media_type'] = 'image';
+                Utils.ext_log(`Replaced video (id=${video_id}) with thumbnail: ${parsed['url']}, hires: ${parsed['hdurl']}`);
+            }
+        }
+
         if (parsed['media_type'] === 'image') {
             let url_split = parsed['url'].split('.');
             let extension = url_split[url_split.length - 1];

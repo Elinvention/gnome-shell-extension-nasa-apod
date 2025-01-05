@@ -30,6 +30,12 @@
         <description>Set background to NASA's APOD</description>
     </key>
 
+    <key name="use-thumbnail" type="b">
+      <default>false</default>
+        <summary>Use thumbnail</summary>
+        <description>If APOD api returns youtube video, use its thumbnail as wallpaper</description>
+    </key>
+
     <key name="download-folder" type="s">
       <default>""</default>
       <summary>Where to download pictures.</summary>
