@@ -125,6 +125,7 @@ function buildPrefsWidget() {
     let notifySwitch = buildable.get_object('notifications');
     let transientSwitch = buildable.get_object('transient_notifications');
     let bgSwitch = buildable.get_object('background_switch');
+    let tnSwitch = buildable.get_object('thumbnail_switch');
     let bgCombo = buildable.get_object('background_combo');
     let downloadButton = buildable.get_object('download_folder');
     let imageResCombo = buildable.get_object('image_resolution_combo');
@@ -156,6 +157,7 @@ function buildPrefsWidget() {
 
     // Wallpaper
     settings.bind('set-background', bgSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
+    settings.bind('use-thumbnail', tnSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('background-options', bgCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
     settings.connect('changed::background-options', function () {
         Utils.setBackgroundBasedOnSettings();
