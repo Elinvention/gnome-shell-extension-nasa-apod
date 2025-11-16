@@ -55,10 +55,10 @@ function buildHistoryFlowBoxChild(file, info) {
 }
 
 
-export var HistoryPage = GObject.registerClass(
+export const HistoryPage = GObject.registerClass(
 class NasaApodHistoryPage extends Adw.PreferencesPage {
-    _init(settings) {
-        super._init({
+    constructor(settings) {
+        super({
             title: _('History'),
             icon_name: 'document-open-recent-symbolic',
             name: 'HistoryPage',

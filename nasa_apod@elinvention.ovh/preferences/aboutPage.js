@@ -8,14 +8,15 @@ import GObject from 'gi://GObject';
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 
-export var AboutPage = GObject.registerClass(
+export const AboutPage = GObject.registerClass(
 class NasaApodAboutPage extends Adw.PreferencesPage {
-    _init(settings, image_path, version) {
-        super._init({
+    constructor(settings, image_path, version) {
+        super({
             title: _('About'),
             icon_name: 'help-about-symbolic',
             name: 'AboutPage',
         });
+
         this._settings = settings;
 
         // About group

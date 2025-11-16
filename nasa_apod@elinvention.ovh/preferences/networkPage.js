@@ -106,14 +106,15 @@ function testApiKey(apiKey) {
 }
 
 
-export var NetworkPage = GObject.registerClass(
+export const NetworkPage = GObject.registerClass(
 class NasaApodNetworkPage extends Adw.PreferencesPage {
-    _init(settings) {
-        super._init({
+    constructor(settings) {
+        super({
             title: _('Network'),
             icon_name: 'network-wireless-symbolic',
             name: 'NetworkPage',
         });
+
         this._settings = settings;
 
         // Usage group

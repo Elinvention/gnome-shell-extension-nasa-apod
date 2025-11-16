@@ -35,11 +35,11 @@ release: eslint clean build potfile
 
 $(POT_PATH):
 	xgettext -L JavaScript -k_ -kN_ --package-name "NASA APOD Wallpaper Changer" --from-code UTF-8 --no-wrap -o $(POT_PATH) $(UUID)/*.js
-	xgettext -L JavaScript -j -o $(POT_PATH) --from-code UTF-8 --no-wrap $(UUID)/preferences/*.js 
+	xgettext -L JavaScript -j -o $(POT_PATH) --from-code UTF-8 --no-wrap $(UUID)/preferences/*.js
 	xgettext -j -o $(POT_PATH) --from-code UTF-8 --no-wrap $(UUID)/schemas/*.xml
 
 eslint:
-	npx eslint -c eslintrc-gjs.yml $(UUID)
+	npx eslint -c eslint.config.js $(UUID)
 
 nested-shell:
 	dbus-run-session -- gnome-shell --nested --wayland

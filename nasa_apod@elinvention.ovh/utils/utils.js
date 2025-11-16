@@ -20,7 +20,7 @@ export function dump(object) {
     for (let property in object)
         output += `${property}: ${object[property]};\n`;
 
-    log(output);
+    console.log(output);
 }
 
 /**

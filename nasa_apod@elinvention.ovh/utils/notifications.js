@@ -150,9 +150,9 @@ export function notifyError(msg, details, actions = [], user_initiated = true) {
     let prefix = 'NASA APOD extension error';
     // Always log the errors
     if (details)
-        log(`${prefix}: ${msg}: ${details}`);
+        console.log(`${prefix}: ${msg}: ${details}`);
     else
-        log(`${prefix}: ${msg}`);
+        console.log(`${prefix}: ${msg}`);
 
     // Actually show the notification if user_initiated
     if (user_initiated) {

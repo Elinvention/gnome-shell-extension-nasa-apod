@@ -41,14 +41,15 @@ function openDownloadFolderDialog(transient_for, settings, downloadFolderButton)
 }
 
 
-export var GeneralPage = GObject.registerClass(
+export const GeneralPage = GObject.registerClass(
 class NasaApodGeneralPage extends Adw.PreferencesPage {
-    _init(settings) {
-        super._init({
+    constructor(settings) {
+        super({
             title: _('General'),
             icon_name: 'applications-system-symbolic',
             name: 'GeneralPage',
         });
+
         this._settings = settings;
 
         // Indicator group

@@ -51,22 +51,24 @@ function open_getapi() {
 }
 
 /**
- * @param {Object} settings Gio.Settings object
+ * @param {object} settings Gio.Settings object
  */
 function open_wallpapers_folder(settings) {
     xdg_open(Utils.getDownloadFolder(settings));
 }
 
 /**
- * @param {Object} parsed Parsed background image informations
+ * @param {object} parsed Parsed background image informations
  * @param {string} parsed.media_type Media type of today's APOD
  */
 function MediaTypeError(parsed) {
     this.title = _(`Media type ${parsed['media_type']} not supported.`);
     this.message = _('No picture for today 😞. Please visit NASA APOD website.');
     if (parsed['media_type'] === 'video') {
-        this.message += ' ' + _('You can enable YouTube thumbnail download in the settings.');
+        this.message += ' ';
+        this.message += _('You can enable YouTube thumbnail download in the settings.');
     }
+
     this.parsed = parsed;
 }
 MediaTypeError.prototype = Object.create(Error.prototype);
@@ -74,7 +76,7 @@ MediaTypeError.prototype.name = 'MediaTypeError';
 MediaTypeError.prototype.constructor = MediaTypeError;
 
 /**
- * @param {Object} item A label object
+ * @param {object} item A label object
  * @param {string} text Text to set on the label
  */
 function set_text(item, text) {
@@ -431,8 +433,7 @@ const NasaApodIndicator = GObject.registerClass({
 
         const resolution_setting = this._network_monitor.get_network_metered()
             ? 'image-resolution-metered'
-            : 'image-resolution'
-        ;
+            : 'image-resolution';
         const use_hd = this._settings.get_string(resolution_setting) === 'hd';
 
         Utils.ext_log(`Use thumbnail: ${this._settings.get_boolean('use-thumbnail')}`);
@@ -456,9 +457,8 @@ const NasaApodIndicator = GObject.registerClass({
             let title = parsed['title'].replace(/[/\\:]/, '_');
 
             let url = parsed['url'];
-            if (use_hd && 'hdurl' in parsed) {
+            if (use_hd && 'hdurl' in parsed)
                 url = parsed['hdurl'];
-            }
 
             this.data = {
                 'title': parsed['title'],

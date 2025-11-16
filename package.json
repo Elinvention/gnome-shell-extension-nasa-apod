@@ -1,4 +1,6 @@
 {
+  "type": "module",
+  "sourceType": "module",
   "devDependencies": {
     "eslint-plugin-jsdoc": "^61.2.1"
   },
