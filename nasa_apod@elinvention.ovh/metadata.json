@@ -5,12 +5,13 @@
     "45",
     "46",
     "47",
-    "48"
+    "48",
+    "49"
   ],
   "gettext-domain": "nasa-apod",
   "settings-schema": "org.gnome.shell.extensions.nasa-apod",
   "description": "Change your wallpaper daily to the NASA's astronomy picture of the day",
   "url": "https://github.com/Elinvention/gnome-shell-extension-nasa-apod",
-  "version": 43
+  "version": 44
 }
 
