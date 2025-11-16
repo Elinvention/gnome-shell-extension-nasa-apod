@@ -62,8 +62,11 @@ function open_wallpapers_folder(settings) {
  * @param {string} parsed.media_type Media type of today's APOD
  */
 function MediaTypeError(parsed) {
-    this.title = _('Media type {0} not supported.').replace('{0}', parsed['media_type']);
+    this.title = _(`Media type ${parsed['media_type']} not supported.`);
     this.message = _('No picture for today 😞. Please visit NASA APOD website.');
+    if (parsed['media_type'] === 'video') {
+        this.message += ' ' + _('You can enable YouTube thumbnail download in the settings.');
+    }
     this.parsed = parsed;
 }
 MediaTypeError.prototype = Object.create(Error.prototype);
@@ -77,28 +80,6 @@ MediaTypeError.prototype.constructor = MediaTypeError;
 function set_text(item, text) {
     item.visible = Boolean(text);
     item.label.set_text(text);
-}
-
-/**
- * Retrieves the image URL from the API based on the provided settings and network conditions.
- *
- * @param {Gio.Settings} settings - An object containing application settings.
- * @param {Object} network_monitor - An object responsible for monitoring network conditions.
- * @param {Object} parsed - The parsed response from the API, expected to contain 'url' and 'hdurl' properties.
- *
- * @returns {string} The image URL based on the provided settings and network conditions.
- */
-function getImageUrlFromApi(settings, network_monitor, parsed) {
-    if ('hdurl' in parsed) {
-        const isNetworkMetered = network_monitor.get_network_metered();
-        if (isNetworkMetered) {
-            if (settings.get_string('image-resolution-metered') === 'hd')
-                return parsed['hdurl'];
-        } else if (settings.get_string('image-resolution') === 'hd') {
-            return parsed['hdurl'];
-        }
-    }
-    return parsed['url'];
 }
 
 const NasaApodIndicator = GObject.registerClass({
@@ -448,6 +429,25 @@ const NasaApodIndicator = GObject.registerClass({
     _parseData(json) {
         let parsed = JSON.parse(json);
 
+        const resolution_setting = this._network_monitor.get_network_metered()
+            ? 'image-resolution-metered'
+            : 'image-resolution'
+        ;
+        const use_hd = this._settings.get_string(resolution_setting) === 'hd';
+
+        Utils.ext_log(`Use thumbnail: ${this._settings.get_boolean('use-thumbnail')}`);
+
+        if (parsed['media_type'] === 'video' && this._settings.get_boolean('use-thumbnail')) {
+            const match = parsed['url'].match(/\/embed\/([a-zA-Z0-9_-]+)/);
+            if (match) {
+                const video_id = match[1];
+                parsed['hdurl'] = `https://i.ytimg.com/vi/${video_id}/maxresdefault.jpg`;
+                parsed['url'] = `https://i.ytimg.com/vi/${video_id}/hqdefault.jpg`;
+                parsed['media_type'] = 'image';
+                Utils.ext_log(`Replaced video (id=${video_id}) with thumbnail: ${parsed['url']}, hires: ${parsed['hdurl']}`);
+            }
+        }
+
         if (parsed['media_type'] === 'image') {
             let url_split = parsed['url'].split('.');
             let extension = url_split[url_split.length - 1];
@@ -455,11 +455,16 @@ const NasaApodIndicator = GObject.registerClass({
             let date = parsed['date'];
             let title = parsed['title'].replace(/[/\\:]/, '_');
 
+            let url = parsed['url'];
+            if (use_hd && 'hdurl' in parsed) {
+                url = parsed['hdurl'];
+            }
+
             this.data = {
                 'title': parsed['title'],
                 'explanation': parsed['explanation'],
                 'copyright': 'copyright' in parsed ? parsed['copyright'].replace('\n', ' ') : undefined,
-                'url': getImageUrlFromApi(this._settings, this._network_monitor, parsed),
+                'url': url,
                 'filename': GLib.build_filenamev([NasaApodDir, `${date}-${title}.${extension}`]),
                 'date': parsed['date'],
             };

@@ -164,7 +164,20 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         downloadFolderRow.add_suffix(downloadFolderButton);
         downloadFolderRow.set_activatable_widget(downloadFolderButton);
 
+        // YouTube API for thumbnails retrieval
+        const thumbnailSwitch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: this._settings.get_boolean('use-thumbnail'),
+        });
+        let thumbnailRow = new Adw.ActionRow({
+            title: _('Download thumbnail from YouTube for videos'),
+            subtitle: _('If the APOD is a YouTube video, download and use its thumbnail as wallpaper'),
+            activatable_widget: thumbnailSwitch,
+        });
+        thumbnailRow.add_suffix(thumbnailSwitch);
+
         backgroundGroup.add(downloadFolderRow);
+        backgroundGroup.add(thumbnailRow);
         backgroundGroup.add(backgroundComboRow);
         this.add(backgroundGroup);
 
@@ -189,6 +202,9 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         });
         settings.connect('changed::background-options', (_settings, _key) => {
             Utils.setBackgroundBasedOnSettings(_settings);
+        });
+        thumbnailSwitch.connect('notify::active', widget => {
+            this._settings.set_boolean('use-thumbnail', widget.get_active());
         });
     }
 });
