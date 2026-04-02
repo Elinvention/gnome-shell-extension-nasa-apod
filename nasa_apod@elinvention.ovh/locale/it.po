@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-06 23:16+0100\n"
-"PO-Revision-Date: 2024-11-06 23:38+0100\n"
+"POT-Creation-Date: 2026-04-02 22:46+0200\n"
+"PO-Revision-Date: 2026-04-02 22:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it_IT\n"
@@ -280,6 +280,34 @@ msgstr ""
 "Puoi fissare uno sfondo selezionandolo.\n"
 "Uno sfondo fissato non verrà sostituito da quelli nuovi."
 
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:88
+msgid "Total download size: {0}"
+msgstr "Dimensione totale dei download: {0}"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:171
+msgid "Cleanup"
+msgstr "Pulizia"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:189
+msgid "Days to keep images"
+msgstr "Giorni di conservazione delle immagini"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:190
+msgid "0 means keep forever"
+msgstr "0 significa conserva per sempre"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:197
+msgid "Clean up now"
+msgstr "Pulisci ora"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:213
+msgid "Estimated maximum size: No limit"
+msgstr "Dimensione massima stimata: Nessun limite"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:217
+msgid "Estimated maximum size: {0}"
+msgstr "Dimensione massima stimata: {0}"
+
 #: nasa_apod@elinvention.ovh/preferences/networkPage.js:41
 msgid "Remove"
 msgstr "Rimuovi"
@@ -467,6 +495,15 @@ msgstr "Posizione indicatore."
 #: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:92
 msgid "Useful to statically position the indicator in the status area."
 msgstr "Utile per posizionare staticamente l'indicatore nell'area di status."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:103
+msgid "Days to keep."
+msgstr "Giorni di conservazione."
+
+#: nasa_apod@elinvention.ovh/schemas/org.gnome.shell.extensions.nasa-apod.gschema.xml:104
+msgid "How many days of images to keep. 0 means keep forever."
+msgstr ""
+"Quanti giorni di immagini conservare. 0 significa conserva per sempre."
 
 #~ msgid "Please paste here your API key."
 #~ msgstr "Per favore incolla qui la tua chiave API."
