@@ -42,5 +42,5 @@ eslint:
 	npx eslint -c eslint.config.js $(UUID)
 
 nested-shell:
-	dbus-run-session -- gnome-shell --nested --wayland
+	dbus-run-session -- gnome-shell --nested --wayland || dbus-run-session -- gnome-shell --devkit
 
