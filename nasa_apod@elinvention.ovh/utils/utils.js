@@ -79,6 +79,34 @@ export function list_files(path) {
 }
 
 /**
+ * @param {string} path The path to the directory
+ * @returns {number} The total size of the directory in bytes
+ */
+export function getDirectorySize(path) {
+    let dir = Gio.file_new_for_path(path);
+    let files_iter = dir.enumerate_children('standard::size', Gio.FileQueryInfoFlags.NONE, null);
+    let total_size = 0;
+    let file;
+    while ((file = files_iter.next_file(null)) !== null)
+        total_size += file.get_size();
+
+    return total_size;
+}
+
+/**
+ * @param {number} bytes Number of bytes
+ * @returns {string} Formatted string with units
+ */
+export function formatSize(bytes) {
+    if (bytes === 0)
+        return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+}
+
+/**
  * @param {string} path Path to an image created by this extension.
  * @returns {Object} Contains information parsed from the file name of the image.
  */

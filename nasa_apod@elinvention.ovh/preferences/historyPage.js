@@ -75,6 +75,19 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
             wrap: true,
         });
 
+        // Size label
+        const sizeLabel = new Gtk.Label({
+            justify: Gtk.Justification.CENTER,
+            css_classes: ['dim-label'],
+        });
+
+        const updateSizeLabel = () => {
+            const downloadFolder = Utils.getDownloadFolder(settings);
+            const totalSize = Utils.getDirectorySize(downloadFolder);
+            sizeLabel.label = _('Total download size: {0}').replace('{0}', Utils.formatSize(totalSize));
+        };
+        updateSizeLabel();
+
         // History page
         let file_names = [];
         const pinned = settings.get_string('pinned-background');
@@ -155,6 +168,7 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
 
         // load images only when opening the page for the first time
         this.connect('map', () => {
+            updateSizeLabel();
             if (historyFlowBox.get_first_child() === null) {
                 Utils.ext_log('History page will be drawn foor the first time. Loading images...');
                 file_names = Utils.list_files(downloadFolder);
@@ -167,6 +181,7 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
         });
 
         historyGroup.add(descriptionLabel);
+        historyGroup.add(sizeLabel);
         historyGroup.add(historyScroll);
 
         this.add(historyGroup);
