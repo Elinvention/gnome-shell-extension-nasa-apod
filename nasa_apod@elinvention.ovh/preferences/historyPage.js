@@ -79,6 +79,7 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
         const sizeLabel = new Gtk.Label({
             justify: Gtk.Justification.CENTER,
             css_classes: ['dim-label'],
+            margin_bottom: 12,
         });
 
         const updateSizeLabel = () => {
@@ -166,15 +167,82 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
             }
         });
 
-        // load images only when opening the page for the first time
-        this.connect('map', () => {
-            updateSizeLabel();
-            if (historyFlowBox.get_first_child() === null) {
-                Utils.ext_log('History page will be drawn foor the first time. Loading images...');
-                file_names = Utils.list_files(downloadFolder);
-                load_files_thumbnails();
-            }
+        const cleanupGroup = new Adw.PreferencesGroup({
+            title: _('Cleanup'),
         });
+
+        const keepDaysAdjustment = new Gtk.Adjustment({
+            lower: 0,
+            upper: 3650,
+            step_increment: 1,
+        });
+        const keepDaysSpinButton = new Gtk.SpinButton({
+            valign: Gtk.Align.CENTER,
+            adjustment: keepDaysAdjustment,
+            climb_rate: 1,
+            digits: 0,
+        });
+        
+        settings.bind('keep-days', keepDaysSpinButton, 'value', Gio.SettingsBindFlags.DEFAULT);
+
+        const keepDaysRow = new Adw.ActionRow({
+            title: _('Days to keep images'),
+            subtitle: _('0 means keep forever'),
+            activatable_widget: keepDaysSpinButton,
+        });
+        keepDaysRow.add_suffix(keepDaysSpinButton);
+        cleanupGroup.add(keepDaysRow);
+
+        const cleanupButton = new Gtk.Button({
+            label: _('Clean up now'),
+            halign: Gtk.Align.CENTER,
+            css_classes: ['destructive-action'],
+            margin_top: 12,
+            margin_bottom: 12,
+        });
+        cleanupGroup.add(cleanupButton);
+
+        const estimatedSizeLabel = new Gtk.Label({
+            justify: Gtk.Justification.CENTER,
+            css_classes: ['dim-label'],
+        });
+
+        const updateEstimatedSizeLabel = () => {
+            const keepDays = settings.get_int('keep-days');
+            if (keepDays === 0) {
+                estimatedSizeLabel.label = _('Estimated maximum size: No limit');
+            } else {
+                const meanSize = Utils.getMeanImageSize(downloadFolder);
+                const estSize = meanSize * keepDays;
+                estimatedSizeLabel.label = _('Estimated maximum size: {0}').replace('{0}', Utils.formatSize(estSize));
+            }
+        };
+        updateEstimatedSizeLabel();
+        settings.connect('changed::keep-days', updateEstimatedSizeLabel);
+
+        cleanupGroup.add(estimatedSizeLabel);
+
+        const refreshHistory = () => {
+            // Clear current thumbnails
+            let child = historyFlowBox.get_first_child();
+            while (child !== null) {
+                historyFlowBox.remove(child);
+                child = historyFlowBox.get_first_child();
+            }
+
+            // Reload file names and thumbnails
+            file_names = Utils.list_files(downloadFolder);
+            load_files_thumbnails();
+            updateSizeLabel();
+            updateEstimatedSizeLabel();
+        };
+
+        cleanupButton.connect('clicked', () => {
+            Utils.deleteOldImages(settings);
+            refreshHistory();
+        });
+
+        this.add(cleanupGroup);
 
         const historyGroup = new Adw.PreferencesGroup({
             title: _('History'),
@@ -185,6 +253,16 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
         historyGroup.add(historyScroll);
 
         this.add(historyGroup);
+
+        // load images only when opening the page for the first time
+        this.connect('map', () => {
+            updateSizeLabel();
+            updateEstimatedSizeLabel();
+            if (historyFlowBox.get_first_child() === null) {
+                Utils.ext_log('History page will be drawn foor the first time. Loading images...');
+                file_names = Utils.list_files(downloadFolder);
+                load_files_thumbnails();
+            }
+        });
     }
 });
-

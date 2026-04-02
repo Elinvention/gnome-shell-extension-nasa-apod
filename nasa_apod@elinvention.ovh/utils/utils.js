@@ -84,6 +84,8 @@ export function list_files(path) {
  */
 export function getDirectorySize(path) {
     let dir = Gio.file_new_for_path(path);
+    if (!dir.query_exists(null)) return 0;
+
     let files_iter = dir.enumerate_children('standard::size', Gio.FileQueryInfoFlags.NONE, null);
     let total_size = 0;
     let file;
@@ -231,5 +233,71 @@ export function replace_contents(file, input_bytes) {
         );
     });
 }
+
+/**
+ * @param {string} path The path to the directory
+ * @returns {number} The mean size of the files in the directory in bytes
+ */
+export function getMeanImageSize(path) {
+    let dir;
+    try {
+        dir = Gio.file_new_for_path(path);
+    } catch {
+        return 0;
+    }
+    
+    if (!dir.query_exists(null)) return 0;
+
+    let files_iter = dir.enumerate_children('standard::size', Gio.FileQueryInfoFlags.NONE, null);
+    let total_size = 0;
+    let count = 0;
+    let file;
+    while ((file = files_iter.next_file(null)) !== null) {
+        total_size += file.get_size();
+        count++;
+    }
+
+    if (count === 0) return 0;
+    return total_size / count;
+}
+
+/**
+ * @param {Object} settings Gio.Settings object
+ */
+export function deleteOldImages(settings) {
+    const keepDays = settings.get_int('keep-days');
+    if (keepDays <= 0) return;
+
+    const downloadFolder = getDownloadFolder(settings);
+    const pinned = settings.get_string('pinned-background');
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    const fileNames = list_files(downloadFolder);
+    for (const fileName of fileNames) {
+        if (fileName === pinned) continue;
+        
+        try {
+            const info = parse_path(downloadFolder + fileName);
+            if (info.date) {
+                const fileDate = new Date(info.date);
+                if (!isNaN(fileDate.getTime())) {
+                    fileDate.setHours(0, 0, 0, 0);
+                    const diffTime = now - fileDate;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+
+                    if (diffDays >= keepDays) {
+                        const file = Gio.file_new_for_path(downloadFolder + fileName);
+                        file.delete(null);
+                        ext_log(`Deleted old image: ${fileName}`);
+                    }
+                }
+            }
+        } catch (e) {
+            ext_log(`Error processing file for deletion: ${fileName} - ${e}`);
+        }
+    }
+}
+
 
 

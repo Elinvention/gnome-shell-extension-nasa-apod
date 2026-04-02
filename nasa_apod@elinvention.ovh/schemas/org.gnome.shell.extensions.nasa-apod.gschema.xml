@@ -98,5 +98,11 @@
         <description>Useful to statically position the indicator in the status area.</description>
     </key>
 
+    <key name="keep-days" type="i">
+      <default>0</default>
+      <summary>Days to keep.</summary>
+      <description>How many days of images to keep. 0 means keep forever.</description>
+    </key>
+
   </schema>
 </schemalist>

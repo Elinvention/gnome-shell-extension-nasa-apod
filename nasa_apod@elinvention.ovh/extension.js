@@ -527,6 +527,7 @@ const NasaApodIndicator = GObject.registerClass({
             await Utils.replace_contents(file, downloaded_bytes);
 
             Utils.ext_log('Download successful');
+            Utils.deleteOldImages(this._settings);
             this._setBackground();
             this._notifyAPIResults();
             if (this._settings.get_string('pinned-background') === '')
