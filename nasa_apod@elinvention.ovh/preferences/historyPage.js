@@ -5,6 +5,7 @@ import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
+import Gdk from 'gi://Gdk';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
@@ -34,10 +35,12 @@ function buildHistoryFlowBoxChild(file, info) {
         label: info.date,
         wrap: true,
     });
-    const image = new Gtk.Image({
-        valign: 'start',
+    const image = new Gtk.Picture({
+        content_fit: Gtk.ContentFit.CONTAIN,
         width_request: PREVIEW_SIZE,
         height_request: PREVIEW_SIZE,
+        hexpand: true,
+        vexpand: true,
     });
 
     box.append(title_label);
@@ -48,7 +51,7 @@ function buildHistoryFlowBoxChild(file, info) {
     let stream = file.read(null);
     GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream, PREVIEW_SIZE, PREVIEW_SIZE, true, null, function (source, res) {
         let pix = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
-        image.set_from_pixbuf(pix);
+        image.set_paintable(Gdk.Texture.new_for_pixbuf(pix));
     });
 
     return row;

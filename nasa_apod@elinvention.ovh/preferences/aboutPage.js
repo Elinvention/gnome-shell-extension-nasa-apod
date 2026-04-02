@@ -4,6 +4,7 @@
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import GObject from 'gi://GObject';
+import Gio from 'gi://Gio';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
@@ -26,9 +27,11 @@ class NasaApodAboutPage extends Adw.PreferencesPage {
         });
 
         // NASA image
-        const nasaImage = new Gtk.Image({
-            file: image_path,
+        const nasaImage = new Gtk.Picture({
+            file: Gio.File.new_for_path(image_path),
             height_request: 290,
+            content_fit: Gtk.ContentFit.CONTAIN,
+            hexpand: true,
         });
 
         // Title
