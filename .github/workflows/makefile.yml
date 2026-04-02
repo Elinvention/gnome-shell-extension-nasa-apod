@@ -40,8 +40,8 @@ jobs:
 
     - name: Get release informations
       run: |
-        echo "release_subject=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
-        git tag -l --format='%(contents:body)' ${GITHUB_REF/refs\/tags\//} > releaseBody.md
+        echo "release_subject=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
+        git tag -l --format='%(contents:body)' ${GITHUB_REF#refs/tags/} | sed -E 's/^( {1,4}|\t)//' > releaseBody.md
 
     - name: Release
       uses: ncipollo/release-action@v1
