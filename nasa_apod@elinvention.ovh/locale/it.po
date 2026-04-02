@@ -284,7 +284,11 @@ msgstr ""
 msgid "Total download size: {0}"
 msgstr "Dimensione totale dei download: {0}"
 
-#: nasa_apod@elinvention.ovh/preferences/historyPage.js:171
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:109
+msgid "Load More"
+msgstr "Carica altri"
+
+#: nasa_apod@elinvention.ovh/preferences/historyPage.js:167
 msgid "Cleanup"
 msgstr "Pulizia"
 

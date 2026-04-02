@@ -94,10 +94,6 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
         const pinned = settings.get_string('pinned-background');
         const downloadFolder = Utils.getDownloadFolder(settings);
 
-        const historyScroll = new Gtk.ScrolledWindow({
-            vexpand: true,
-        });
-        const viewport = new Gtk.Viewport();
         const historyFlowBox = new Gtk.FlowBox({
             column_spacing: 6,
             row_spacing: 6,
@@ -106,10 +102,15 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
             max_children_per_line: 5,
             activate_on_single_click: false,
             can_focus: false,
+            margin_bottom: 12,
         });
 
-        historyScroll.set_child(viewport);
-        viewport.set_child(historyFlowBox);
+        const loadMoreButton = new Gtk.Button({
+            label: _('Load More'),
+            halign: Gtk.Align.CENTER,
+            margin_bottom: 12,
+            visible: false,
+        });
 
         /**
          * @param {number} [limit=6] the number of thumbnails to load at a time
@@ -117,7 +118,7 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
         function load_files_thumbnails(limit = 6) {
             Utils.ext_log('load_files_thumbnails');
             let file_name, i = 0;
-            while ((file_name = file_names.pop()) !== undefined && i < limit) {
+            while (i < limit && (file_name = file_names.pop()) !== undefined) {
                 try {
                     let path = downloadFolder + file_name;
                     let file = Gio.file_new_for_path(path);
@@ -127,13 +128,15 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
                     historyFlowBox.insert(child, -1);
                     if (pinned === info.filename)
                         historyFlowBox.select_child(child);
+                    i++;
                 } catch (err) {
                     Utils.ext_log(err);
-                } finally {
-                    i++;
                 }
             }
+            loadMoreButton.visible = file_names.length > 0;
         }
+
+        loadMoreButton.connect('clicked', () => load_files_thumbnails());
 
         let previous_selection = null;
         historyFlowBox.connect('selected_children_changed', function () {
@@ -159,13 +162,6 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
             }
         });
 
-
-        historyScroll.connect('edge-reached', function (__, pos) {
-            if (pos === 3) {  // if user reached the bottom of the SrolledWindow
-                Utils.ext_log('Reached bottom of SrolledWindow');
-                load_files_thumbnails();
-            }
-        });
 
         const cleanupGroup = new Adw.PreferencesGroup({
             title: _('Cleanup'),
@@ -250,7 +246,8 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
 
         historyGroup.add(descriptionLabel);
         historyGroup.add(sizeLabel);
-        historyGroup.add(historyScroll);
+        historyGroup.add(historyFlowBox);
+        historyGroup.add(loadMoreButton);
 
         this.add(historyGroup);
 
@@ -259,9 +256,9 @@ class NasaApodHistoryPage extends Adw.PreferencesPage {
             updateSizeLabel();
             updateEstimatedSizeLabel();
             if (historyFlowBox.get_first_child() === null) {
-                Utils.ext_log('History page will be drawn foor the first time. Loading images...');
+                Utils.ext_log('History page will be drawn for the first time. Loading images...');
                 file_names = Utils.list_files(downloadFolder);
-                load_files_thumbnails();
+                load_files_thumbnails(4);
             }
         });
     }
