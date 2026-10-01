@@ -17,7 +17,7 @@ import Timer from './utils/timer.js';
 import * as Utils from './utils/utils.js';
 
 
-const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
+const NasaApodURL = 'https://science.nasa.gov/wp-json/wp/v2/apod-basic';
 const NasaApodWebsiteURL = 'https://apod.nasa.gov/apod/';
 const NasaApodGetYourAPIURL = 'https://api.nasa.gov/';
 
@@ -74,6 +74,63 @@ function MediaTypeError(parsed) {
 MediaTypeError.prototype = Object.create(Error.prototype);
 MediaTypeError.prototype.name = 'MediaTypeError';
 MediaTypeError.prototype.constructor = MediaTypeError;
+
+/**
+ * @param {string} html HTML fragment
+ * @returns {string} Plain text
+ */
+function strip_html(html) {
+    return html
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<[^>]*>/g, '')
+        .replace(/&#(\d+);/g, (__, code) => String.fromCodePoint(code))
+        .replace(/&quot;/g, '"')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/[ \t]+/g, ' ')
+        .trim();
+}
+
+/**
+ * Converts a response of the apod-basic endpoint to the shape of the old
+ * api.nasa.gov response, which is what _parseData expects.
+ *
+ * @param {string} response Response body of the apod-basic endpoint
+ * @returns {object} date, title, explanation, copyright, media_type, url, hdurl
+ */
+function normalize_apod(response) {
+    let entry = JSON.parse(response);
+    if (Array.isArray(entry))
+        entry = entry[0];
+
+    const normalized = {
+        'date': entry['date'],
+        'title': strip_html(entry['title']),
+        'explanation': strip_html(entry['explanation']).replace(/^Explanation:\s*/, ''),
+        'media_type': entry['media_type'],
+        // url is the article page in the new API, replaced below when possible
+        'url': entry['url'],
+        'hdurl': entry['hdurl'],
+    };
+
+    const copyright = strip_html(entry['copyright'] ?? '');
+    if (copyright)
+        normalized['copyright'] = copyright;
+
+    if (entry['media_type'] === 'image' && entry['hdurl']) {
+        // the image server resizes on request, ask for a smaller image
+        normalized['url'] = `${entry['hdurl'].split('?')[0]}?w=960`;
+    } else if (entry['media_type'] === 'video') {
+        // keep the YouTube thumbnail logic of _parseData working
+        const embed = (entry['basic_html'] ?? '').match(/https:\/\/www\.youtube(?:-nocookie)?\.com\/embed\/[a-zA-Z0-9_-]+/);
+        if (embed)
+            normalized['url'] = embed[0];
+    }
+
+    return normalized;
+}
 
 /**
  * @param {object} item A label object
@@ -354,11 +411,10 @@ const NasaApodIndicator = GObject.registerClass({
 
         /* eslint-disable no-await-in-loop */
         while (this._updatePending && this._apiKeys.length > 0) {
-            let apiKey = this._apiKeys[0];
             let pinned = this._settings.get_string('pinned-background');
-            let url = `${NasaApodURL}?api_key=${apiKey}`;
-            if (pinned.length > 0)
-                url += `&date=${Utils.parse_path(pinned).date}`;
+            let url = `${NasaApodURL}?per_page=1`;
+            if (pinned.length > 0) // YYYY-MM-DD to yyMMdd
+                url = `${NasaApodURL}/${Utils.parse_path(pinned).date.replace(/-/g, '').slice(2)}`;
             Utils.ext_log(url);
 
             // create an http message
@@ -366,7 +422,7 @@ const NasaApodIndicator = GObject.registerClass({
 
             try {
                 // download response
-                const response = await Utils.make_request(this._httpSession, message);
+                const response = JSON.stringify(normalize_apod(await Utils.make_request(this._httpSession, message)));
 
                 this._settings.set_string('last-json', response);
                 this._settings.set_uint64('last-refresh', Date.now());
@@ -450,7 +506,7 @@ const NasaApodIndicator = GObject.registerClass({
         }
 
         if (parsed['media_type'] === 'image') {
-            let url_split = parsed['url'].split('.');
+            let url_split = parsed['url'].split('?')[0].split('.');
             let extension = url_split[url_split.length - 1];
             let NasaApodDir = Utils.getDownloadFolder(this._settings);
             let date = parsed['date'];
