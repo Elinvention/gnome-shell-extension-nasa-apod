@@ -15,6 +15,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Notifications from './utils/notifications.js';
 import Timer from './utils/timer.js';
 import * as Utils from './utils/utils.js';
+import * as Apod from './utils/apod.js';
 
 
 const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
@@ -366,7 +367,7 @@ const NasaApodIndicator = GObject.registerClass({
 
             try {
                 // download response
-                const response = await Utils.make_request(this._httpSession, message);
+                const response = await this._fetchApodData(message, pinned);
 
                 this._settings.set_string('last-json', response);
                 this._settings.set_uint64('last-refresh', Date.now());
@@ -404,7 +405,7 @@ const NasaApodIndicator = GObject.registerClass({
                         this._networkErrorActions,
                         user_initiated
                     );
-                    this._refreshDone(-1);
+                    this._refreshDone(RETRY_NETWORK_ERROR);
                 }
             }
         }
@@ -428,8 +429,35 @@ const NasaApodIndicator = GObject.registerClass({
         Utils.ext_log('Refresh done.');
     }
 
+    async _fetchApodData(message, pinned) {
+        let parsed;
+        try {
+            const response = await Utils.make_request(this._httpSession, message);
+            parsed = JSON.parse(response);
+            if (!Apod.isBrokenApod(parsed))
+                return response;
+        } catch (error) {
+            // Keep API key and rate-limit errors on their existing paths.
+            if (!Number.isInteger(error) || error < 500 || error > 599)
+                throw error;
+        }
+
+        const today = GLib.DateTime.new_now(GLib.TimeZone.new_identifier('America/New_York')).format('%Y-%m-%d');
+        const date = pinned ? Utils.parse_path(pinned).date : parsed?.date || today;
+        const request = url => Utils.make_request(this._httpSession, Soup.Message.new('GET', url));
+        Utils.ext_log(`Fetching APOD article for ${date}`);
+        try {
+            return JSON.stringify(await Apod.fetchArticle(request, date, !pinned && date === today));
+        } catch (error) {
+            // A fallback HTTP error must not be mistaken for an API key error.
+            throw new Error(`APOD article lookup failed: ${error}`);
+        }
+    }
+
     _parseData(json) {
         let parsed = JSON.parse(json);
+        if (Apod.isBrokenApod(parsed))
+            throw new Error('Stored APOD data contains no usable picture');
 
         const resolution_setting = this._network_monitor.get_network_metered()
             ? 'image-resolution-metered'
@@ -450,15 +478,14 @@ const NasaApodIndicator = GObject.registerClass({
         }
 
         if (parsed['media_type'] === 'image') {
-            let url_split = parsed['url'].split('.');
-            let extension = url_split[url_split.length - 1];
             let NasaApodDir = Utils.getDownloadFolder(this._settings);
             let date = parsed['date'];
-            let title = parsed['title'].replace(/[/\\:]/, '_');
+            let title = parsed['title'].replace(/[/\\:]/g, '_');
 
             let url = parsed['url'];
             if (use_hd && 'hdurl' in parsed)
                 url = parsed['hdurl'];
+            const extension = url.split(/[?#]/)[0].split('.').pop();
 
             this.data = {
                 'title': parsed['title'],
@@ -579,4 +606,3 @@ export default class NasaApodExtension extends Extension {
         this._indicator = null;
     }
 }
-

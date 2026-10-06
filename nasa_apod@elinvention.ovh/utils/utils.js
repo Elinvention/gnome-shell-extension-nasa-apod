@@ -166,20 +166,24 @@ export function getCurrentBackgroundUri() {
 export function make_request(httpSession, message) {
     return new Promise((resolve, reject) => {
         httpSession.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (session, result) => {
-            if (message.get_status() === Soup.Status.OK) {
-                // Successful request
-                // log remaining requests
-                let limit = message.get_response_headers().get_one('X-RateLimit-Limit');
-                let remaining = message.get_response_headers().get_one('X-RateLimit-Remaining');
-                ext_log(`${remaining}/${limit} requests per hour remaining`);
+            try {
+                const bytes = session.send_and_read_finish(result);
+                    if (message.get_status() === Soup.Status.OK) {
+                        // Successful request
+                        // log remaining requests
+                        let limit = message.get_response_headers().get_one('X-RateLimit-Limit');
+                        let remaining = message.get_response_headers().get_one('X-RateLimit-Remaining');
+                        ext_log(`${remaining}/${limit} requests per hour remaining`);
 
-                let bytes = httpSession.send_and_read_finish(result);
-                let decoder = new TextDecoder('utf-8');
-                let response = decoder.decode(bytes.get_data());
+                        let decoder = new TextDecoder('utf-8');
+                        let response = decoder.decode(bytes.get_data());
 
-                resolve(response);
-            } else {
-                reject(message.get_status());
+                        resolve(response);
+                    } else {
+                        reject(message.get_status());
+                    }
+            } catch (error) {
+                reject(error);
             }
         });
     });
@@ -298,6 +302,5 @@ export function deleteOldImages(settings) {
         }
     }
 }
-
 
 
