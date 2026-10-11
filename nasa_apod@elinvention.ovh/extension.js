@@ -1,7 +1,6 @@
 'use strict';
 
 import St from 'gi://St';
-import Clutter from 'gi://Clutter';
 import Soup from 'gi://Soup';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
@@ -138,8 +137,15 @@ function normalize_apod(response) {
  * @param {string} text Text to set on the label
  */
 function set_text(item, text) {
-    item.visible = Boolean(text);
-    item.label.set_text(text);
+    if (!item)
+        return;
+    try {
+        item.visible = Boolean(text);
+        if (item.label)
+            item.label.set_text(text);
+    } catch {
+        // Ignored if actor has been disposed
+    }
 }
 
 const NasaApodIndicator = GObject.registerClass({
@@ -324,7 +330,7 @@ const NasaApodIndicator = GObject.registerClass({
     _restartTimeout(seconds = TIMEOUT_SECONDS) {
         Timer.remove('update');
         if (seconds < 0) {
-            this.refreshStatusItem.label.set_text(_('No refresh scheduled'));
+            set_text(this.refreshStatusItem, _('No refresh scheduled'));
             Utils.ext_log('Timeout removed');
         } else {
             if (seconds < 10) {
@@ -335,10 +341,10 @@ const NasaApodIndicator = GObject.registerClass({
             if (seconds > 60) {
                 let timezone = GLib.TimeZone.new_local();
                 let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
-                this.refreshStatusItem.label.set_text(_('Next refresh: {0}').replace('{0}', localTime));
+                set_text(this.refreshStatusItem, _('Next refresh: {0}').replace('{0}', localTime));
                 Utils.ext_log(`Next check @ local time ${localTime}`);
             } else {
-                this.refreshStatusItem.label.set_text(_('Next refresh in less than a minute'));
+                set_text(this.refreshStatusItem, _('Next refresh in less than a minute'));
                 Utils.ext_log('Next check in less than a minute');
             }
         }
@@ -404,7 +410,7 @@ const NasaApodIndicator = GObject.registerClass({
         }
 
         this._updatePending = true;
-        this.refreshStatusItem.label.set_text(_('Pending refresh'));
+        set_text(this.refreshStatusItem, _('Pending refresh'));
 
         let pinned = this._settings.get_string('pinned-background');
         let url = `${NasaApodURL}?per_page=1`;
@@ -639,16 +645,16 @@ export default class NasaApodExtension extends Extension {
         this._injectionManager = new InjectionManager();
         const extension = this;
 
+        // Ensure GNOME Shell's in-memory Extension object marks unlock-dialog as supported
+        const extObj = Main.extensionManager?.lookup(this.uuid);
+        if (extObj && !extObj.sessionModes.includes('unlock-dialog'))
+            extObj.sessionModes.push('unlock-dialog');
+
         // Obtain BackgroundSource prototype to make it compatible with schemas
         // lacking picture-uri-dark (such as org.gnome.desktop.screensaver in dark mode).
         try {
-            const dummyBgManager = new Background.BackgroundManager({
-                container: new Clutter.Actor(),
-                monitorIndex: 0,
-                controlPosition: false,
-            });
-            const bgSourceProto = Object.getPrototypeOf(dummyBgManager._backgroundSource);
-            dummyBgManager.destroy();
+            const layoutBgSource = Main.layoutManager?._bgManagers?.[0]?._backgroundSource;
+            const bgSourceProto = layoutBgSource ? Object.getPrototypeOf(layoutBgSource) : null;
 
             if (bgSourceProto && typeof bgSourceProto.getBackground === 'function') {
                 this._injectionManager.overrideMethod(bgSourceProto, 'getBackground', originalMethod => {
@@ -682,6 +688,13 @@ export default class NasaApodExtension extends Extension {
                     return;
                 }
 
+                // If lockscreen-extension is active and managing the background, let it handle it
+                const lockExtObj = Main.extensionManager?.lookup('lockscreen-extension@pratap.fastmail.fm');
+                if (lockExtObj?.stateObj?._injectionManager) {
+                    originalMethod.call(this, monitorIndex);
+                    return;
+                }
+
                 const monitor = Main.layoutManager.monitors[monitorIndex];
                 const widget = new St.Widget({
                     style_class: 'screen-shield-background',
@@ -707,6 +720,12 @@ export default class NasaApodExtension extends Extension {
         this._injectionManager.overrideMethod(UnlockDialog.prototype, '_updateBackgroundEffects', originalMethod => {
             return function () {
                 if (!extension._settings?.get_boolean('set-lockscreen-background')) {
+                    originalMethod.call(this);
+                    return;
+                }
+
+                const lockExtObj = Main.extensionManager?.lookup('lockscreen-extension@pratap.fastmail.fm');
+                if (lockExtObj?.stateObj?._injectionManager) {
                     originalMethod.call(this);
                     return;
                 }

@@ -44,8 +44,8 @@ export function setBackgroundBasedOnSettings(settings, filename = null) {
     let backgroundSettings = getBackgroundSettings();
     let screensaverSettings = getScreensaverSettings();
 
-    if ((typeof filename === 'string' || filename instanceof String) && !filename.startsWith('file://'))
-        filename = `file://${filename}`;
+    if (typeof filename === 'string' || filename instanceof String)
+        filename = Gio.File.new_for_commandline_arg(filename).get_uri();
 
     let option = settings.get_string('background-options');
 
@@ -88,6 +88,10 @@ export function setBackgroundBasedOnSettings(settings, filename = null) {
                     for (let i = 1; i <= 4; i++) {
                         if (lockscreenExtSettings.settings_schema.has_key(`background-image-path-${i}`))
                             lockscreenExtSettings.set_string(`background-image-path-${i}`, filename);
+                        if (lockscreenExtSettings.settings_schema.has_key(`blur-radius-${i}`))
+                            lockscreenExtSettings.set_int(`blur-radius-${i}`, 0);
+                        if (lockscreenExtSettings.settings_schema.has_key(`blur-brightness-${i}`))
+                            lockscreenExtSettings.set_double(`blur-brightness-${i}`, 0.85);
                     }
                     Gio.Settings.sync();
                     lockscreenExtSettings.apply();
