@@ -79,6 +79,23 @@ export function setBackgroundBasedOnSettings(settings, filename = null) {
 
         Gio.Settings.sync();
         screensaverSettings.apply();
+
+        // Support modern GNOME Shell lockscreen via Lockscreen Extension if installed
+        if (filename !== null) {
+            try {
+                let lockscreenExtSettings = getLockscreenExtensionSettings();
+                if (lockscreenExtSettings) {
+                    for (let i = 1; i <= 4; i++) {
+                        if (lockscreenExtSettings.settings_schema.has_key(`background-image-path-${i}`))
+                            lockscreenExtSettings.set_string(`background-image-path-${i}`, filename);
+                    }
+                    Gio.Settings.sync();
+                    lockscreenExtSettings.apply();
+                }
+            } catch (e) {
+                ext_log(`Could not update lockscreen-extension: ${e}`);
+            }
+        }
     }
 }
 
@@ -193,7 +210,43 @@ export function getCurrentBackgroundUri() {
  * @returns {string} The path to the image used as the current screensaver background.
  */
 export function getCurrentScreensaverUri() {
+    let extSettings = getLockscreenExtensionSettings();
+    if (extSettings && extSettings.settings_schema.has_key('background-image-path-1'))
+        return extSettings.get_string('background-image-path-1');
     return getScreensaverSettings().get_string('picture-uri');
+}
+
+/**
+ * @returns {Object|null} gsettings singleton for 'org.gnome.shell.extensions.lockscreen-extension' if installed
+ */
+export function getLockscreenExtensionSettings() {
+    if (getLockscreenExtensionSettings._instance !== undefined)
+        return getLockscreenExtensionSettings._instance;
+
+    try {
+        const schemaId = 'org.gnome.shell.extensions.lockscreen-extension';
+        const defaultSource = Gio.SettingsSchemaSource.get_default();
+        if (defaultSource && defaultSource.lookup(schemaId, true)) {
+            getLockscreenExtensionSettings._instance = new Gio.Settings({schema_id: schemaId});
+            return getLockscreenExtensionSettings._instance;
+        }
+
+        const userSchemaPath = `${GLib.get_home_dir()}/.local/share/gnome-shell/extensions/lockscreen-extension@pratap.fastmail.fm/schemas`;
+        const userDir = Gio.File.new_for_path(userSchemaPath);
+        if (userDir.query_exists(null)) {
+            const schemaSource = Gio.SettingsSchemaSource.new_from_directory(userSchemaPath, defaultSource, false);
+            const schema = schemaSource.lookup(schemaId, false);
+            if (schema) {
+                getLockscreenExtensionSettings._instance = new Gio.Settings({settings_schema: schema});
+                return getLockscreenExtensionSettings._instance;
+            }
+        }
+    } catch {
+        // Ignored if extension is not installed
+    }
+
+    getLockscreenExtensionSettings._instance = null;
+    return null;
 }
 
 /**
