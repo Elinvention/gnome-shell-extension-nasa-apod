@@ -11,6 +11,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     
     - name: Install npm dependencies
       run: npm install
@@ -50,5 +52,6 @@ jobs:
         artifacts: "nasa_apod@elinvention.ovh.zip,nasa_apod@elinvention.ovh.pot"
         draft: false
         prerelease: false
+        allowUpdates: true
         name: ${{ env.release_subject }}
         bodyFile: releaseBody.md
