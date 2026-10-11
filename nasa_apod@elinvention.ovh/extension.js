@@ -649,6 +649,7 @@ export default class NasaApodExtension extends Extension {
         const extObj = Main.extensionManager?.lookup(this.uuid);
         if (extObj && !extObj.sessionModes.includes('unlock-dialog'))
             extObj.sessionModes.push('unlock-dialog');
+        Utils.ext_log(`Lockscreen hooks active, sessionModes: ${JSON.stringify(extObj?.sessionModes)}`);
 
         // Obtain BackgroundSource prototype to make it compatible with schemas
         // lacking picture-uri-dark (such as org.gnome.desktop.screensaver in dark mode).
