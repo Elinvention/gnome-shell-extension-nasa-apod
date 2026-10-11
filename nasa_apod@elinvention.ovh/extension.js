@@ -473,6 +473,12 @@ const NasaApodIndicator = GObject.registerClass({
                 parsed['url'] = `https://i.ytimg.com/vi/${video_id}/hqdefault.jpg`;
                 parsed['media_type'] = 'image';
                 Utils.ext_log(`Replaced video (id=${video_id}) with thumbnail: ${parsed['url']}, hires: ${parsed['hdurl']}`);
+            } else if (parsed['hdurl']) {
+                const baseImageUrl = parsed['hdurl'].split('?')[0];
+                parsed['hdurl'] = baseImageUrl;
+                parsed['url'] = `${baseImageUrl}?w=960`;
+                parsed['media_type'] = 'image';
+                Utils.ext_log(`Replaced video with still image: ${parsed['url']}, hires: ${parsed['hdurl']}`);
             }
         }
 
