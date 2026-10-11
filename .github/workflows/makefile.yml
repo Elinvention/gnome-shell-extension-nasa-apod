@@ -13,6 +13,11 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    - name: Set up Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
     
     - name: Install npm dependencies
       run: npm install
@@ -40,18 +45,19 @@ jobs:
     - name: Generate extension pot
       run: make potfile
 
-    - name: Get release informations
+    - name: Create or update release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo "release_subject=$(git tag -l --format='%(contents:subject)' ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
-        git tag -l --format='%(contents:body)' ${GITHUB_REF#refs/tags/} | sed -E 's/^( {1,4}|\t)//' > releaseBody.md
+        TAG_NAME="${GITHUB_REF#refs/tags/}"
+        RELEASE_TITLE="Version ${TAG_NAME}"
+        git tag -l --format='%(contents:body)' "${TAG_NAME}" | sed -E 's/^( {1,4}|\t)//' > releaseBody.md
 
-    - name: Release
-      uses: ncipollo/release-action@v1
-      id: create_release
-      with:
-        artifacts: "nasa_apod@elinvention.ovh.zip,nasa_apod@elinvention.ovh.pot"
-        draft: false
-        prerelease: false
-        allowUpdates: true
-        name: ${{ env.release_subject }}
-        bodyFile: releaseBody.md
+        if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+          gh release edit "${TAG_NAME}" --title "${RELEASE_TITLE}" --notes-file releaseBody.md
+          gh release upload "${TAG_NAME}" nasa_apod@elinvention.ovh.zip nasa_apod@elinvention.ovh.pot --clobber
+        else
+          gh release create "${TAG_NAME}" nasa_apod@elinvention.ovh.zip nasa_apod@elinvention.ovh.pot \
+            --title "${RELEASE_TITLE}" \
+            --notes-file releaseBody.md
+        fi
