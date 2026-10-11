@@ -419,7 +419,7 @@ const NasaApodIndicator = GObject.registerClass({
             this._settings.set_uint64('last-refresh', Date.now());
 
             this._parseData(response);
-            await this._downloadImage();
+            await this._downloadImage(user_initiated);
             this._updatePending = false; // make sure not to repeat while
         } catch (e) {
             Utils.ext_log(e);
@@ -436,8 +436,16 @@ const NasaApodIndicator = GObject.registerClass({
                     );
                     this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
                 } else {
+                    let errorMsg;
+                    if (e === 0)
+                        errorMsg = _('Unable to connect to NASA servers. Please check your internet connection.');
+                    else if (e >= 500 && e < 600)
+                        errorMsg = _('NASA server error (HTTP {0}). Retrying later.').replace('{0}', e.toString());
+                    else
+                        errorMsg = _('HTTP status code {0}.').replace('{0}', e.toString());
+
                     Notifications.notifyError(_('Network error'),
-                        _('HTTP status code {0}.').replace('{0}', message.status_code),
+                        errorMsg,
                         this._networkErrorActions,
                         user_initiated
                     );
@@ -514,7 +522,7 @@ const NasaApodIndicator = GObject.registerClass({
         }
     }
 
-    async _downloadImage() {
+    async _downloadImage(user_initiated = false) {
         const url = this.data['url'];
         const file = Gio.file_new_for_path(this.data['filename']);
 
@@ -576,9 +584,19 @@ const NasaApodIndicator = GObject.registerClass({
                 this._refreshDone(-1);
         } catch (e) {
             Utils.ext_log(`Error: ${e}`);
+            const statusCode = message.get_status();
+            let errorMsg;
+            if (statusCode === 0)
+                errorMsg = _('Connection timed out or failed while downloading image.');
+            else if (statusCode >= 500 && statusCode < 600)
+                errorMsg = _('NASA server error (HTTP {0}).').replace('{0}', statusCode.toString());
+            else
+                errorMsg = _('HTTP status code {0}.').replace('{0}', statusCode.toString());
+
             Notifications.notifyError(_("Couldn't fetch image from {0}").replace('{0}', url),
-                _('HTTP status code {0}.').replace('{0}', message.status_code),
-                this._networkErrorActions);
+                errorMsg,
+                this._networkErrorActions,
+                user_initiated);
             file.delete(null);
             this._refreshDone();
         }
