@@ -21,9 +21,8 @@ const Notifications = Me.imports.notifications;
 const Gettext = imports.gettext.domain('nasa-apod');
 const _ = Gettext.gettext;
 
-const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
-const NasaApodWebsiteURL = 'https://apod.nasa.gov/apod/';
-const NasaApodGetYourAPIURL = 'https://api.nasa.gov/';
+const NasaApodURL = 'https://science.nasa.gov/wp-json/wp/v2/apod-basic';
+const NasaApodWebsiteURL = 'https://science.nasa.gov/apod/';
 
 const IndicatorName = 'NasaApodIndicator';
 const TIMEOUT_SECONDS = 6 * 3600;
@@ -51,10 +50,67 @@ function open_website() {
 }
 
 /**
- *
+ * @param {string} html HTML fragment
+ * @returns {string} Plain text
  */
-function open_getapi() {
-    xdg_open(NasaApodGetYourAPIURL);
+function strip_html(html) {
+    if (!html)
+        return '';
+    return html
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<[^>]*>/g, '')
+        .replace(/&#(x[0-9a-f]+|\d+);/gi, (__, code) => {
+            const val = code.toLowerCase().startsWith('x') ? parseInt(code.slice(1), 16) : parseInt(code, 10);
+            return String.fromCodePoint(val);
+        })
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&#039;/g, "'")
+        .replace(/&#8211;/g, '–')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/[ \t]+/g, ' ')
+        .trim();
+}
+
+/**
+ * Converts a response of the apod-basic endpoint to the shape of the old
+ * api.nasa.gov response, which is what _parseData expects.
+ *
+ * @param {string|object} response Response body of the apod-basic endpoint
+ * @returns {object} date, title, explanation, copyright, media_type, url, hdurl
+ */
+function normalize_apod(response) {
+    let entry = typeof response === 'string' ? JSON.parse(response) : response;
+    if (Array.isArray(entry))
+        entry = entry[0];
+
+    const normalized = {
+        'date': entry['date'],
+        'title': strip_html(entry['title']),
+        'explanation': strip_html(entry['explanation']).replace(/^Explanation:\s*/, ''),
+        'media_type': entry['media_type'],
+        'url': entry['url'],
+        'hdurl': entry['hdurl'],
+    };
+
+    const copyright = strip_html(entry['copyright'] ?? entry['credit'] ?? '');
+    if (copyright)
+        normalized['copyright'] = copyright;
+
+    if (entry['media_type'] === 'image' && entry['hdurl']) {
+        const baseImageUrl = entry['hdurl'].split('?')[0];
+        normalized['hdurl'] = baseImageUrl;
+        normalized['url'] = `${baseImageUrl}?w=960`;
+    } else if (entry['media_type'] === 'video') {
+        const embed = (entry['basic_html'] ?? '').match(/https:\/\/www\.youtube(?:-nocookie)?\.com\/embed\/[a-zA-Z0-9_-]+/);
+        if (embed)
+            normalized['url'] = embed[0];
+    }
+
+    return normalized;
 }
 
 /**
@@ -71,6 +127,10 @@ function open_wallpapers_folder() {
 function MediaTypeError(parsed) {
     this.title = _('Media type {0} not supported.').replace('{0}', parsed['media_type']);
     this.message = _('No picture for today 😞. Please visit NASA APOD website.');
+    if (parsed['media_type'] === 'video') {
+        this.message += ' ';
+        this.message += _('You can enable YouTube thumbnail download in the settings.');
+    }
     this.parsed = parsed;
 }
 MediaTypeError.prototype = Object.create(Error.prototype);
@@ -94,8 +154,6 @@ const NasaApodIndicator = GObject.registerClass({
         super._init(0.0, IndicatorName);
 
         this._descriptionActions  = [{'name': _('NASA APOD website'), 'fun': open_website}];
-        this._apiKeyErrorActions  = [{'name': _('Get an API key'), 'fun': open_getapi},
-            {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()}];
         this._networkErrorActions = [{'name': _('Retry'), 'fun': () => this._refresh(true)},
             {'name': _('Settings'), 'fun': () => ExtensionUtils.openPrefs()}];
 
@@ -185,7 +243,6 @@ const NasaApodIndicator = GObject.registerClass({
             }
         }
 
-        this._settings.connect('changed::api-keys', this._populateKeys.bind(this));
         this._settings.connect('changed::pinned-background', this._pinnedBackground.bind(this));
 
         if (this._settings.get_string('pinned-background') === '') {
@@ -311,13 +368,6 @@ const NasaApodIndicator = GObject.registerClass({
         this._restartTimeout(10);
     }
 
-    _populateKeys() {
-        this._apiKeys = this._settings.get_strv('api-keys')
-                .map(k => [k, Math.random()])
-                .sort(([__, a], [___, b]) => a - b)
-                .map(([k, __]) => k);
-    }
-
     _refreshButton() {
         if (this._settings.get_string('pinned-background') !== '')
             this._settings.reset('pinned-background');
@@ -348,74 +398,58 @@ const NasaApodIndicator = GObject.registerClass({
         }
 
         this._updatePending = true;
-        this._populateKeys();
         this.refreshStatusItem.label.set_text(_('Pending refresh'));
 
-        let makeRequest = function () {
-            if (this._apiKeys.length === 0) {
-                Notifications.notifyError(_('Over rate limit (error 429)'),
-                    _('Get your API key at https://api.nasa.gov/ to have 1000 requests per hour just for you.'),
-                    this._apiKeyErrorActions,
-                    user_initiated
-                );
-                this._populateKeys();
-                this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
-                return;
-            }
+        let pinned = this._settings.get_string('pinned-background');
+        let url = `${NasaApodURL}?per_page=1`;
+        if (pinned.length > 0)
+            url = `${NasaApodURL}/${Utils.parse_path(pinned).date.replace(/-/g, '').slice(2)}`;
+        Utils.ext_log(url);
 
-            let apiKey = this._apiKeys[0];
-            let pinned = this._settings.get_string('pinned-background');
-            let url = `${NasaApodURL}?api_key=${apiKey}`;
-            if (pinned.length > 0)
-                url += `&date=${Utils.parse_path(pinned).date}`;
-            Utils.ext_log(url);
+        // create an http message
+        let request = Soup.Message.new('GET', url);
 
-            // create an http message
-            let request = Soup.Message.new('GET', url);
-
-            // queue the http request
-            httpSession.queue_message(request, (session, message) => {
-                if (message.status_code === 200) {
-                    // Successful request
-                    // log remaining requests
-                    let limit = message.response_headers.get('X-RateLimit-Limit');
-                    let remaining = message.response_headers.get('X-RateLimit-Remaining');
+        // queue the http request
+        httpSession.queue_message(request, (session, message) => {
+            if (message.status_code === 200) {
+                // Successful request
+                let limit = message.response_headers.get('X-RateLimit-Limit');
+                let remaining = message.response_headers.get('X-RateLimit-Remaining');
+                if (limit && remaining)
                     Utils.ext_log(`${remaining}/${limit} requests per hour remaining`);
 
-                    let data = message.response_body.data;
-                    this._settings.set_string('last-json', data);
+                let data = message.response_body.data;
+                try {
+                    let normalized = normalize_apod(data);
+                    let normalizedJson = JSON.stringify(normalized);
+                    this._settings.set_string('last-json', normalizedJson);
                     this._settings.set_uint64('last-refresh', Date.now());
-                    try {
-                        this._parseData(data);
-                        this._prepareDownload(this.data['url']);
-                    } catch (e) {
-                        if (e instanceof MediaTypeError)
-                            this._notifyAPIResults();
-                        else
-                            Notifications.notifyError(_('Error downloading image'), e);
-                        this._refreshDone();
-                    }
-                } else if (message.status_code === 403) {
-                    this._refreshDone(-1);
-                    Notifications.notifyError(_('Invalid NASA API key (error 403)'),
-                        _('Check that your key is correct or use the default key.'),
-                        this._apiKeyErrorActions
-                    );
-                } else if (message.status_code === 429) {
-                    Utils.ext_log(`API key ${this._apiKeys[0]} is rate limited.`);
-                    this._apiKeys.shift();
-                    makeRequest();
-                } else {
-                    Notifications.notifyError(_('Network error'),
-                        _('HTTP status code {0}.').replace('{0}', message.status_code),
-                        this._networkErrorActions,
-                        user_initiated
-                    );
-                    this._refreshDone(RETRY_NETWORK_ERROR);
+                    this._parseData(normalizedJson);
+                    this._prepareDownload(this.data['url']);
+                } catch (e) {
+                    if (e instanceof MediaTypeError)
+                        this._notifyAPIResults();
+                    else
+                        Notifications.notifyError(_('Error downloading image'), e);
+                    this._refreshDone();
                 }
-            });
-        }.bind(this);
-        makeRequest();
+            } else if (message.status_code === 429) {
+                Notifications.notifyError(
+                    _('Over rate limit (error 429)'),
+                    _('Too many requests. Please try again later.'),
+                    this._networkErrorActions,
+                    user_initiated
+                );
+                this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
+            } else {
+                Notifications.notifyError(_('Network error'),
+                    _('HTTP status code {0}.').replace('{0}', message.status_code),
+                    this._networkErrorActions,
+                    user_initiated
+                );
+                this._refreshDone(RETRY_NETWORK_ERROR);
+            }
+        });
     }
 
     _refreshDone(seconds = TIMEOUT_SECONDS) {
@@ -433,29 +467,38 @@ const NasaApodIndicator = GObject.registerClass({
             : 'image-resolution';
         const use_hd = this._settings.get_string(resolution_setting) === 'hd';
 
+        Utils.ext_log(`Use thumbnail: ${this._settings.get_boolean('use-thumbnail')}`);
+
         if (parsed['media_type'] === 'video' && this._settings.get_boolean('use-thumbnail')) {
             const match = parsed['url'].match(/\/embed\/([a-zA-Z0-9_-]+)/);
             if (match) {
                 const video_id = match[1];
-                const thumbnail_resolution = use_hd ? 'maxres' : 'hq';
-                parsed['url'] = `https://i.ytimg.com/vi/${video_id}/${thumbnail_resolution}default.jpg`;
+                parsed['hdurl'] = `https://i.ytimg.com/vi/${video_id}/maxresdefault.jpg`;
+                parsed['url'] = `https://i.ytimg.com/vi/${video_id}/hqdefault.jpg`;
                 parsed['media_type'] = 'image';
-                Utils.ext_log(`Replaced video (id=${video_id}) with thumbnail: ${parsed['url']}`);
+                Utils.ext_log(`Replaced video (id=${video_id}) with thumbnail: ${parsed['url']}, hires: ${parsed['hdurl']}`);
+            } else if (parsed['hdurl']) {
+                const baseImageUrl = parsed['hdurl'].split('?')[0];
+                parsed['hdurl'] = baseImageUrl;
+                parsed['url'] = `${baseImageUrl}?w=960`;
+                parsed['media_type'] = 'image';
+                Utils.ext_log(`Replaced video with still image: ${parsed['url']}, hires: ${parsed['hdurl']}`);
             }
         }
 
         if (parsed['media_type'] === 'image') {
-            let url_split = parsed['url'].split('.');
+            let url = parsed['url'];
+            if (use_hd && 'hdurl' in parsed)
+                url = parsed['hdurl'];
+
+            let url_split = url.split('?')[0].split('.');
             let extension = url_split[url_split.length - 1];
             let NasaApodDir = Utils.getDownloadFolder();
 
             let date = parsed['date'];
-            let title = parsed['title'].replace(/[/\\:]/, '_');
+            let title = parsed['title'].replace(/[/\\:*?"<>|]/g, '_').trim();
             let filename = GLib.build_filenamev([NasaApodDir, `${date}-${title}.${extension}`]);
 
-            let url = parsed['url'];
-            if (use_hd && 'hdurl' in parsed)
-                url = parsed['hdurl'];
             this.data = {
                 'title': parsed['title'],
                 'explanation': parsed['explanation'],

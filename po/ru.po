@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-12 23:40+0100\n"
+"POT-Creation-Date: 2026-10-11 23:44+0200\n"
 "PO-Revision-Date: 2020-04-27 23:23+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16,82 +16,83 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 
-#: extension.js:72
+#: extension.js:128
 msgid "Media type {0} not supported."
 msgstr "Видео тип файлов {0} не поддерживается."
 
-#: extension.js:73
+#: extension.js:129
 msgid "No picture for today 😞. Please visit NASA APOD website."
-msgstr "На сегодня нет изображения 😞. Пожалуйста, посетите веб-сайт НАСА APOD."
+msgstr ""
+"На сегодня нет изображения 😞. Пожалуйста, посетите веб-сайт НАСА APOD."
 
-#: extension.js:96 extension.js:135
+#: extension.js:132
+msgid "You can enable YouTube thumbnail download in the settings."
+msgstr ""
+
+#: extension.js:156 extension.js:193
 msgid "NASA APOD website"
 msgstr "НАСА APOD веб-сайт"
 
-#: extension.js:97
-msgid "Get an API key"
-msgstr "Получить ключ API"
-
-#: extension.js:98 extension.js:100 extension.js:150 prefs.ui.h:22
-msgid "Settings"
-msgstr "Настройки"
-
-#: extension.js:99
+#: extension.js:157
 msgid "Retry"
 msgstr "Повторить"
 
-#: extension.js:121
+#: extension.js:158 extension.js:208 prefs.ui.h:18
+msgid "Settings"
+msgstr "Настройки"
+
+#: extension.js:179
 msgid "No title available"
 msgstr "Название не доступно"
 
-#: extension.js:125
+#: extension.js:183
 msgid "No description available"
 msgstr "Нет доступного описания"
 
-#: extension.js:131
+#: extension.js:189
 msgid "No copyright information available"
 msgstr "Информация об авторских правах недоступна"
 
-#: extension.js:138 extension.js:266
+#: extension.js:196 extension.js:323
 msgid "No refresh scheduled"
 msgstr "Обновление не запланировано"
 
-#: extension.js:141
+#: extension.js:199
 msgid "Open Wallpaper Folder"
 msgstr "Открыть папку обоев"
 
-#: extension.js:144
+#: extension.js:202
 msgid "Set Wallpaper"
 msgstr "Установка обоев"
 
-#: extension.js:147 extension.js:231
+#: extension.js:205 extension.js:288
 msgid "Refresh"
 msgstr "Обновить"
 
-#: extension.js:217
+#: extension.js:274
 msgid "Refreshing..."
 msgstr "Обновление ..."
 
-#: extension.js:220
+#: extension.js:277
 msgid "Network unavailable"
 msgstr "Сеть недоступна"
 
-#: extension.js:223
+#: extension.js:280
 msgid "Wait 10 seconds..."
 msgstr "Подождите 10 секунд ..."
 
-#: extension.js:229
+#: extension.js:286
 msgid "Unpin and Refresh"
 msgstr "Открепить и обновить"
 
-#: extension.js:233
+#: extension.js:290
 msgid " (metered network)"
 msgstr ""
 
-#: extension.js:247
+#: extension.js:304
 msgid ""
 "Here will be displayed an explanation of the current NASA's APOD wallpaper. "
 "Please press refresh to download a new wallpaper along with the explanation."
@@ -99,202 +100,161 @@ msgstr ""
 "Здесь будет отображаться объяснение текущих обоев APOD НАСА. Пожалуйста, "
 "нажмите Обновить, чтобы загрузить новые обои вместе с объяснением."
 
-#: extension.js:277
+#: extension.js:334
 msgid "Next refresh: {0}"
 msgstr "Следующее обновление: {0}"
 
-#: extension.js:280
+#: extension.js:337
 msgid "Next refresh in less than a minute"
 msgstr "Следующее обновление менее чем за минуту"
 
-#: extension.js:352
+#: extension.js:401
 msgid "Pending refresh"
 msgstr "Ожидание обновления"
 
-#: extension.js:384
-msgid "Invalid NASA API key (error 403)"
-msgstr "Неверный ключ API НАСА (ошибка 403)"
+#: extension.js:433
+msgid "Error downloading image"
+msgstr "Ошибка при загрузке изображения"
 
-#: extension.js:385
-msgid "Check that your key is correct or use the default key."
-msgstr "Убедитесь, что ваш ключ правильный или используйте ключ по умолчанию."
-
-#: extension.js:392
-msgid "Network error"
-msgstr "Сетевая ошибка"
-
-#: extension.js:393 extension.js:524
-msgid "HTTP status code {0}."
-msgstr "Код состояния HTTP {0}."
-
-#: extension.js:401
-#, fuzzy
-msgid "Generic error"
-msgstr "Сетевая ошибка"
-
-#: extension.js:413
+#: extension.js:438
 msgid "Over rate limit (error 429)"
 msgstr "Превышение скорости (ошибка 429)"
 
-#: extension.js:414
-msgid ""
-"Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
-"just for you."
+#: extension.js:439
+msgid "Too many requests. Please try again later."
 msgstr ""
-"Получите ключ API по адресу https://api.nasa.gov/, чтобы иметь 1000 запросов "
-"в час только для вас."
 
-#: extension.js:523
+#: extension.js:445
+msgid "Network error"
+msgstr "Сетевая ошибка"
+
+#: extension.js:446 extension.js:584
+msgid "HTTP status code {0}."
+msgstr "Код состояния HTTP {0}."
+
+#: extension.js:562
+#, fuzzy
+msgid "Download {0} done"
+msgstr "Скачать папку:"
+
+#: extension.js:583
 msgid "Couldn't fetch image from {0}"
 msgstr "Не удалось получить изображение из {0}"
 
-#: prefs.js:168
+#: prefs.js:118
 #, fuzzy
 msgid "Choose download folder"
 msgstr "Скачать папку:"
 
-#: prefs.js:173
+#: prefs.js:123
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:174
+#: prefs.js:124
 msgid "Select"
 msgstr ""
 
 #: prefs.ui.h:1
-msgid "Add NASA APOD API key"
-msgstr ""
-
-#: prefs.ui.h:2
-msgid "Please paste here your API key."
-msgstr "Пожалуйста, вставьте сюда свой ключ API."
-
-#: prefs.ui.h:3
-msgid "The entered API key is not valid."
-msgstr ""
-
-#: prefs.ui.h:4
-msgid "Checking..."
-msgstr ""
-
-#: prefs.ui.h:5
-msgid "The API key has to be 40 characters long."
-msgstr "Ключ API должен быть длиной 40 символов."
-
-#: prefs.ui.h:6
 msgid "Hide the indicator"
 msgstr "Скрыть индикатор"
 
-#: prefs.ui.h:7
+#: prefs.ui.h:2
 msgid "Send a notification with explanation when a new image is downloaded."
 msgstr "Отправьте уведомление с объяснением при загрузке нового изображения."
 
-#: prefs.ui.h:8
+#: prefs.ui.h:3
 msgid "Notifications"
 msgstr "Уведомления"
 
-#: prefs.ui.h:9
+#: prefs.ui.h:4
 msgid "Use transient notifications (auto dismiss)"
 msgstr "Использовать временные уведомления (автоматическое отклонение)"
 
-#: prefs.ui.h:10
+#: prefs.ui.h:5
 #, fuzzy
 msgid "Indicator and notifications"
 msgstr "Уведомления"
 
-#: prefs.ui.h:11
+#: prefs.ui.h:6
 msgid "Set background image:"
 msgstr "Установить фоновое изображение:"
 
-#: prefs.ui.h:12
+#: prefs.ui.h:7
 msgid "None"
 msgstr "Никто"
 
-#: prefs.ui.h:13
+#: prefs.ui.h:8
 msgid "Centered"
 msgstr "По центру"
 
-#: prefs.ui.h:14
+#: prefs.ui.h:9
 msgid "Scaled"
 msgstr "Замостить"
 
-#: prefs.ui.h:15
+#: prefs.ui.h:10
 msgid "Spanned"
 msgstr "Растянуть"
 
-#: prefs.ui.h:16
+#: prefs.ui.h:11
 msgid "Stretched"
 msgstr "Натянуть"
 
-#: prefs.ui.h:17
+#: prefs.ui.h:12
 msgid "Wallpaper"
 msgstr "Обои"
 
-#: prefs.ui.h:18
+#: prefs.ui.h:13
 msgid "Zoom"
 msgstr "Увеличить"
 
-#: prefs.ui.h:19
+#: prefs.ui.h:14
 msgid "Default"
 msgstr "По умолчанию"
 
-#: prefs.ui.h:20
+#: prefs.ui.h:15
+msgid "Use thumbnail for video:"
+msgstr ""
+
+#: prefs.ui.h:16
 msgid "Download folder:"
 msgstr "Скачать папку:"
 
-#: prefs.ui.h:21
+#: prefs.ui.h:17
 msgid "Background"
 msgstr ""
 
-#: prefs.ui.h:23
+#: prefs.ui.h:19
 msgid "Image resolution:"
 msgstr ""
 
-#: prefs.ui.h:24
+#: prefs.ui.h:20
 #, fuzzy
 msgid "HD version"
 msgstr "версия:"
 
-#: prefs.ui.h:25
+#: prefs.ui.h:21
 msgid "Low resolution version"
 msgstr ""
 
-#: prefs.ui.h:26
+#: prefs.ui.h:22
 msgid "Image resolution on metered networks:"
 msgstr ""
 
-#: prefs.ui.h:27
+#: prefs.ui.h:23
 msgid "Automatic refresh on metered networks:"
 msgstr ""
 
-#: prefs.ui.h:28
+#: prefs.ui.h:24
 #, fuzzy
 msgid "Network usage"
 msgstr "Сетевая ошибка"
 
-#: prefs.ui.h:29
-#, fuzzy
-msgid ""
-"API keys can be obtained from the <a href=\"https://api.nasa.gov/index."
-"html#apply-for-an-api-key\">NASA APOD website</a>.\n"
-"Each key is limited to 1000 requests per hour, and hence you may not be able "
-"to refresh with the default keys."
-msgstr ""
-"Ключи API можно получить на <a href=\"https://api.nasa.gov/index.html#apply-"
-"for-an-api-key\"> веб-сайте НАСА APOD </a>.\n"
-"Каждый ключ ограничен 1000 запросов в час, и, следовательно, вы не сможете "
-"обновить с ключами по умолчанию."
-
-#: prefs.ui.h:31
-msgid "API keys"
-msgstr "API ключи"
-
-#: prefs.ui.h:32
+#: prefs.ui.h:25
 #, fuzzy
 msgid "Network"
 msgstr "Сетевая ошибка"
 
-#: prefs.ui.h:33
+#: prefs.ui.h:26
 #, fuzzy
 msgid ""
 "You can pin a background by selecting it.\n"
@@ -303,31 +263,31 @@ msgstr ""
 "Вы можете закрепить фон, выбрав его.\n"
 "Прикрепленный фон не будет заменен более новыми."
 
-#: prefs.ui.h:35
+#: prefs.ui.h:28
 msgid "History"
 msgstr "История"
 
-#: prefs.ui.h:36
+#: prefs.ui.h:29
 msgid "version: "
 msgstr "версия:"
 
-#: prefs.ui.h:37
+#: prefs.ui.h:30
 msgid "Change your wallpaper daily to the NASA's astronomy picture of the day"
 msgstr "Ежедневно меняйте обои на астрономическую картину НАСА"
 
-#: prefs.ui.h:38
+#: prefs.ui.h:31
 msgid "Extension's GitHub Webpage"
 msgstr "Расширение GitHub Webpage"
 
-#: prefs.ui.h:39
+#: prefs.ui.h:32
 msgid "Issue Tracker"
 msgstr "Отслеживание проблем"
 
-#: prefs.ui.h:40
+#: prefs.ui.h:33
 msgid "Changelog"
 msgstr "Изменения"
 
-#: prefs.ui.h:41
+#: prefs.ui.h:34
 #, fuzzy
 msgid ""
 "Brought to you by:\n"
@@ -336,27 +296,63 @@ msgstr ""
 "Привлечены к вам:\n"
 "Элия Арджентери"
 
-#: prefs.ui.h:43
+#: prefs.ui.h:36
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.\n"
-"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-"\">GNU General Public License, version 3 or later</a> for details.</span>"
+"See the <a href=\"https://www.gnu.org/licenses/old-licenses/"
+"gpl-2.0.html\">GNU General Public License, version 3 or later</a> for "
+"details.</span>"
 msgstr ""
 "<span size = \"small\"> Эта программа поставляется без АБСОЛЮТНОЙ ГАРАНТИИ.\n"
 "Для получения дополнительной информации см. <a href=\"https://www.gnu.org/"
 "licenses/old-licenses/gpl-2.0.html\"> Общедоступную лицензию GNU, версия 3 "
 "или более позднюю </a>. </ Span>"
 
-#: prefs.ui.h:45
+#: prefs.ui.h:38
 msgid "About"
 msgstr "О программе"
 
-#~ msgid "Error downloading image"
-#~ msgstr "Ошибка при загрузке изображения"
+#~ msgid "Get an API key"
+#~ msgstr "Получить ключ API"
+
+#~ msgid "Invalid NASA API key (error 403)"
+#~ msgstr "Неверный ключ API НАСА (ошибка 403)"
+
+#~ msgid "Check that your key is correct or use the default key."
+#~ msgstr ""
+#~ "Убедитесь, что ваш ключ правильный или используйте ключ по умолчанию."
 
 #, fuzzy
-#~ msgid "Download {0} done"
-#~ msgstr "Скачать папку:"
+#~ msgid "Generic error"
+#~ msgstr "Сетевая ошибка"
+
+#~ msgid ""
+#~ "Get your API key at https://api.nasa.gov/ to have 1000 requests per hour "
+#~ "just for you."
+#~ msgstr ""
+#~ "Получите ключ API по адресу https://api.nasa.gov/, чтобы иметь 1000 "
+#~ "запросов в час только для вас."
+
+#~ msgid "Please paste here your API key."
+#~ msgstr "Пожалуйста, вставьте сюда свой ключ API."
+
+#~ msgid "The API key has to be 40 characters long."
+#~ msgstr "Ключ API должен быть длиной 40 символов."
+
+#, fuzzy
+#~ msgid ""
+#~ "API keys can be obtained from the <a href=\"https://api.nasa.gov/"
+#~ "index.html#apply-for-an-api-key\">NASA APOD website</a>.\n"
+#~ "Each key is limited to 1000 requests per hour, and hence you may not be "
+#~ "able to refresh with the default keys."
+#~ msgstr ""
+#~ "Ключи API можно получить на <a href=\"https://api.nasa.gov/"
+#~ "index.html#apply-for-an-api-key\"> веб-сайте НАСА APOD </a>.\n"
+#~ "Каждый ключ ограничен 1000 запросов в час, и, следовательно, вы не "
+#~ "сможете обновить с ключами по умолчанию."
+
+#~ msgid "API keys"
+#~ msgstr "API ключи"
 
 #~ msgid "Set lock screen image:"
 #~ msgstr "Установить изображение экрана блокировки:"
