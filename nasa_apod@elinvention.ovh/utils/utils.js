@@ -85,11 +85,13 @@ export function setBackgroundBasedOnSettings(settings, filename = null) {
             try {
                 let lockscreenExtSettings = getLockscreenExtensionSettings();
                 if (lockscreenExtSettings) {
+                    const shouldBlur = settings.get_boolean('lockscreen-blur');
+                    const blurRadius = shouldBlur ? settings.get_int('lockscreen-blur-radius') : 0;
                     for (let i = 1; i <= 4; i++) {
                         if (lockscreenExtSettings.settings_schema.has_key(`background-image-path-${i}`))
                             lockscreenExtSettings.set_string(`background-image-path-${i}`, filename);
                         if (lockscreenExtSettings.settings_schema.has_key(`blur-radius-${i}`))
-                            lockscreenExtSettings.set_int(`blur-radius-${i}`, 0);
+                            lockscreenExtSettings.set_int(`blur-radius-${i}`, blurRadius);
                         if (lockscreenExtSettings.settings_schema.has_key(`blur-brightness-${i}`))
                             lockscreenExtSettings.set_double(`blur-brightness-${i}`, 0.85);
                     }

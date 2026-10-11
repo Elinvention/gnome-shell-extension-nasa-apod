@@ -731,12 +731,18 @@ export default class NasaApodExtension extends Extension {
                     return;
                 }
 
+                const shouldBlur = extension._settings.get_boolean('lockscreen-blur');
+                const blurRadius = shouldBlur
+                    ? extension._settings.get_int('lockscreen-blur-radius')
+                    : 0;
+                const themeContext = St.ThemeContext.get_for_stage(global.stage);
+
                 for (const widget of this._backgroundGroup) {
                     const effect = widget.get_effect('blur');
                     if (effect) {
                         effect.set({
                             brightness: 0.85,
-                            radius: 0,
+                            radius: blurRadius * themeContext.scale_factor,
                         });
                     }
                 }
@@ -746,6 +752,14 @@ export default class NasaApodExtension extends Extension {
         this._settings.connect('changed::set-lockscreen-background', () => {
             if (Main.screenShield?._dialog)
                 Main.screenShield._dialog._updateBackgrounds();
+        });
+        this._settings.connect('changed::lockscreen-blur', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgroundEffects();
+        });
+        this._settings.connect('changed::lockscreen-blur-radius', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgroundEffects();
         });
         this._settings.connect('changed::background-options', () => {
             if (Main.screenShield?._dialog)
