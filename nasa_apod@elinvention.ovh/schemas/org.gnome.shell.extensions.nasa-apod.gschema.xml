@@ -30,6 +30,12 @@
         <description>Set background to NASA's APOD</description>
     </key>
 
+    <key name="set-lockscreen-background" type="b">
+      <default>true</default>
+        <summary>Set lock screen background</summary>
+        <description>Set lock screen background to NASA's APOD</description>
+    </key>
+
     <key name="use-thumbnail" type="b">
       <default>false</default>
       <summary>Use thumbnail (requires a call to YouTube APIs)</summary>

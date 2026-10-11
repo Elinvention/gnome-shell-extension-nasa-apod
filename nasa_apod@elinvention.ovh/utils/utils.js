@@ -42,9 +42,12 @@ export function getDownloadFolder(settings) {
  */
 export function setBackgroundBasedOnSettings(settings, filename = null) {
     let backgroundSettings = getBackgroundSettings();
+    let screensaverSettings = getScreensaverSettings();
 
     if ((typeof filename === 'string' || filename instanceof String) && !filename.startsWith('file://'))
         filename = `file://${filename}`;
+
+    let option = settings.get_string('background-options');
 
     if (settings.get_boolean('set-background')) {
         if (filename !== null) {
@@ -54,13 +57,29 @@ export function setBackgroundBasedOnSettings(settings, filename = null) {
             backgroundSettings.set_string('picture-uri', filename);
             backgroundSettings.set_string('picture-uri-dark', filename);
         }
-        let option = settings.get_string('background-options');
         if (option !== 'default')
             backgroundSettings.set_string('picture-options', option);
+
+        Gio.Settings.sync();
+        backgroundSettings.apply();
     }
 
-    Gio.Settings.sync();
-    backgroundSettings.apply();
+    if (settings.get_boolean('set-lockscreen-background')) {
+        if (filename !== null) {
+            // force gnome to reload the lockscreen background
+            screensaverSettings.reset('picture-uri');
+            screensaverSettings.set_string('picture-uri', filename);
+            if (screensaverSettings.settings_schema.has_key('picture-uri-dark')) {
+                screensaverSettings.reset('picture-uri-dark');
+                screensaverSettings.set_string('picture-uri-dark', filename);
+            }
+        }
+        if (option !== 'default' && screensaverSettings.settings_schema.has_key('picture-options'))
+            screensaverSettings.set_string('picture-options', option);
+
+        Gio.Settings.sync();
+        screensaverSettings.apply();
+    }
 }
 
 /**
@@ -150,12 +169,31 @@ export function getBackgroundSettings() {
 }
 
 /**
+ * @returns {Object} gsettings singleton with schema 'org.gnome.desktop.screensaver'
+ */
+export function getScreensaverSettings() {
+    if (getScreensaverSettings._instance)
+        return getScreensaverSettings._instance;
+    getScreensaverSettings._instance = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
+    return getScreensaverSettings._instance;
+}
+
+/**
  * Returns the current background URI.
  *
  * @returns {string} The path to the image used as the current background.
  */
 export function getCurrentBackgroundUri() {
     return getBackgroundSettings().get_string('picture-uri');
+}
+
+/**
+ * Returns the current screensaver background URI.
+ *
+ * @returns {string} The path to the image used as the current screensaver background.
+ */
+export function getCurrentScreensaverUri() {
+    return getScreensaverSettings().get_string('picture-uri');
 }
 
 /**

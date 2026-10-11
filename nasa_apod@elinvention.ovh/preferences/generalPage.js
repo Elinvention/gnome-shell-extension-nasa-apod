@@ -136,7 +136,31 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
             title: _('Background'),
         });
 
-        // Set background
+        // Set desktop background
+        const desktopSwitch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: this._settings.get_boolean('set-background'),
+        });
+        const desktopRow = new Adw.ActionRow({
+            title: _('Set desktop background'),
+            subtitle: _('Automatically update the desktop wallpaper'),
+            activatable_widget: desktopSwitch,
+        });
+        desktopRow.add_suffix(desktopSwitch);
+
+        // Set lock screen background
+        const lockscreenSwitch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: this._settings.get_boolean('set-lockscreen-background'),
+        });
+        const lockscreenRow = new Adw.ActionRow({
+            title: _('Set lock screen background'),
+            subtitle: _('Automatically update the lock screen wallpaper'),
+            activatable_widget: lockscreenSwitch,
+        });
+        lockscreenRow.add_suffix(lockscreenSwitch);
+
+        // Set background image adaptation
         const backgroundModel = new Gtk.StringList();
         backgroundModel.append('none');
         backgroundModel.append('centered');
@@ -177,6 +201,8 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         });
         thumbnailRow.add_suffix(thumbnailSwitch);
 
+        backgroundGroup.add(desktopRow);
+        backgroundGroup.add(lockscreenRow);
         backgroundGroup.add(downloadFolderRow);
         backgroundGroup.add(thumbnailRow);
         backgroundGroup.add(backgroundComboRow);
@@ -196,6 +222,19 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         });
         transientCheckButton.connect('notify::active', widget => {
             this._settings.set_boolean('transient', widget.selected);
+        });
+
+        desktopSwitch.connect('notify::active', widget => {
+            this._settings.set_boolean('set-background', widget.get_active());
+        });
+        lockscreenSwitch.connect('notify::active', widget => {
+            this._settings.set_boolean('set-lockscreen-background', widget.get_active());
+        });
+        settings.connect('changed::set-background', (_settings, _key) => {
+            Utils.setBackgroundBasedOnSettings(_settings);
+        });
+        settings.connect('changed::set-lockscreen-background', (_settings, _key) => {
+            Utils.setBackgroundBasedOnSettings(_settings);
         });
 
         backgroundComboRow.connect('notify::selected', widget => {

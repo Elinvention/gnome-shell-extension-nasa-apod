@@ -301,7 +301,14 @@ const NasaApodIndicator = GObject.registerClass({
             set_text(this.descItem, this.data['explanation']);
             set_text(this.copyItem, this.data['copyright'] !== undefined ? `Copyright © ${this.data['copyright']}` : '');
         }
-        this.wallpaperItem.setSensitive(!this._updatePending && 'filename' in this.data && `file://${this.data['filename']}` !== Utils.getCurrentBackgroundUri());
+        const fileUri = 'filename' in this.data ? `file://${this.data['filename']}` : null;
+        const setBg = this._settings.get_boolean('set-background');
+        const setLock = this._settings.get_boolean('set-lockscreen-background');
+        const needsBg = setBg && fileUri !== Utils.getCurrentBackgroundUri();
+        const needsLock = setLock && fileUri !== Utils.getCurrentScreensaverUri();
+        const canSet = (setBg || setLock) && (needsBg || needsLock);
+
+        this.wallpaperItem.setSensitive(!this._updatePending && fileUri !== null && canSet);
     }
 
     _setBackground() {
