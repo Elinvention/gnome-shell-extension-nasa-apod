@@ -1,6 +1,7 @@
 'use strict';
 
 import St from 'gi://St';
+import Clutter from 'gi://Clutter';
 import Soup from 'gi://Soup';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
@@ -637,6 +638,42 @@ export default class NasaApodExtension extends Extension {
     _setupLockscreenHooks() {
         this._injectionManager = new InjectionManager();
         const extension = this;
+
+        // Obtain BackgroundSource prototype to make it compatible with schemas
+        // lacking picture-uri-dark (such as org.gnome.desktop.screensaver in dark mode).
+        try {
+            const dummyBgManager = new Background.BackgroundManager({
+                container: new Clutter.Actor(),
+                monitorIndex: 0,
+                controlPosition: false,
+            });
+            const bgSourceProto = Object.getPrototypeOf(dummyBgManager._backgroundSource);
+            dummyBgManager.destroy();
+
+            if (bgSourceProto && typeof bgSourceProto.getBackground === 'function') {
+                this._injectionManager.overrideMethod(bgSourceProto, 'getBackground', originalMethod => {
+                    return function (monitorIndex) {
+                        const schema = this._settings?.settings_schema;
+                        if (!schema || schema.has_key('picture-uri-dark'))
+                            return originalMethod.call(this, monitorIndex);
+
+                        const origGetString = this._settings.get_string.bind(this._settings);
+                        this._settings.get_string = key => {
+                            if (key === 'picture-uri-dark' && !schema.has_key('picture-uri-dark'))
+                                return origGetString('picture-uri');
+                            return origGetString(key);
+                        };
+                        try {
+                            return originalMethod.call(this, monitorIndex);
+                        } finally {
+                            this._settings.get_string = origGetString;
+                        }
+                    };
+                });
+            }
+        } catch (e) {
+            Utils.ext_log(`Failed to patch BackgroundSource: ${e.message}`);
+        }
 
         this._injectionManager.overrideMethod(UnlockDialog.prototype, '_createBackground', originalMethod => {
             return function (monitorIndex) {
