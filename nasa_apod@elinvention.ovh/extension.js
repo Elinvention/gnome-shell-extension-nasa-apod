@@ -19,7 +19,6 @@ import * as Utils from './utils/utils.js';
 
 const NasaApodURL = 'https://science.nasa.gov/wp-json/wp/v2/apod-basic';
 const NasaApodWebsiteURL = 'https://science.nasa.gov/apod/';
-const NasaApodGetYourAPIURL = 'https://api.nasa.gov/';
 
 const IndicatorName = 'NasaApodIndicator';
 const TIMEOUT_SECONDS = 6 * 3600;
@@ -41,13 +40,6 @@ function xdg_open(url) {
  */
 function open_website() {
     xdg_open(NasaApodWebsiteURL);
-}
-
-/**
- *
- */
-function open_getapi() {
-    xdg_open(NasaApodGetYourAPIURL);
 }
 
 /**
@@ -156,8 +148,6 @@ const NasaApodIndicator = GObject.registerClass({
         this._httpSession = extension._httpSession;
 
         this._descriptionActions  = [{'name': _('NASA APOD website'), 'fun': open_website}];
-        this._apiKeyErrorActions  = [{'name': _('Get an API key'), 'fun': open_getapi},
-            {'name': _('Settings'), 'fun': () => extension.openPreferences()}];
         this._networkErrorActions = [{'name': _('Retry'), 'fun': () => this._refresh(true)},
             {'name': _('Settings'), 'fun': () => extension.openPreferences()}];
 
@@ -246,7 +236,6 @@ const NasaApodIndicator = GObject.registerClass({
             }
         }
 
-        this._settings.connect('changed::api-keys', this._populateKeys.bind(this));
         this._settings.connect('changed::pinned-background', this._pinnedBackground.bind(this));
 
         if (this._settings.get_string('pinned-background') === '') {
@@ -370,13 +359,6 @@ const NasaApodIndicator = GObject.registerClass({
             this._setBackground();
         }
         this._restartTimeout(10);
-    }
-
-    _populateKeys() {
-        this._apiKeys = this._settings.get_strv('api-keys')
-                .map(k => [k, Math.random()])
-                .sort(([__, a], [___, b]) => a - b)
-                .map(([k, __]) => k);
     }
 
     _refreshButton() {
