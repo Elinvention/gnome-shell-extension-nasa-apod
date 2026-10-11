@@ -10,15 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    - name: Checkout code
+      run: |
+        git clone --branch "${GITHUB_REF#refs/tags/}" "https://github.com/${{ github.repository }}.git" .
 
-    - name: Set up Node.js 24
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-    
     - name: Install npm dependencies
       run: npm install
 
@@ -51,7 +46,9 @@ jobs:
       run: |
         TAG_NAME="${GITHUB_REF#refs/tags/}"
         RELEASE_TITLE="Version ${TAG_NAME}"
-        git tag -l --format='%(contents:body)' "${TAG_NAME}" | sed -E 's/^( {1,4}|\t)//' > releaseBody.md
+        
+        TAG_SHA="$(gh api "repos/${{ github.repository }}/git/ref/tags/${TAG_NAME}" --jq '.object.sha')"
+        gh api "repos/${{ github.repository }}/git/tags/${TAG_SHA}" --jq '.message' | sed -e '1{/^Version [0-9]/d}' -e '1{/^$/d}' > releaseBody.md
 
         if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
           gh release edit "${TAG_NAME}" --title "${RELEASE_TITLE}" --notes-file releaseBody.md
