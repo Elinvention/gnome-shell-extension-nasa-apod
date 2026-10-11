@@ -5,12 +5,15 @@ import Soup from 'gi://Soup';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
+import Shell from 'gi://Shell';
 
-import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {Extension, InjectionManager, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Util from 'resource:///org/gnome/shell/misc/util.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as Background from 'resource:///org/gnome/shell/ui/background.js';
+import {UnlockDialog} from 'resource:///org/gnome/shell/ui/unlockDialog.js';
 
 import * as Notifications from './utils/notifications.js';
 import Timer from './utils/timer.js';
@@ -627,9 +630,80 @@ export default class NasaApodExtension extends Extension {
                 Main.panel.addToStatusArea(this.uuid, this._indicator, new_position, 'right');
             }
         });
+
+        this._setupLockscreenHooks();
+    }
+
+    _setupLockscreenHooks() {
+        this._injectionManager = new InjectionManager();
+        const extension = this;
+
+        this._injectionManager.overrideMethod(UnlockDialog.prototype, '_createBackground', originalMethod => {
+            return function (monitorIndex) {
+                if (!extension._settings?.get_boolean('set-lockscreen-background')) {
+                    originalMethod.call(this, monitorIndex);
+                    return;
+                }
+
+                const monitor = Main.layoutManager.monitors[monitorIndex];
+                const widget = new St.Widget({
+                    style_class: 'screen-shield-background',
+                    x: monitor.x,
+                    y: monitor.y,
+                    width: monitor.width,
+                    height: monitor.height,
+                    effect: new Shell.BlurEffect({name: 'blur'}),
+                });
+
+                const bgManager = new Background.BackgroundManager({
+                    container: widget,
+                    monitorIndex,
+                    controlPosition: false,
+                    settingsSchema: 'org.gnome.desktop.screensaver',
+                });
+
+                this._bgManagers.push(bgManager);
+                this._backgroundGroup.add_child(widget);
+            };
+        });
+
+        this._injectionManager.overrideMethod(UnlockDialog.prototype, '_updateBackgroundEffects', originalMethod => {
+            return function () {
+                if (!extension._settings?.get_boolean('set-lockscreen-background')) {
+                    originalMethod.call(this);
+                    return;
+                }
+
+                for (const widget of this._backgroundGroup) {
+                    const effect = widget.get_effect('blur');
+                    if (effect) {
+                        effect.set({
+                            brightness: 0.85,
+                            radius: 0,
+                        });
+                    }
+                }
+            };
+        });
+
+        this._settings.connect('changed::set-lockscreen-background', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgrounds();
+        });
+        this._settings.connect('changed::background-options', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgrounds();
+        });
+
+        if (Main.screenShield?._dialog)
+            Main.screenShield._dialog._updateBackgrounds();
     }
 
     disable() {
+        this._injectionManager?.clear();
+        this._injectionManager = null;
+        if (Main.screenShield?._dialog)
+            Main.screenShield._dialog._updateBackgrounds();
         this._indicator?.stop();
         this._indicator?.destroy();
         this._httpSession?.abort();
