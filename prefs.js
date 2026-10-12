@@ -2,7 +2,7 @@
 /* exported buildPrefsWidget */
 
 
-const {Gtk, Gdk, Gio, GLib, GdkPixbuf, Soup} = imports.gi;
+const {Gtk, Gdk, Gio, GLib, GdkPixbuf} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -14,8 +14,6 @@ Gettext.textdomain('nasa-apod');
 Gettext.bindtextdomain('nasa-apod', Me.dir.get_child('locale').get_path());
 const _ = Gettext.gettext;
 
-
-const NasaApodURL = 'https://api.nasa.gov/planetary/apod';
 
 /**
  * https://gjs.guide/extensions/review-guidelines/review-guidelines.html#only-use-init-for-initialization
@@ -52,52 +50,6 @@ function buildHistoryFlowBoxChild(file, info) {
     return row;
 }
 
-/**
- * Builds a GTK widgeet containing a label with the API key written on it
- *
- * @param {string} apiKey the API key string
- * @returns {Array} First element is the whole item, the second just the button inside the item
- */
-function buildApiKeyItem(apiKey) {
-    let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['api_key_item']);
-
-    let item = buildable.get_object('api_key_item');
-    let label = buildable.get_object('api_key_label');
-    let button = buildable.get_object('api_key_remove');
-    label.set_text(apiKey);
-    return [item, button];
-}
-
-/**
- * @returns {Array} Elements are: dialog widget, entry text, invalid label and checking label
- */
-function buildNewApiKeyDialog() {
-    let buildable = new Gtk.Builder();
-    buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['new_api_key_dialog']);
-
-    let dialog = buildable.get_object('new_api_key_dialog');
-    let entry = buildable.get_object('new_api_key_entry');
-    let invalid_lb = buildable.get_object('new_api_key_invalid_label');
-    let checking_lb = buildable.get_object('new_api_key_checking_label');
-
-    return [dialog, entry, invalid_lb, checking_lb];
-}
-
-/**
- * @param {string} apiKey the API key string
- * @returns {Object} a Promise that resolves to true if the api key is valid, false otherwise
- */
-function testApiKey(apiKey) {
-    Utils.ext_log(`Checking if ${apiKey} is valid...`);
-    let httpSession = new Soup.Session();
-    let message = Soup.Message.new('GET', `${NasaApodURL}?api_key=${apiKey}`);
-    return new Promise(resolve => {
-        httpSession.send_async(message, GLib.PRIORITY_DEFAULT, null, (__, ___) => {
-            resolve(message.get_status() === Soup.Status.OK);
-        });
-    });
-}
 
 
 /**
@@ -118,20 +70,18 @@ function buildPrefsWidget() {
     buildable.add_objects_from_file(`${Me.dir.get_path()}/prefs.ui`, ['prefs_widget']);
     let prefsWidget = buildable.get_object('prefs_widget');
 
-    buildable.get_object('extension_version').set_text(Me.metadata.version.toString());
+    buildable.get_object('extension_version').set_text(Me.metadata['version-name'].toString());
 
     let hideSwitch = buildable.get_object('hide');
     let notifySwitch = buildable.get_object('notifications');
     let transientSwitch = buildable.get_object('transient_notifications');
     let bgSwitch = buildable.get_object('background_switch');
+    let tnSwitch = buildable.get_object('thumbnail_switch');
     let bgCombo = buildable.get_object('background_combo');
     let downloadButton = buildable.get_object('download_folder');
     let imageResCombo = buildable.get_object('image_resolution_combo');
     let imageResMeteredCombo = buildable.get_object('image_resolution_metered_combo');
     let refreshSwitch = buildable.get_object('autorefresh_metered_network_switch');
-    let apiKeysListBox = buildable.get_object('api_keys_listbox');
-    let apiKeysAdd = buildable.get_object('api_keys_add');
-    let apiKeysReset = buildable.get_object('api_keys_reset');
     let historyFlowBox = buildable.get_object('history_flowbox');
     let historyScroll = buildable.get_object('history_scroll');
 
@@ -155,6 +105,7 @@ function buildPrefsWidget() {
 
     // Wallpaper
     settings.bind('set-background', bgSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
+    settings.bind('use-thumbnail', tnSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('background-options', bgCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
     settings.connect('changed::background-options', function () {
         Utils.setBackgroundBasedOnSettings();
@@ -197,73 +148,6 @@ function buildPrefsWidget() {
     settings.bind('image-resolution-metered', imageResMeteredCombo, 'active_id', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('refresh-metered', refreshSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
-    // - API key frame
-    /**
-     *
-     */
-    function populateApiKeysListBox() {
-        let keys = settings.get_strv('api-keys');
-        Utils.ext_log(`keys: ${keys}`);
-        let child = apiKeysListBox.get_first_child();
-        while (child !== null) {
-            let ex_child = child;
-            child = child.get_next_sibling();
-            Utils.ext_log(`Removing row for ${ex_child.get_child().get_first_child().get_text()}`);
-            apiKeysListBox.remove(ex_child);
-        }
-        keys.forEach(function (key, index) {
-            let [item, button] = buildApiKeyItem(key);
-            button.connect('clicked', function () {
-                // array.pop has no argument and always pops the last element of the array
-                // since I don't care about order, copy the last element to the index to be deleted
-                //  and then pop the copied last element
-                Utils.ext_log(`Remove key ${keys[index]}`);
-                keys[index] = keys[keys.length - 1];
-                keys.pop();
-                settings.set_strv('api-keys', keys);
-            });
-            Utils.ext_log(`Adding row for ${key} at position ${index}`);
-            apiKeysListBox.insert(item, index);
-        });
-    }
-
-    populateApiKeysListBox();
-    settings.connect('changed::api-keys', populateApiKeysListBox);
-
-    apiKeysAdd.connect('clicked', () => {
-        let [dialog, entry, invalid_lb, checking_lb] = buildNewApiKeyDialog();
-        dialog.set_transient_for(prefsWidget.get_root());
-        entry.connect('changed', async () => {
-            let apiKey = entry.get_text();
-            let length = apiKey.length;
-            entry.set_progress_fraction(length / 40);
-            let valid = false;
-            if (length === 40) {
-                checking_lb.show();
-                valid = await testApiKey(apiKey);
-                checking_lb.hide();
-            }
-            invalid_lb.set_visible(length === 40 && valid !== true);
-            let ok_btn = dialog.get_widget_for_response(Gtk.ResponseType.OK);
-            ok_btn.set_sensitive(length === 40 && valid === true);
-        });
-        dialog.show();
-        dialog.connect('response', function (__, response) {
-            if (response === Gtk.ResponseType.OK) {
-                let key = entry.get_text();
-                if (key.length !== 40)
-                    return;
-                let keys = settings.get_strv('api-keys');
-                keys.push(key);
-                settings.set_strv('api-keys', keys);
-            }
-            dialog.destroy();
-        });
-    });
-
-    apiKeysReset.connect('clicked', function () {
-        settings.reset('api-keys');
-    });
 
     // History page
     let file_names = [];

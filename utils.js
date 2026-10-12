@@ -7,6 +7,7 @@
 /* exported make_request */
 /* exported download_bytes */
 /* exported replace_contents */
+/* exported formatSize */
 
 
 const {Gio, GLib, Soup} = imports.gi;
@@ -58,9 +59,11 @@ function setBackgroundBasedOnSettings(filename = null) {
         if (filename !== null) {
             // force gnome to reload the background
             backgroundSettings.reset('picture-uri');
-            backgroundSettings.reset('picture-uri-dark');
             backgroundSettings.set_string('picture-uri', filename);
-            backgroundSettings.set_string('picture-uri-dark', filename);
+            if (backgroundSettings.settings_schema.has_key('picture-uri-dark')) {
+                backgroundSettings.reset('picture-uri-dark');
+                backgroundSettings.set_string('picture-uri-dark', filename);
+            }
         }
         let option = settings.get_string('background-options');
         if (option !== 'default')
@@ -128,6 +131,19 @@ function getBackgroundSettings() {
 }
 
 /**
+ * @param {number} bytes Number of bytes
+ * @returns {string} Formatted string with units
+ */
+function formatSize(bytes) {
+    if (bytes === 0)
+        return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+}
+
+/**
  * @param {Object} httpSession Soup.Session
  * @param {Object} message Soup.message
  * @returns a Promise that resolves with the response body
@@ -140,7 +156,8 @@ function make_request(httpSession, message) {
                 // log remaining requests
                 let limit = message.get_response_headers().get_one('X-RateLimit-Limit');
                 let remaining = message.get_response_headers().get_one('X-RateLimit-Remaining');
-                ext_log(`${remaining}/${limit} requests per hour remaining`);
+                if (limit && remaining)
+                    ext_log(`${remaining}/${limit} requests per hour remaining`);
 
                 let bytes = httpSession.send_and_read_finish(result);
                 let decoder = new TextDecoder('utf-8');
@@ -163,11 +180,7 @@ function download_bytes(httpSession, message) {
     return new Promise((resolve, reject) => {
         httpSession.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (session, response_task) => {
             if (message.get_status() === Soup.Status.OK) {
-                const total_size = message.get_response_headers().get_content_length();
-                ext_log(`Download size: ${total_size}B`);
-
                 const input_bytes = session.send_and_read_finish(response_task);
-                ext_log(`Downloaded ${input_bytes.get_size()}B`);
 
                 resolve(input_bytes);
             } else {
@@ -193,7 +206,6 @@ function replace_contents(file, input_bytes) {
             (_file, task) => {
                 try {
                     const [, etag] = _file.replace_contents_finish(task);
-                    ext_log(`etag ${etag}`);
                     resolve(etag);
                 } catch (e) {
                     reject(e);

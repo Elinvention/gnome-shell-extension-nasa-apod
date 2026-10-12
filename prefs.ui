@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="nasa-apod">
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkListBoxRow" id="api_key_item">
-    <property name="width_request">100</property>
-    <property name="height_request">40</property>
-    <property name="child">
-      <object class="GtkBox" id="api_key_box">
-        <child>
-          <object class="GtkLabel" id="api_key_label">
-            <property name="hexpand">1</property>
-            <property name="label">API key here</property>
-            <property name="selectable">1</property>
-            <property name="width_chars">40</property>
-            <property name="max_width_chars">40</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="api_key_remove">
-            <property name="label">Remove</property>
-            <property name="receives_default">1</property>
-          </object>
-        </child>
-      </object>
-    </property>
-  </object>
   <object class="GtkFlowBoxChild" id="history_flowboxchild">
     <property name="width_request">100</property>
     <property name="height_request">80</property>
@@ -54,80 +31,6 @@
         </child>
       </object>
     </property>
-  </object>
-  <object class="GtkDialog" id="new_api_key_dialog">
-    <property name="width_request">400</property>
-    <property name="height_request">150</property>
-    <property name="title" translatable="yes">Add NASA APOD API key</property>
-    <property name="modal">1</property>
-    <property name="destroy_with_parent">1</property>
-    <property name="icon_name">list-add</property>
-    <child internal-child="content_area">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <property name="spacing">8</property>
-        <property name="margin-bottom">10</property>
-        <property name="margin-end">10</property>
-        <property name="margin-start">10</property>
-        <property name="margin-top">10</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="label" translatable="yes">Please paste here your API key.</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkEntry" id="new_api_key_entry">
-            <property name="max_length">40</property>
-            <property name="truncate_multiline">true</property>
-            <property name="input-hints">GTK_INPUT_HINT_NO_EMOJI | GTK_INPUT_HINT_NO_SPELLCHECK</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="new_api_key_invalid_label">
-            <property name="label" translatable="yes">The entered API key is not valid.</property>
-            <property name="visible">false</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="new_api_key_checking_label">
-            <property name="label" translatable="yes">Checking...</property>
-            <property name="visible">false</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="label" translatable="yes">The API key has to be 40 characters long.</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="-6">api_key_cancel</action-widget>
-      <action-widget response="-5">api_key_ok</action-widget>
-    </action-widgets>
-    <child internal-child="action_area">
-      <object class="GtkBox">
-        <property name="valign">end</property>
-        <property name="halign">center</property>
-        <property name="vexpand">true</property>
-        <property name="spacing">15</property>
-        <property name="margin-bottom">10</property>
-        <property name="margin-end">10</property>
-        <property name="margin-start">10</property>
-        <property name="margin-top">10</property>
-        <child>
-          <object class="GtkButton" id="api_key_cancel">
-            <property name="label">Cancel</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="api_key_ok">
-            <property name="label">OK</property>
-            <property name="sensitive">false</property>
-          </object>
-        </child>
-      </object>
-    </child>
   </object>
   <object class="GtkNotebook" id="prefs_widget">
     <child>
@@ -315,6 +218,40 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkListBoxRow" id="thumbnail_listboxrow">
+                        <property name="child">
+                          <object class="GtkGrid" id="thumbnail_grid">
+                            <property name="margin_start">12</property>
+                            <property name="margin_end">12</property>
+                            <property name="margin_top">12</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="column_spacing">32</property>
+                            <child>
+                              <object class="GtkLabel" id="thumbnail_label">
+                                <property name="label" translatable="yes">Use thumbnail for video:</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="thumbnail_switch">
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">1</property>
+                                <property name="vexpand">1</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkListBoxRow" id="download_folder_listboxrow">
                         <property name="width_request">100</property>
                         <property name="height_request">80</property>
@@ -471,64 +408,6 @@
                 <child type="label">
                   <object class="GtkLabel" id="network_usage_label">
                     <property name="label" translatable="yes">Network usage</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkFrame" id="api_keys_frame">
-                <property name="margin_start">12</property>
-                <property name="margin_end">12</property>
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="margin_start">12</property>
-                    <property name="margin_end">12</property>
-                    <property name="margin_top">12</property>
-                    <property name="margin_bottom">12</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">10</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label" translatable="yes">API keys can be obtained from the &lt;a href=&quot;https://api.nasa.gov/index.html#apply-for-an-api-key&quot;&gt;NASA APOD website&lt;/a&gt;.
-Each key is limited to 1000 requests per hour, and hence you may not be able to refresh with the default keys.</property>
-                        <property name="use_markup">1</property>
-                        <property name="justify">center</property>
-                        <property name="wrap">1</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkListBox" id="api_keys_listbox">
-                        <property name="selection_mode">none</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="halign">center</property>
-                        <property name="hexpand">True</property>
-                        <child>
-                          <object class="GtkButton" id="api_keys_reset">
-                            <property name="label">Default</property>
-                            <property name="hexpand">1</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="api_keys_add">
-                            <property name="label">Add</property>
-                            <property name="receives_default">1</property>
-                            <property name="hexpand">1</property>
-                          </object>
-                        </child>
-                        <style>
-                          <class name="linked"/>
-                        </style>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-                <child type="label">
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes">API keys</property>
                   </object>
                 </child>
               </object>
