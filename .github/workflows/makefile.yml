@@ -45,10 +45,10 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         TAG_NAME="${GITHUB_REF#refs/tags/}"
-        RELEASE_TITLE="Version ${TAG_NAME}"
+        RELEASE_TITLE="Version ${TAG_NAME#v}"
         
         TAG_SHA="$(gh api "repos/${{ github.repository }}/git/ref/tags/${TAG_NAME}" --jq '.object.sha')"
-        gh api "repos/${{ github.repository }}/git/tags/${TAG_SHA}" --jq '.message' | sed -e '1{/^Version [0-9]/d}' -e '1{/^$/d}' > releaseBody.md
+        gh api "repos/${{ github.repository }}/git/tags/${TAG_SHA}" --jq '.message' | sed -e '1{/^Version [v0-9]/d}' -e '1{/^$/d}' > releaseBody.md
 
         if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
           gh release edit "${TAG_NAME}" --title "${RELEASE_TITLE}" --notes-file releaseBody.md
