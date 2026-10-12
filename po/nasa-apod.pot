@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 23:50+0200\n"
+"POT-Creation-Date: 2026-10-12 11:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -123,15 +123,19 @@ msgstr ""
 msgid "Network error"
 msgstr ""
 
-#: extension.js:446 extension.js:584
+#: extension.js:446 extension.js:596
 msgid "HTTP status code {0}."
 msgstr ""
 
-#: extension.js:562
+#: extension.js:567
 msgid "Download {0} done"
 msgstr ""
 
-#: extension.js:583
+#: extension.js:569
+msgid "Downloading..."
+msgstr ""
+
+#: extension.js:595
 msgid "Couldn't fetch image from {0}"
 msgstr ""
 

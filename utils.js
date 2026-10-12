@@ -54,7 +54,8 @@ function setBackgroundBasedOnSettings(filename = null) {
     if (settings.get_boolean('set-background')) {
         if (filename !== null) {
             backgroundSettings.set_string('picture-uri', filename);
-            backgroundSettings.set_string('picture-uri-dark', filename);
+            if (backgroundSettings.settings_schema.has_key('picture-uri-dark'))
+                backgroundSettings.set_string('picture-uri-dark', filename);
         }
         let option = settings.get_string('background-options');
         if (option !== 'default')

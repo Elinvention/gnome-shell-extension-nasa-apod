@@ -525,11 +525,16 @@ const NasaApodIndicator = GObject.registerClass({
             this._download_image(url, file);
         } else {
             Utils.ext_log(`${this.data['filename']} already downloaded`);
-            this._setBackground();
-            if (this._settings.get_string('pinned-background') === '')
-                this._refreshDone();
-            else
-                this._refreshDone(-1);
+            try {
+                this._setBackground();
+            } catch (e) {
+                Utils.ext_log(`Error applying background: ${e}`);
+            } finally {
+                if (this._settings.get_string('pinned-background') === '')
+                    this._refreshDone();
+                else
+                    this._refreshDone(-1);
+            }
         }
     }
 
@@ -560,6 +565,8 @@ const NasaApodIndicator = GObject.registerClass({
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
                 this.refreshStatusItem.label.set_text(_('Download {0} done').replace('{0}', `${percent}%`));
+            } else {
+                this.refreshStatusItem.label.set_text(_('Downloading...'));
             }
             let written = fstream.write(chunk.get_data(), null);
             if (written !== chunk.length)
@@ -573,12 +580,17 @@ const NasaApodIndicator = GObject.registerClass({
 
             if (message.status_code === 200) {
                 Utils.ext_log('Download successful');
-                this._setBackground();
-                this._notifyAPIResults();
-                if (this._settings.get_string('pinned-background') === '')
-                    this._refreshDone();
-                else
-                    this._refreshDone(-1);
+                try {
+                    this._setBackground();
+                    this._notifyAPIResults();
+                } catch (e) {
+                    Utils.ext_log(`Error applying background/notification: ${e}`);
+                } finally {
+                    if (this._settings.get_string('pinned-background') === '')
+                        this._refreshDone();
+                    else
+                        this._refreshDone(-1);
+                }
             } else {
                 Notifications.notifyError(_("Couldn't fetch image from {0}").replace('{0}', url),
                     _('HTTP status code {0}.').replace('{0}', message.status_code),
