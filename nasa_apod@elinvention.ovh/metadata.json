@@ -10,6 +10,10 @@
     "50",
     "51"
   ],
+  "session-modes": [
+    "user",
+    "unlock-dialog"
+  ],
   "gettext-domain": "nasa-apod",
   "settings-schema": "org.gnome.shell.extensions.nasa-apod",
   "description": "Change your wallpaper daily to the NASA's astronomy picture of the day",

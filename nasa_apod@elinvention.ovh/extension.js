@@ -5,12 +5,15 @@ import Soup from 'gi://Soup';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
+import Shell from 'gi://Shell';
 
-import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {Extension, InjectionManager, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Util from 'resource:///org/gnome/shell/misc/util.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as Background from 'resource:///org/gnome/shell/ui/background.js';
+import {UnlockDialog} from 'resource:///org/gnome/shell/ui/unlockDialog.js';
 
 import * as Notifications from './utils/notifications.js';
 import Timer from './utils/timer.js';
@@ -134,8 +137,15 @@ function normalize_apod(response) {
  * @param {string} text Text to set on the label
  */
 function set_text(item, text) {
-    item.visible = Boolean(text);
-    item.label.set_text(text);
+    if (!item)
+        return;
+    try {
+        item.visible = Boolean(text);
+        if (item.label)
+            item.label.set_text(text);
+    } catch {
+        // Ignored if actor has been disposed
+    }
 }
 
 const NasaApodIndicator = GObject.registerClass({
@@ -301,7 +311,14 @@ const NasaApodIndicator = GObject.registerClass({
             set_text(this.descItem, this.data['explanation']);
             set_text(this.copyItem, this.data['copyright'] !== undefined ? `Copyright © ${this.data['copyright']}` : '');
         }
-        this.wallpaperItem.setSensitive(!this._updatePending && 'filename' in this.data && `file://${this.data['filename']}` !== Utils.getCurrentBackgroundUri());
+        const fileUri = 'filename' in this.data ? `file://${this.data['filename']}` : null;
+        const setBg = this._settings.get_boolean('set-background');
+        const setLock = this._settings.get_boolean('set-lockscreen-background');
+        const needsBg = setBg && fileUri !== Utils.getCurrentBackgroundUri();
+        const needsLock = setLock && fileUri !== Utils.getCurrentScreensaverUri();
+        const canSet = (setBg || setLock) && (needsBg || needsLock);
+
+        this.wallpaperItem.setSensitive(!this._updatePending && fileUri !== null && canSet);
     }
 
     _setBackground() {
@@ -313,7 +330,7 @@ const NasaApodIndicator = GObject.registerClass({
     _restartTimeout(seconds = TIMEOUT_SECONDS) {
         Timer.remove('update');
         if (seconds < 0) {
-            this.refreshStatusItem.label.set_text(_('No refresh scheduled'));
+            set_text(this.refreshStatusItem, _('No refresh scheduled'));
             Utils.ext_log('Timeout removed');
         } else {
             if (seconds < 10) {
@@ -324,10 +341,10 @@ const NasaApodIndicator = GObject.registerClass({
             if (seconds > 60) {
                 let timezone = GLib.TimeZone.new_local();
                 let localTime = GLib.DateTime.new_now(timezone).add_seconds(seconds).format('%R');
-                this.refreshStatusItem.label.set_text(_('Next refresh: {0}').replace('{0}', localTime));
+                set_text(this.refreshStatusItem, _('Next refresh: {0}').replace('{0}', localTime));
                 Utils.ext_log(`Next check @ local time ${localTime}`);
             } else {
-                this.refreshStatusItem.label.set_text(_('Next refresh in less than a minute'));
+                set_text(this.refreshStatusItem, _('Next refresh in less than a minute'));
                 Utils.ext_log('Next check in less than a minute');
             }
         }
@@ -393,7 +410,7 @@ const NasaApodIndicator = GObject.registerClass({
         }
 
         this._updatePending = true;
-        this.refreshStatusItem.label.set_text(_('Pending refresh'));
+        set_text(this.refreshStatusItem, _('Pending refresh'));
 
         let pinned = this._settings.get_string('pinned-background');
         let url = `${NasaApodURL}?per_page=1`;
@@ -412,7 +429,7 @@ const NasaApodIndicator = GObject.registerClass({
             this._settings.set_uint64('last-refresh', Date.now());
 
             this._parseData(response);
-            await this._downloadImage();
+            await this._downloadImage(user_initiated);
             this._updatePending = false; // make sure not to repeat while
         } catch (e) {
             Utils.ext_log(e);
@@ -429,8 +446,16 @@ const NasaApodIndicator = GObject.registerClass({
                     );
                     this._refreshDone(RETRY_RATE_LIMIT_SECONDS);
                 } else {
+                    let errorMsg;
+                    if (e === 0)
+                        errorMsg = _('Unable to connect to NASA servers. Please check your internet connection.');
+                    else if (e >= 500 && e < 600)
+                        errorMsg = _('NASA server error (HTTP {0}). Retrying later.').replace('{0}', e.toString());
+                    else
+                        errorMsg = _('HTTP status code {0}.').replace('{0}', e.toString());
+
                     Notifications.notifyError(_('Network error'),
-                        _('HTTP status code {0}.').replace('{0}', message.status_code),
+                        errorMsg,
                         this._networkErrorActions,
                         user_initiated
                     );
@@ -507,7 +532,7 @@ const NasaApodIndicator = GObject.registerClass({
         }
     }
 
-    async _downloadImage() {
+    async _downloadImage(user_initiated = false) {
         const url = this.data['url'];
         const file = Gio.file_new_for_path(this.data['filename']);
 
@@ -569,9 +594,19 @@ const NasaApodIndicator = GObject.registerClass({
                 this._refreshDone(-1);
         } catch (e) {
             Utils.ext_log(`Error: ${e}`);
+            const statusCode = message.get_status();
+            let errorMsg;
+            if (statusCode === 0)
+                errorMsg = _('Connection timed out or failed while downloading image.');
+            else if (statusCode >= 500 && statusCode < 600)
+                errorMsg = _('NASA server error (HTTP {0}).').replace('{0}', statusCode.toString());
+            else
+                errorMsg = _('HTTP status code {0}.').replace('{0}', statusCode.toString());
+
             Notifications.notifyError(_("Couldn't fetch image from {0}").replace('{0}', url),
-                _('HTTP status code {0}.').replace('{0}', message.status_code),
-                this._networkErrorActions);
+                errorMsg,
+                this._networkErrorActions,
+                user_initiated);
             file.delete(null);
             this._refreshDone();
         }
@@ -602,9 +637,144 @@ export default class NasaApodExtension extends Extension {
                 Main.panel.addToStatusArea(this.uuid, this._indicator, new_position, 'right');
             }
         });
+
+        this._setupLockscreenHooks();
+    }
+
+    _setupLockscreenHooks() {
+        this._injectionManager = new InjectionManager();
+        const extension = this;
+
+        // Ensure GNOME Shell's in-memory Extension object marks unlock-dialog as supported
+        const extObj = Main.extensionManager?.lookup(this.uuid);
+        if (extObj && !extObj.sessionModes.includes('unlock-dialog'))
+            extObj.sessionModes.push('unlock-dialog');
+        Utils.ext_log(`Lockscreen hooks active, sessionModes: ${JSON.stringify(extObj?.sessionModes)}`);
+
+        // Obtain BackgroundSource prototype to make it compatible with schemas
+        // lacking picture-uri-dark (such as org.gnome.desktop.screensaver in dark mode).
+        try {
+            const layoutBgSource = Main.layoutManager?._bgManagers?.[0]?._backgroundSource;
+            const bgSourceProto = layoutBgSource ? Object.getPrototypeOf(layoutBgSource) : null;
+
+            if (bgSourceProto && typeof bgSourceProto.getBackground === 'function') {
+                this._injectionManager.overrideMethod(bgSourceProto, 'getBackground', originalMethod => {
+                    return function (monitorIndex) {
+                        const schema = this._settings?.settings_schema;
+                        if (!schema || schema.has_key('picture-uri-dark'))
+                            return originalMethod.call(this, monitorIndex);
+
+                        const origGetString = this._settings.get_string.bind(this._settings);
+                        this._settings.get_string = key => {
+                            if (key === 'picture-uri-dark' && !schema.has_key('picture-uri-dark'))
+                                return origGetString('picture-uri');
+                            return origGetString(key);
+                        };
+                        try {
+                            return originalMethod.call(this, monitorIndex);
+                        } finally {
+                            this._settings.get_string = origGetString;
+                        }
+                    };
+                });
+            }
+        } catch (e) {
+            Utils.ext_log(`Failed to patch BackgroundSource: ${e.message}`);
+        }
+
+        this._injectionManager.overrideMethod(UnlockDialog.prototype, '_createBackground', originalMethod => {
+            return function (monitorIndex) {
+                if (!extension._settings?.get_boolean('set-lockscreen-background')) {
+                    originalMethod.call(this, monitorIndex);
+                    return;
+                }
+
+                // If lockscreen-extension is active and managing the background, let it handle it
+                const lockExtObj = Main.extensionManager?.lookup('lockscreen-extension@pratap.fastmail.fm');
+                if (lockExtObj?.stateObj?._injectionManager) {
+                    originalMethod.call(this, monitorIndex);
+                    return;
+                }
+
+                const monitor = Main.layoutManager.monitors[monitorIndex];
+                const widget = new St.Widget({
+                    style_class: 'screen-shield-background',
+                    x: monitor.x,
+                    y: monitor.y,
+                    width: monitor.width,
+                    height: monitor.height,
+                    effect: new Shell.BlurEffect({name: 'blur'}),
+                });
+
+                const bgManager = new Background.BackgroundManager({
+                    container: widget,
+                    monitorIndex,
+                    controlPosition: false,
+                    settingsSchema: 'org.gnome.desktop.screensaver',
+                });
+
+                this._bgManagers.push(bgManager);
+                this._backgroundGroup.add_child(widget);
+            };
+        });
+
+        this._injectionManager.overrideMethod(UnlockDialog.prototype, '_updateBackgroundEffects', originalMethod => {
+            return function () {
+                if (!extension._settings?.get_boolean('set-lockscreen-background')) {
+                    originalMethod.call(this);
+                    return;
+                }
+
+                const lockExtObj = Main.extensionManager?.lookup('lockscreen-extension@pratap.fastmail.fm');
+                if (lockExtObj?.stateObj?._injectionManager) {
+                    originalMethod.call(this);
+                    return;
+                }
+
+                const shouldBlur = extension._settings.get_boolean('lockscreen-blur');
+                const blurRadius = shouldBlur
+                    ? extension._settings.get_int('lockscreen-blur-radius')
+                    : 0;
+                const themeContext = St.ThemeContext.get_for_stage(global.stage);
+
+                for (const widget of this._backgroundGroup) {
+                    const effect = widget.get_effect('blur');
+                    if (effect) {
+                        effect.set({
+                            brightness: 0.85,
+                            radius: blurRadius * themeContext.scale_factor,
+                        });
+                    }
+                }
+            };
+        });
+
+        this._settings.connect('changed::set-lockscreen-background', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgrounds();
+        });
+        this._settings.connect('changed::lockscreen-blur', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgroundEffects();
+        });
+        this._settings.connect('changed::lockscreen-blur-radius', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgroundEffects();
+        });
+        this._settings.connect('changed::background-options', () => {
+            if (Main.screenShield?._dialog)
+                Main.screenShield._dialog._updateBackgrounds();
+        });
+
+        if (Main.screenShield?._dialog)
+            Main.screenShield._dialog._updateBackgrounds();
     }
 
     disable() {
+        this._injectionManager?.clear();
+        this._injectionManager = null;
+        if (Main.screenShield?._dialog)
+            Main.screenShield._dialog._updateBackgrounds();
         this._indicator?.stop();
         this._indicator?.destroy();
         this._httpSession?.abort();
