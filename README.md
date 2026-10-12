@@ -9,9 +9,10 @@ Also note that some images might be protected by copyright.
 
 ## Supported GNOME Versions
 
-The extension is maintained across two active branches depending on your GNOME Shell version:
+The extension is maintained across several active branches depending on your GNOME Shell version:
 
 - **`main` branch**: Supports **GNOME 45 through 51+** (modern ES Modules, GTK4 & Libadwaita, Soup 3.0).
+- **[`gnome-43-44`](https://github.com/Elinvention/gnome-shell-extension-nasa-apod/tree/gnome-43-44) branch**: Supports legacy **GNOME 43 and 44** (GJS legacy imports, GTK4, Soup 3.0).
 - **[`gnome-40-42`](https://github.com/Elinvention/gnome-shell-extension-nasa-apod/tree/gnome-40-42) branch**: Supports legacy **GNOME 40, 41, and 42** (GJS legacy imports, GTK3, Soup 2.4).
 
 When installing from [extensions.gnome.org], the website automatically selects the compatible package for your GNOME Shell version.
@@ -41,6 +42,8 @@ The commands below download and install the current development version:
 git clone https://github.com/Elinvention/gnome-shell-extension-nasa-apod.git
 cd gnome-shell-extension-nasa-apod
 
+# If on GNOME 43 or 44, switch to the matching branch:
+# git checkout gnome-43-44
 # If on GNOME 40–42, switch to the legacy branch:
 # git checkout gnome-40-42
 
@@ -68,6 +71,8 @@ You can test the extension on different GNOME Shell versions without setting up 
 3. **Install the extension** inside the container:
    ```bash
    cd gnome-shell-extension-nasa-apod
+   # Switch branch if testing GNOME 43-44:
+   # git checkout gnome-43-44
    # Switch branch if testing GNOME 40-42:
    # git checkout gnome-40-42
    make install
@@ -96,6 +101,7 @@ This project follows a GNOME-major SemVer scheme:
 
 - **`<GNOME_BASE>`**: The baseline GNOME version supported by the branch:
   - `45` on `main` for modern GNOME environments (GNOME 45+ with ESM).
+  - `43` on `gnome-43-44` for legacy GNOME environments (GNOME 43–44 with Soup 3.0).
   - `40` on `gnome-40-42` for legacy GNOME environments (GNOME 40–42 with Soup 2.4).
 - **`<RELEASE>`**: Minor/feature releases for that specific branch.
 - **`<PATCH>`**: Bugfix and maintenance releases.
