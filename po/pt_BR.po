@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 11:26+0200\n"
+"POT-Creation-Date: 2026-10-12 11:42+0200\n"
 "PO-Revision-Date: 2021-06-02 15:41-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -127,20 +127,20 @@ msgstr ""
 msgid "Network error"
 msgstr "Erro de rede"
 
-#: extension.js:446 extension.js:596
+#: extension.js:446 extension.js:599
 msgid "HTTP status code {0}."
 msgstr "Código de Status HTTP {0}."
 
-#: extension.js:567
+#: extension.js:570
 #, fuzzy
 msgid "Download {0} done"
 msgstr "Pasta de Download:"
 
-#: extension.js:569
+#: extension.js:572
 msgid "Downloading..."
 msgstr ""
 
-#: extension.js:595
+#: extension.js:598
 msgid "Couldn't fetch image from {0}"
 msgstr "Não foi possível buscar imagem de {0}"
 

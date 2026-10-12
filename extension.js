@@ -554,14 +554,17 @@ const NasaApodIndicator = GObject.registerClass({
         // got_headers event
         request.connect('got_headers', message => {
             total_size = message.response_headers.get_content_length();
-            Utils.ext_log(`Download size: ${total_size}B`);
+            if (total_size > 0)
+                Utils.ext_log(`Download size: ${Utils.formatSize(total_size)}`);
+            else
+                Utils.ext_log('Download size: unknown (chunked stream)');
         });
 
         // got_chunk event
         request.connect('got_chunk', (message, chunk) => {
             bytes_so_far += chunk.length;
 
-            if (total_size) {
+            if (total_size > 0) {
                 let fraction = bytes_so_far / total_size;
                 let percent = Math.floor(fraction * 100);
                 this.refreshStatusItem.label.set_text(_('Download {0} done').replace('{0}', `${percent}%`));
@@ -579,7 +582,7 @@ const NasaApodIndicator = GObject.registerClass({
             fstream.close(null);
 
             if (message.status_code === 200) {
-                Utils.ext_log('Download successful');
+                Utils.ext_log(`Download successful (${Utils.formatSize(bytes_so_far)})`);
                 try {
                     this._setBackground();
                     this._notifyAPIResults();

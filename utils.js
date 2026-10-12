@@ -4,6 +4,7 @@
 /* exported setBackgroundBasedOnSettings */
 /* exported list_files */
 /* exported parse_uri */
+/* exported formatSize */
 
 
 const {Gio, GLib} = imports.gi;
@@ -120,4 +121,17 @@ function getBackgroundSettings() {
         return getBackgroundSettings._instance;
     getBackgroundSettings._instance = new Gio.Settings({schema: 'org.gnome.desktop.background'});
     return getBackgroundSettings._instance;
+}
+
+/**
+ * @param {number} bytes Number of bytes
+ * @returns {string} Formatted string with units
+ */
+function formatSize(bytes) {
+    if (bytes === 0)
+        return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
