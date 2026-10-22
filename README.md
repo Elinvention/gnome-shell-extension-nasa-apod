@@ -128,10 +128,6 @@ send it to me by email (see my profile).
 ![Settings][screenshot2]  
 ![Settings About][screenshot3]  
 
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/Elinvention/gnome-shell-extension-nasa-apod.svg?variant=adaptive)](https://starchart.cc/Elinvention/gnome-shell-extension-nasa-apod)
-
 [screenshot1]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/4.png
 [screenshot2]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/5.png
 [screenshot3]: https://github.com/Elinvention/gnome-shell-extension-nasa-apod/blob/main/screenshots/6.png
