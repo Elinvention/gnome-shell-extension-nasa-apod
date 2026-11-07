@@ -136,7 +136,73 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
             title: _('Background'),
         });
 
-        // Set background
+        // Set desktop background
+        const desktopSwitch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: this._settings.get_boolean('set-background'),
+        });
+        const desktopRow = new Adw.ActionRow({
+            title: _('Set desktop background'),
+            subtitle: _('Automatically update the desktop wallpaper'),
+            activatable_widget: desktopSwitch,
+        });
+        desktopRow.add_suffix(desktopSwitch);
+
+        // Set lock screen background
+        const lockscreenSwitch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: this._settings.get_boolean('set-lockscreen-background'),
+        });
+        const lockscreenRow = new Adw.ActionRow({
+            title: _('Set lock screen background'),
+            subtitle: _('Automatically update the lock screen wallpaper'),
+            activatable_widget: lockscreenSwitch,
+        });
+        lockscreenRow.add_suffix(lockscreenSwitch);
+
+        // Lock screen blur switch
+        const lockscreenBlurSwitch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: this._settings.get_boolean('lockscreen-blur'),
+        });
+        const lockscreenBlurRow = new Adw.ActionRow({
+            title: _('Blur lock screen background'),
+            subtitle: _('Apply a blur effect to the lock screen wallpaper'),
+            activatable_widget: lockscreenBlurSwitch,
+        });
+        lockscreenBlurRow.add_suffix(lockscreenBlurSwitch);
+
+        // Lock screen blur radius
+        const lockscreenBlurRadiusAdjustment = new Gtk.Adjustment({
+            step_increment: 5,
+            page_increment: 10,
+            page_size: 0,
+            lower: 0,
+            upper: 100,
+            value: this._settings.get_int('lockscreen-blur-radius'),
+        });
+        const lockscreenBlurRadiusSpinButton = new Gtk.SpinButton({
+            valign: Gtk.Align.CENTER,
+            adjustment: lockscreenBlurRadiusAdjustment,
+            climb_rate: 1,
+            digits: 0,
+        });
+        const lockscreenBlurRadiusRow = new Adw.ActionRow({
+            title: _('Lock screen blur radius'),
+            subtitle: _('Amount of blur to apply (0 for no blur, 90 for default GNOME blur)'),
+            activatable_widget: lockscreenBlurRadiusSpinButton,
+        });
+        lockscreenBlurRadiusRow.add_suffix(lockscreenBlurRadiusSpinButton);
+
+        const updateBlurSensitivity = () => {
+            const lockActive = lockscreenSwitch.get_active();
+            const blurActive = lockscreenBlurSwitch.get_active();
+            lockscreenBlurRow.set_sensitive(lockActive);
+            lockscreenBlurRadiusRow.set_sensitive(lockActive && blurActive);
+        };
+        updateBlurSensitivity();
+
+        // Set background image adaptation
         const backgroundModel = new Gtk.StringList();
         backgroundModel.append('none');
         backgroundModel.append('centered');
@@ -177,6 +243,10 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         });
         thumbnailRow.add_suffix(thumbnailSwitch);
 
+        backgroundGroup.add(desktopRow);
+        backgroundGroup.add(lockscreenRow);
+        backgroundGroup.add(lockscreenBlurRow);
+        backgroundGroup.add(lockscreenBlurRadiusRow);
         backgroundGroup.add(downloadFolderRow);
         backgroundGroup.add(thumbnailRow);
         backgroundGroup.add(backgroundComboRow);
@@ -196,6 +266,27 @@ class NasaApodGeneralPage extends Adw.PreferencesPage {
         });
         transientCheckButton.connect('notify::active', widget => {
             this._settings.set_boolean('transient', widget.selected);
+        });
+
+        desktopSwitch.connect('notify::active', widget => {
+            this._settings.set_boolean('set-background', widget.get_active());
+        });
+        lockscreenSwitch.connect('notify::active', widget => {
+            this._settings.set_boolean('set-lockscreen-background', widget.get_active());
+            updateBlurSensitivity();
+        });
+        lockscreenBlurSwitch.connect('notify::active', widget => {
+            this._settings.set_boolean('lockscreen-blur', widget.get_active());
+            updateBlurSensitivity();
+        });
+        lockscreenBlurRadiusSpinButton.connect('notify::value', widget => {
+            this._settings.set_int('lockscreen-blur-radius', widget.get_value_as_int());
+        });
+        settings.connect('changed::set-background', (_settings, _key) => {
+            Utils.setBackgroundBasedOnSettings(_settings);
+        });
+        settings.connect('changed::set-lockscreen-background', (_settings, _key) => {
+            Utils.setBackgroundBasedOnSettings(_settings);
         });
 
         backgroundComboRow.connect('notify::selected', widget => {

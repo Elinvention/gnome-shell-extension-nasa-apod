@@ -42,9 +42,12 @@ export function getDownloadFolder(settings) {
  */
 export function setBackgroundBasedOnSettings(settings, filename = null) {
     let backgroundSettings = getBackgroundSettings();
+    let screensaverSettings = getScreensaverSettings();
 
-    if ((typeof filename === 'string' || filename instanceof String) && !filename.startsWith('file://'))
-        filename = `file://${filename}`;
+    if (typeof filename === 'string' || filename instanceof String)
+        filename = Gio.File.new_for_commandline_arg(filename).get_uri();
+
+    let option = settings.get_string('background-options');
 
     if (settings.get_boolean('set-background')) {
         if (filename !== null) {
@@ -54,13 +57,52 @@ export function setBackgroundBasedOnSettings(settings, filename = null) {
             backgroundSettings.set_string('picture-uri', filename);
             backgroundSettings.set_string('picture-uri-dark', filename);
         }
-        let option = settings.get_string('background-options');
         if (option !== 'default')
             backgroundSettings.set_string('picture-options', option);
+
+        Gio.Settings.sync();
+        backgroundSettings.apply();
     }
 
-    Gio.Settings.sync();
-    backgroundSettings.apply();
+    if (settings.get_boolean('set-lockscreen-background')) {
+        if (filename !== null) {
+            // force gnome to reload the lockscreen background
+            screensaverSettings.reset('picture-uri');
+            screensaverSettings.set_string('picture-uri', filename);
+            if (screensaverSettings.settings_schema.has_key('picture-uri-dark')) {
+                screensaverSettings.reset('picture-uri-dark');
+                screensaverSettings.set_string('picture-uri-dark', filename);
+            }
+        }
+        if (option !== 'default' && screensaverSettings.settings_schema.has_key('picture-options'))
+            screensaverSettings.set_string('picture-options', option);
+
+        Gio.Settings.sync();
+        screensaverSettings.apply();
+
+        // Support modern GNOME Shell lockscreen via Lockscreen Extension if installed
+        if (filename !== null) {
+            try {
+                let lockscreenExtSettings = getLockscreenExtensionSettings();
+                if (lockscreenExtSettings) {
+                    const shouldBlur = settings.get_boolean('lockscreen-blur');
+                    const blurRadius = shouldBlur ? settings.get_int('lockscreen-blur-radius') : 0;
+                    for (let i = 1; i <= 4; i++) {
+                        if (lockscreenExtSettings.settings_schema.has_key(`background-image-path-${i}`))
+                            lockscreenExtSettings.set_string(`background-image-path-${i}`, filename);
+                        if (lockscreenExtSettings.settings_schema.has_key(`blur-radius-${i}`))
+                            lockscreenExtSettings.set_int(`blur-radius-${i}`, blurRadius);
+                        if (lockscreenExtSettings.settings_schema.has_key(`blur-brightness-${i}`))
+                            lockscreenExtSettings.set_double(`blur-brightness-${i}`, 0.85);
+                    }
+                    Gio.Settings.sync();
+                    lockscreenExtSettings.apply();
+                }
+            } catch (e) {
+                ext_log(`Could not update lockscreen-extension: ${e}`);
+            }
+        }
+    }
 }
 
 /**
@@ -150,12 +192,67 @@ export function getBackgroundSettings() {
 }
 
 /**
+ * @returns {Object} gsettings singleton with schema 'org.gnome.desktop.screensaver'
+ */
+export function getScreensaverSettings() {
+    if (getScreensaverSettings._instance)
+        return getScreensaverSettings._instance;
+    getScreensaverSettings._instance = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
+    return getScreensaverSettings._instance;
+}
+
+/**
  * Returns the current background URI.
  *
  * @returns {string} The path to the image used as the current background.
  */
 export function getCurrentBackgroundUri() {
     return getBackgroundSettings().get_string('picture-uri');
+}
+
+/**
+ * Returns the current screensaver background URI.
+ *
+ * @returns {string} The path to the image used as the current screensaver background.
+ */
+export function getCurrentScreensaverUri() {
+    let extSettings = getLockscreenExtensionSettings();
+    if (extSettings && extSettings.settings_schema.has_key('background-image-path-1'))
+        return extSettings.get_string('background-image-path-1');
+    return getScreensaverSettings().get_string('picture-uri');
+}
+
+/**
+ * @returns {Object|null} gsettings singleton for 'org.gnome.shell.extensions.lockscreen-extension' if installed
+ */
+export function getLockscreenExtensionSettings() {
+    if (getLockscreenExtensionSettings._instance !== undefined)
+        return getLockscreenExtensionSettings._instance;
+
+    try {
+        const schemaId = 'org.gnome.shell.extensions.lockscreen-extension';
+        const defaultSource = Gio.SettingsSchemaSource.get_default();
+        if (defaultSource && defaultSource.lookup(schemaId, true)) {
+            getLockscreenExtensionSettings._instance = new Gio.Settings({schema_id: schemaId});
+            return getLockscreenExtensionSettings._instance;
+        }
+
+        const userSchemaPath = `${GLib.get_home_dir()}/.local/share/gnome-shell/extensions/lockscreen-extension@pratap.fastmail.fm/schemas`;
+        const userDir = Gio.File.new_for_path(userSchemaPath);
+        if (userDir.query_exists(null)) {
+            const schemaSource = Gio.SettingsSchemaSource.new_from_directory(userSchemaPath, defaultSource, false);
+            const schema = schemaSource.lookup(schemaId, false);
+            if (schema) {
+                getLockscreenExtensionSettings._instance = new Gio.Settings({settings_schema: schema});
+                return getLockscreenExtensionSettings._instance;
+            }
+        }
+    } catch {
+        // Ignored if extension is not installed
+    }
+
+    getLockscreenExtensionSettings._instance = null;
+    return null;
 }
 
 /**
