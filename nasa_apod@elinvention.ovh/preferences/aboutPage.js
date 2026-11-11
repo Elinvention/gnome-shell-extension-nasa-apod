@@ -4,7 +4,6 @@
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import GObject from 'gi://GObject';
-import Gio from 'gi://Gio';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
@@ -20,40 +19,20 @@ class NasaApodAboutPage extends Adw.PreferencesPage {
 
         this._settings = settings;
 
-        // About group
-        // ---------------
-        const aboutGroup = new Adw.PreferencesGroup({
-            title: _('About'),
-        });
-
         // NASA image
-        const nasaImage = new Gtk.Picture({
-            file: Gio.File.new_for_path(image_path),
-            height_request: 290,
-            content_fit: Gtk.ContentFit.CONTAIN,
-            hexpand: true,
+        const nasaImage = new Gtk.Image({
+            file: image_path,
         });
 
-        // Title
-        const titleLabel = new Gtk.Label({
-            label: '<b>NASA APOD Wallpaper Changer extension</b>',
-            justify: Gtk.Justification.CENTER,
-            wrap: true,
-            halign: Gtk.Align.CENTER,
-            use_markup: true,
+        const statusPage = new Adw.StatusPage({
+            title: _('NASA APOD Wallpaper Changer extension'),
+            description: _("Change your wallpaper daily to the NASA's astronomy picture of the day"),
+            paintable: nasaImage.get_paintable(),
         });
 
         // version
         const versionLabel = new Gtk.Label({
             label: `${_('version:')} ${version}`,
-            justify: Gtk.Justification.CENTER,
-            wrap: true,
-            halign: Gtk.Align.CENTER,
-        });
-
-        // slogan
-        const sloganLabel = new Gtk.Label({
-            label: _("Change your wallpaper daily to the NASA's astronomy picture of the day"),
             justify: Gtk.Justification.CENTER,
             wrap: true,
             halign: Gtk.Align.CENTER,
@@ -86,8 +65,6 @@ class NasaApodAboutPage extends Adw.PreferencesPage {
             label: `${_('Brought to you by:')}\nElia Argentieri`,
             halign: Gtk.Align.CENTER,
             justify: Gtk.Justification.CENTER,
-            vexpand: true,
-            valign: Gtk.Align.END,
         });
 
         const licenseLabel = new Gtk.Label({
@@ -99,17 +76,23 @@ class NasaApodAboutPage extends Adw.PreferencesPage {
             halign: Gtk.Align.CENTER,
         });
 
-        aboutGroup.add(nasaImage);
-        aboutGroup.add(titleLabel);
-        aboutGroup.add(versionLabel);
-        aboutGroup.add(sloganLabel);
-        aboutGroup.add(gitHubLinkButton);
-        aboutGroup.add(issuesLinkButton);
-        aboutGroup.add(releasesLinkButton);
-        aboutGroup.add(creditsLabel);
-        aboutGroup.add(licenseLabel);
+        const child = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 12,
+            halign: Gtk.Align.CENTER,
+        });
+        child.append(versionLabel);
+        child.append(gitHubLinkButton);
+        child.append(issuesLinkButton);
+        child.append(releasesLinkButton);
+        child.append(creditsLabel);
+        child.append(licenseLabel);
+
+        statusPage.set_child(child);
+
+        const aboutGroup = new Adw.PreferencesGroup();
+        aboutGroup.add(statusPage);
 
         this.add(aboutGroup);
     }
 });
-
