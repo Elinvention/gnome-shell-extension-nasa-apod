@@ -27,7 +27,7 @@ export default class NasaApodExtensionPreferences extends ExtensionPreferences {
         let settings_page = new GeneralPrefs.GeneralPage(settings);
         let network_page = new NetworkPrefs.NetworkPage(settings);
         let history_page = new HistoryPrefs.HistoryPage(settings);
-        let about_page = new AboutPrefs.AboutPage(settings, `${this.path}/icons/nasa.svg`, this.metadata.version.toString());
+        let about_page = new AboutPrefs.AboutPage(settings, `${this.path}/icons/nasa.svg`, this.metadata['version-name']);
 
         window.add(settings_page);
         window.add(network_page);
