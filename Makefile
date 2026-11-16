@@ -2,7 +2,7 @@ UUID = nasa_apod@elinvention.ovh
 BUNDLE_PATH = $(UUID).zip
 POT_PATH = $(UUID).pot
 
-.PHONY: install uninstall enable disable build clean potfile mergepo release eslint nested-shell
+.PHONY: install uninstall enable disable build clean potfile mergepo release eslint shexli check nested-shell
 
 install: build
 	gnome-extensions install $(BUNDLE_PATH) --force
@@ -41,6 +41,20 @@ $(POT_PATH):
 
 eslint:
 	npx eslint -c eslint.config.js $(UUID)
+
+shexli: build
+	@if command -v shexli >/dev/null 2>&1; then \
+		shexli $(BUNDLE_PATH) --format text; \
+	elif command -v uvx >/dev/null 2>&1; then \
+		uvx shexli $(BUNDLE_PATH) --format text; \
+	elif command -v nix-shell >/dev/null 2>&1; then \
+		nix-shell -p uv --run "uvx shexli $(BUNDLE_PATH) --format text"; \
+	else \
+		echo "shexli not found (install with 'pip install shexli' or install 'uv')"; \
+		exit 1; \
+	fi
+
+check: eslint shexli
 
 nested-shell:
 	dbus-run-session -- gnome-shell --nested --wayland || dbus-run-session -- gnome-shell --devkit

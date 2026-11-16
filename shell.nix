@@ -9,6 +9,7 @@ pkgs.mkShell {
     gnome-shell
     nodejs
     poedit
+    uv
   ];
 }
 
