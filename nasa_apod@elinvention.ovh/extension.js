@@ -164,7 +164,7 @@ const NasaApodIndicator = GObject.registerClass({
 
         // Indicator visibility
         this.visible = !this._settings.get_boolean('hide'); // set initial state
-        this._settings.connect('changed::hide', () => {
+        this._hideChangedId = this._settings.connect('changed::hide', () => {
             this.visible = !this._settings.get_boolean('hide');
         });
 
@@ -214,7 +214,7 @@ const NasaApodIndicator = GObject.registerClass({
         this.menu.addMenuItem(this.wallpaperItem);
         this.menu.addMenuItem(this._settingsItem);
 
-        this.menu.connect('open-state-changed', (menu, isOpen) => {
+        this._menuOpenStateChangedId = this.menu.connect('open-state-changed', (menu, isOpen) => {
             if (isOpen)
                 this._updateMenuItems();
         });
@@ -236,7 +236,7 @@ const NasaApodIndicator = GObject.registerClass({
             }
         }
 
-        this._settings.connect('changed::pinned-background', this._pinnedBackground.bind(this));
+        this._pinnedBackgroundChangedId = this._settings.connect('changed::pinned-background', this._pinnedBackground.bind(this));
 
         if (this._settings.get_string('pinned-background') === '') {
             // Schedule a refresh only if user did not pin a background.
@@ -539,12 +539,12 @@ const NasaApodIndicator = GObject.registerClass({
         let total_size = 0;
         let bytes_so_far = 0;
 
-        message.connect('got-headers', () => {
+        const gotHeadersId = message.connect('got-headers', () => {
             total_size = message.get_response_headers().get_content_length();
             Utils.ext_log(`got-headers, total size: ${total_size}B`);
         });
 
-        message.connect('got-body-data', (__, size) => {
+        const gotBodyDataId = message.connect('got-body-data', (__, size) => {
             bytes_so_far += size;
 
             if (total_size) {
@@ -574,11 +574,26 @@ const NasaApodIndicator = GObject.registerClass({
                 this._networkErrorActions);
             file.delete(null);
             this._refreshDone();
+        } finally {
+            message.disconnect(gotHeadersId);
+            message.disconnect(gotBodyDataId);
         }
     }
 
     stop() {
         Timer.remove_all();
+        if (this._hideChangedId) {
+            this._settings?.disconnect(this._hideChangedId);
+            this._hideChangedId = null;
+        }
+        if (this._pinnedBackgroundChangedId) {
+            this._settings?.disconnect(this._pinnedBackgroundChangedId);
+            this._pinnedBackgroundChangedId = null;
+        }
+        if (this._menuOpenStateChangedId) {
+            this.menu?.disconnect(this._menuOpenStateChangedId);
+            this._menuOpenStateChangedId = null;
+        }
         this.menu.removeAll();
     }
 });
@@ -593,7 +608,7 @@ export default class NasaApodExtension extends Extension {
         let position = this._settings.get_int('indicator-position');
         Main.panel.addToStatusArea(this.uuid, this._indicator, position, 'right');
 
-        this._settings.connect('changed::indicator-position', (s, key) => {
+        this._indicatorPositionChangedId = this._settings.connect('changed::indicator-position', (s, key) => {
             if (this._indicator) {
                 let new_position = s.get_int(key);
                 this._indicator.stop();
@@ -605,11 +620,16 @@ export default class NasaApodExtension extends Extension {
     }
 
     disable() {
+        if (this._indicatorPositionChangedId) {
+            this._settings?.disconnect(this._indicatorPositionChangedId);
+            this._indicatorPositionChangedId = null;
+        }
         this._indicator?.stop();
         this._indicator?.destroy();
         this._httpSession?.abort();
         this._httpSession = null;
         this._indicator = null;
+        this._settings = null;
     }
 }
 
